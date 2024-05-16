@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Zcy.BaseInterface.BaseModel;
+﻿using Zcy.BaseInterface.BaseModel;
 using Zcy.Dto.SysBaseInfo;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.IRepository.SysBaseInfo;
@@ -13,10 +12,12 @@ namespace Zcy.Service.SysBaseInfo
     public class SystemRoleMenuService : ZcyBaseService, ISystemRoleMenuService
     {
         private readonly ISystemRoleMenuRepository _systemRoleMenuRepository;
-        public SystemRoleMenuService(IServiceCollection serviceCollection,
-            ISystemRoleMenuRepository systemRoleMenuRepository) : base(serviceCollection)
+        private readonly ISystemMenuRepository _systemMenuRepository;
+        public SystemRoleMenuService(ISystemRoleMenuRepository systemRoleMenuRepository, 
+            ISystemMenuRepository systemMenuRepository)
         {
             _systemRoleMenuRepository = systemRoleMenuRepository;
+            _systemMenuRepository = systemMenuRepository;
         }
 
         /// <summary>
@@ -42,6 +43,14 @@ namespace Zcy.Service.SysBaseInfo
                 input.MenuItems.Any() == false)
             {
                 return KdyResult.Error(KdyResultCode.ParError, "参数错误，请至少选择一项");
+            }
+
+            var menuQuery = await _systemMenuRepository.GetQueryableAsync();
+            menuQuery = menuQuery.Where(a => input.MenuItems.Select(b => b.MenuId).Contains(a.Id));
+            var menuCount = await _systemMenuRepository.CountAsync(menuQuery);
+            if (menuCount != input.MenuItems.Count)
+            {
+                return KdyResult.Error(KdyResultCode.ParError, "菜单参数错误");
             }
 
             if (dbRoleMenu.Any())

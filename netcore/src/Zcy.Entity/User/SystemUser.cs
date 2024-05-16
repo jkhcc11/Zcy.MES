@@ -94,7 +94,7 @@ namespace Zcy.Entity.User
         /// 启用登录
         /// </summary>
         /// <remarks>
-        ///  用户密码为空时，讲把密码设置为默认密码
+        ///  用户密码为空时，并把密码设置为默认密码
         /// </remarks>
         public void EnableLogin()
         {

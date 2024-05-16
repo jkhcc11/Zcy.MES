@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Zcy.BaseInterface;
 using Zcy.BaseInterface.Service;
 
 namespace Zcy.Service
@@ -15,10 +16,10 @@ namespace Zcy.Service
         protected readonly ILoginUserInfo LoginUserInfo;
         protected readonly IMapper BaseMapper;
 
-        protected ZcyBaseService(IServiceCollection serviceCollection)
+        protected ZcyBaseService()
         {
-            ServiceCollection = serviceCollection;
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            ServiceCollection = AuthorizationConst.ServiceCollection;
+            var serviceProvider = ServiceCollection.BuildServiceProvider();
             LoginUserInfo = serviceProvider.GetService<ILoginUserInfo>() ??
                             throw new ArgumentException("ZcyBaseService LoginUserInfo is null");
             BaseMapper = serviceProvider.GetService<IMapper>() ??

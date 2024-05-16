@@ -3,6 +3,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
+using Zcy.IRepository.SysBaseInfo;
+using Zcy.IRepository.User;
+using Zcy.MongoDB.SysBaseInfo;
+using Zcy.MongoDB.User;
 
 namespace Zcy.MongoDB
 {
@@ -19,7 +23,12 @@ namespace Zcy.MongoDB
 
             //todo:默认全局仓储，特殊单独注入单独的
             services.TryAdd(ServiceDescriptor.Transient(typeof(IBaseRepository<,>), typeof(CommonRepository<,>)));
-            //services.AddTransient<IGptWebMessageRepository, GptWebMessageRepository>();
+            
+            services.AddTransient<ISystemUserRepository, SystemUserRepository>();
+
+            services.AddTransient<ISystemMenuRepository, SystemMenuRepository>();
+            services.AddTransient<ISystemRoleMenuRepository, SystemRoleMenuRepository>();
+
             //services.AddTransient<IActivationCodeRepository, ActivationCodeRepository>();
             //services.AddTransient<IPerUseActivationCodeRecordRepository, PerUseActivationCodeRecordRepository>();
             //services.AddTransient<IActivationCodeTypeV2Repository, ActivationCodeTypeV2Repository>();

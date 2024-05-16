@@ -15,8 +15,7 @@ namespace Zcy.Service.SysBaseInfo
     {
         private readonly IBaseRepository<SystemRole, long> _roleRepository;
 
-        public SystemRoleService(IServiceCollection serviceCollection,
-            IBaseRepository<SystemRole, long> roleRepository) : base(serviceCollection)
+        public SystemRoleService(IBaseRepository<SystemRole, long> roleRepository)
         {
             _roleRepository = roleRepository;
         }
@@ -72,6 +71,20 @@ namespace Zcy.Service.SysBaseInfo
             var dbList = await _roleRepository.GetAllListAsync();
             var result = BaseMapper.Map<IReadOnlyList<SystemRole>, IList<GetAllRoleDto>>(dbList);
             return result;
+        }
+
+        /// <summary>
+        /// 初始化角色
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> InitRoleAsync()
+        {
+            var rootEntity = new SystemRole(AuthorizationConst.NormalRoleName.SuperAdmin, "超管")
+            {
+                Remark = "超管"
+            };
+            await _roleRepository.CreateAsync(rootEntity);
+            return KdyResult.Success();
         }
 
         #region 私有

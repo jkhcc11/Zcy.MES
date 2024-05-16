@@ -15,8 +15,7 @@ namespace Zcy.Service.SysBaseInfo
     {
         private readonly ISystemMenuRepository _systemMenuRepository;
 
-        public SystemMenuService(IServiceCollection serviceCollection,
-            ISystemMenuRepository systemMenuRepository) : base(serviceCollection)
+        public SystemMenuService(ISystemMenuRepository systemMenuRepository)
         {
             _systemMenuRepository = systemMenuRepository;
         }

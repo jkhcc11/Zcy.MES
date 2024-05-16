@@ -7,12 +7,6 @@ namespace Zcy.Dto.User
     /// </summary>
     public class QueryPageUserDto : BaseEntityDto<long>
     {
-        public QueryPageUserDto(string userName, string userNick)
-        {
-            UserName = userName;
-            UserNick = userNick;
-        }
-
         /// <summary>
         /// 用户名
         /// </summary>

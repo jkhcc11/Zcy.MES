@@ -1,6 +1,7 @@
-
-using Microsoft.OpenApi.Models;
+using Serilog;
+using Zcy.BaseInterface;
 using Zcy.MES.HttpService;
+using Zcy.MES.JsonConvert;
 
 namespace Zcy.MES
 {
@@ -8,32 +9,66 @@ namespace Zcy.MES
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+                .Build();
 
-            // Add services to the container.
-            builder.Services.AddControllers();
-            builder.Services.AddServices();
-            builder.Services.AddJwtAuth(builder.Configuration);
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            try
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
+                Log.Information("Starting ZcyMes application");
+                var builder = WebApplication.CreateBuilder(args);
+
+                // Add services to the container.
+                builder.Services.AddSerilog();
+                builder.Services.AddControllers()
+                    .AddJsonOptions(conf =>
+                    {
+                        conf.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                        conf.JsonSerializerOptions.Converters.Add(new LongConverter());
+                    });
+                builder.Services.AddMemoryCache();
+                builder.Services.AddHttpContextAccessor();
+                AuthorizationConst.ServiceCollection = builder.Services;
+                builder.Services.AddMongodb(builder.Configuration);
+                builder.Services.AddServices();
+                builder.Services.AddJwtAuth(builder.Configuration);
+
+                var app = builder.Build();
+
+                app.UseSerilogRequestLogging();
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
                 {
-                    c.SwaggerEndpoint("/swagger/normal/swagger.json", "normal");
-                    c.SwaggerEndpoint("/swagger/login/swagger.json", "login");
-                    c.SwaggerEndpoint("/swagger/manager/swagger.json", "manager");
-                });
+                    app.UseSwagger();
+                    app.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/normal/swagger.json", "normal");
+                        c.SwaggerEndpoint("/swagger/login/swagger.json", "login");
+                        c.SwaggerEndpoint("/swagger/manager/swagger.json", "manager");
+                    });
+                }
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+                app.MapControllers();
+
+                app.Run();
+
             }
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.MapControllers();
-
-            app.Run();
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "≥Ã–Ú∆Ù∂Ø“Ï≥£");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }

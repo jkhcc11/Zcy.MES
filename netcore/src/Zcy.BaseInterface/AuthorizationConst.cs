@@ -1,4 +1,6 @@
-﻿namespace Zcy.BaseInterface
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Zcy.BaseInterface
 {
 
     /// <summary>
@@ -6,6 +8,11 @@
     /// </summary>
     public class AuthorizationConst
     {
+        /// <summary>
+        /// 全局ServiceCollection 谨慎使用
+        /// </summary>
+        public static IServiceCollection ServiceCollection { get; set; }
+
         /// <summary>
         /// 通用策略名
         /// </summary>

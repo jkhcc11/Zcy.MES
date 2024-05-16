@@ -7,6 +7,12 @@ namespace Zcy.Entity.SysBaseInfo
     /// </summary>
     public class SystemUserRole : BaseEntity<long>
     {
+        public SystemUserRole(long userId, long roleId)
+        {
+            UserId = userId;
+            RoleId = roleId;
+        }
+
         /// <summary>
         /// 用户Id
         /// </summary>

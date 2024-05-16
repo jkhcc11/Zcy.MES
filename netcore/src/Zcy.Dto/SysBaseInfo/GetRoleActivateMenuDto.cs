@@ -5,10 +5,8 @@
     /// </summary>
     public class GetRoleActivateMenuDto
     {
-        public GetRoleActivateMenuDto(long parentMenuId, long menuId, string menuName)
+        public GetRoleActivateMenuDto(string menuName)
         {
-            ParentMenuId = parentMenuId;
-            MenuId = menuId;
             MenuName = menuName;
         }
 

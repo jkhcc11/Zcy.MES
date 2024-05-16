@@ -17,6 +17,7 @@ namespace Zcy.BaseInterface.Entities
         /// </summary>
         /// <returns></returns>
         Task<TEntity?> FirstOrDefaultAsync(TKey keyId);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 
         /// <summary>
         /// 根据Id获取实体
@@ -98,5 +99,12 @@ namespace Zcy.BaseInterface.Entities
         /// <returns></returns>
         Task<IReadOnlyList<TEntity>> ToListAsync();
         Task<IReadOnlyList<TEntity>> ToListAsync(IQueryable<TEntity> query);
+
+        /// <summary>
+        /// 统计
+        /// </summary>
+        /// <returns></returns>
+        Task<int> CountAsync(IQueryable<TEntity> query);
+        Task<long> LongCountAsync(IQueryable<TEntity> query);
     }
 }

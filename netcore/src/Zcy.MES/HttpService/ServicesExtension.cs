@@ -1,12 +1,20 @@
-﻿using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using Snowflake.Core;
 using Zcy.BaseInterface;
+using Zcy.BaseInterface.Entities;
+using Zcy.BaseInterface.Service;
 using Zcy.Dto;
+using Zcy.IService.SysBaseInfo;
+using Zcy.IService.User;
 using Zcy.MongoDB;
+using Zcy.Service.SysBaseInfo;
+using Zcy.Service.User;
 
 namespace Zcy.MES.HttpService
 {
@@ -18,6 +26,8 @@ namespace Zcy.MES.HttpService
         /// <returns></returns>
         public static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfiguration configuration)
         {
+            //todo:记得先清理默认
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             // 配置JWT认证
             services.AddAuthentication(options =>
                 {
@@ -28,6 +38,7 @@ namespace Zcy.MES.HttpService
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        RoleClaimType = JwtClaimTypes.Role,
                         ValidateIssuer = true,
                         //令牌将被发送到哪里，即你的API或应用程序的地址
                         ValidateAudience = false,
@@ -114,12 +125,17 @@ namespace Zcy.MES.HttpService
                 });
             });
 
-            //services.AddTransient<IOpenAiDashboardApiHttpApi, OpenAiDashboardApiHttpApi>();
-            //services.AddTransient<IOpenAiHttpApi, OpenAiHttpApi>();
+            //id生成
+            services.AddSingleton(_ => new IdGenerateExtension(new IdWorker(1, 1)));
 
-            //services.AddTransient<IActivationCodeService, ActivationCodeService>();
+            services.AddScoped<ILoginUserInfo, LoginUserInfo>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<ISystemRoleService, SystemRoleService>();
+            services.AddTransient<ISystemRoleMenuService, SystemRoleMenuService>();
+            services.AddTransient<ISystemMenuService, SystemMenuService>();
+
             //services.AddTransient<IWebConfigService, WebConfigService>();
-
             //services.AddTransient<IWebConfigAdminService, WebConfigAdminService>();
             //services.AddTransient<IActivationCodeAdminService, ActivationCodeAdminService>();
             return services;

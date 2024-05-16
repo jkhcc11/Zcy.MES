@@ -17,6 +17,7 @@ namespace Zcy.MongoDB
     public abstract class BaseMongodbRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
         where TEntity : BaseEntity<TKey> where TKey : struct
     {
+        protected readonly IdGenerateExtension IdGenerateExtension;
         protected readonly ZcyMongodbContext ZcyMongodbContext;
         protected readonly string CollectionName;
         protected readonly IMongoCollection<TEntity> DbCollection;
@@ -31,6 +32,8 @@ namespace Zcy.MongoDB
             DbCollection = zcyDbContext.Database.GetCollection<TEntity>(CollectionName);
             ServiceProvider = zcyDbContext.ServiceCollection.BuildServiceProvider();
             LoginUserInfo = ServiceProvider.GetService<ILoginUserInfo>();
+            IdGenerateExtension = ServiceProvider.GetService<IdGenerateExtension>() ??
+                                  throw new NullReferenceException("BaseMongodbRepository IdGenerateExtension is null");
             BaseMapper = ServiceProvider.GetService<IMapper>() ??
                          throw new NullReferenceException("BaseMongodbRepository BaseMapper is null");
         }
@@ -43,6 +46,13 @@ namespace Zcy.MongoDB
         {
             var query = await GetQueryableAsync();
             return await ToMongoQueryable(query.Where(a => Equals(a.Id, keyId)))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            var query = await GetQueryableAsync();
+            return await ToMongoQueryable(query.Where(predicate))
                 .FirstOrDefaultAsync();
         }
 
@@ -64,7 +74,7 @@ namespace Zcy.MongoDB
             if (typeof(TKey) == typeof(long) &&
                  EqualityComparer<TKey>.Default.Equals(entity.Id, default))
             {
-                entity.Id = (TKey)(object)IdGenerateExtension.Instance.GenerateId();
+                entity.Id = (TKey)(object)IdGenerateExtension.GenerateId();
             }
 
             // ReSharper disable once SuspiciousTypeConversion.Global
@@ -100,7 +110,7 @@ namespace Zcy.MongoDB
                 if (typeof(TKey) == typeof(long) &&
                     EqualityComparer<TKey>.Default.Equals(item.Id, default))
                 {
-                    item.Id = (TKey)(object)IdGenerateExtension.Instance.GenerateId();
+                    item.Id = (TKey)(object)IdGenerateExtension.GenerateId();
                 }
             }
 
@@ -131,9 +141,9 @@ namespace Zcy.MongoDB
 
                 // 添加更新操作
                 var filter = Builders<TEntity>.Filter.Where(a => Equals(a.Id, entity.Id));
-                var update = Builders<TEntity>.Update.Set(a => a.ModifyUserId, LoginUserInfo?.UserId);
-                update.Set(a => a.ModifyTime, DateTime.Now);
-
+                var update = Builders<TEntity>.Update
+                    .Set(a => a.ModifyUserId, LoginUserInfo?.UserId)
+                    .Set(a => a.ModifyTime, DateTime.Now);
                 updates.Add(new UpdateOneModel<TEntity>(filter, update));
             }
 
@@ -166,9 +176,10 @@ namespace Zcy.MongoDB
 
                 // 添加更新操作
                 var filter = Builders<TEntity>.Filter.Where(a => Equals(a.Id, entity.Id));
-                var update = Builders<TEntity>.Update.Set(a => a.DeletedUserId, LoginUserInfo?.UserId);
-                update.Set(a => a.DeletedTime, DateTime.Now);
-                update.Set(a => a.IsDelete, true);
+                var update = Builders<TEntity>.Update
+                    .Set(a => a.DeletedUserId, LoginUserInfo?.UserId)
+                    .Set(a => a.DeletedTime, DateTime.Now)
+                    .Set(a => a.IsDelete, true);
                 updates.Add(new UpdateOneModel<TEntity>(filter, update));
             }
 
@@ -289,6 +300,22 @@ namespace Zcy.MongoDB
         {
             var dbQuery = ToMongoQueryable(query);
             return await dbQuery.ToListAsync();
+        }
+
+        /// <summary>
+        /// 统计
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> CountAsync(IQueryable<TEntity> query)
+        {
+            var dbQuery = ToMongoQueryable(query);
+            return await dbQuery.CountAsync();
+        }
+
+        public async Task<long> LongCountAsync(IQueryable<TEntity> query)
+        {
+            var dbQuery = ToMongoQueryable(query);
+            return await dbQuery.LongCountAsync();
         }
 
         internal IMongoQueryable<TEntity>? ToMongoQueryable(IQueryable<TEntity> query)

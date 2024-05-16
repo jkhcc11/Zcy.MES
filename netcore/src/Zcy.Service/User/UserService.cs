@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Text;
 using IdentityModel;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
@@ -24,9 +23,8 @@ namespace Zcy.Service.User
         private readonly IBaseRepository<SystemRole, long> _roleRepository;
         private readonly IBaseRepository<SystemUserRole, long> _userRoleRepository;
 
-        public UserService(IServiceCollection serviceCollection,
-            ISystemUserRepository userRepository, IBaseRepository<SystemRole, long> roleRepository,
-            IBaseRepository<SystemUserRole, long> userRoleRepository) : base(serviceCollection)
+        public UserService(ISystemUserRepository userRepository, IBaseRepository<SystemRole, long> roleRepository,
+            IBaseRepository<SystemUserRole, long> userRoleRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -292,12 +290,41 @@ namespace Zcy.Service.User
 
             //新增新的
             //todo:更换角色时 token问题
-            var entities = input.RoleIds.Select(a => new SystemUserRole()
-            {
-                RoleId = a,
-                UserId = input.UserId
-            }).ToList();
+            var entities = input.RoleIds.Select(a => new SystemUserRole(input.UserId, a)).ToList();
             await _userRoleRepository.CreateAsync(entities);
+
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 初始化用户
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> InitUserAsync()
+        {
+            //角色
+            var roleEntity =
+                await _roleRepository.FirstOrDefaultAsync(a =>
+                    a.RoleName == AuthorizationConst.NormalRoleName.SuperAdmin);
+            if (roleEntity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "无角色");
+            }
+
+            //用户
+            var userName = "admin";
+            if (await _userRepository.AnyAsync(a => a.UserName == userName))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "用户已存在");
+            }
+
+            var entity = new SystemUser(userName, "超管");
+            entity.EnableLogin();
+            await _userRepository.CreateAsync(entity);
+
+            //用户角色
+            var userRoleEntity = new SystemUserRole(entity.Id, roleEntity.Id);
+            await _userRoleRepository.CreateAsync(userRoleEntity);
 
             return KdyResult.Success();
         }

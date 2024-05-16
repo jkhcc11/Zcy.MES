@@ -16,15 +16,14 @@ namespace Zcy.Dto
             //角色菜单
             CreateMap<SystemMenu, QueryPageMenuDto>();
             CreateMap<SystemMenu, GetAllMenuTreeDto>();
-
-            CreateMap<SystemMenu, QueryPageRoleDto>();
-            CreateMap<SystemRole, GetAllRoleDto>()
-                .ForMember(dest => dest.RoleId, target => target.MapFrom(source => source.Id));
             CreateMap<SystemMenu, GetRoleActivateMenuDto>()
                 .ForMember(dest => dest.MenuId, target => target.MapFrom(source => source.Id));
             CreateMap<SystemMenu, GetRoleActivateMenuTreeDto>()
                 .ForMember(dest => dest.Cacheable, target => target.MapFrom(source => source.IsCache));
 
+            CreateMap<SystemRole, QueryPageRoleDto>();
+            CreateMap<SystemRole, GetAllRoleDto>()
+                .ForMember(dest => dest.RoleId, target => target.MapFrom(source => source.Id));
 
             //CreateMap<ActivationCodeTypeV2, QueryPageCodeTypeDto>()
             //    .ForMember(dest => dest.CardTypeName, target => target.MapFrom(source => source.CodeName));

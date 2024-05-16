@@ -33,5 +33,11 @@ namespace Zcy.IService.SysBaseInfo
         /// </summary>
         /// <returns></returns>
         Task<IList<GetAllRoleDto>> GetAllRoleAsync();
+
+        /// <summary>
+        /// 初始化角色
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> InitRoleAsync();
     }
 }

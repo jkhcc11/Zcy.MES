@@ -67,6 +67,12 @@ namespace Zcy.IService.User
         /// <returns></returns>
         Task<KdyResult> SetUserRoleAsync(SetUserRoleInput input);
 
+        /// <summary>
+        /// 初始化用户
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> InitUserAsync();
+
         ///// <summary>
         ///// 批量导入用户
         ///// </summary>
