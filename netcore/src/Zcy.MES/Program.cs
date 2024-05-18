@@ -33,6 +33,7 @@ namespace Zcy.MES
                         conf.JsonSerializerOptions.Converters.Add(new LongConverter());
                     });
                 builder.Services.AddMemoryCache();
+                builder.Services.AddRedis(builder.Configuration);
                 builder.Services.AddHttpContextAccessor();
                 AuthorizationConst.ServiceCollection = builder.Services;
                 builder.Services.AddMongodb(builder.Configuration);

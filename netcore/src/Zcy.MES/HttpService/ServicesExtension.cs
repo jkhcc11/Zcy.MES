@@ -1,9 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using Snowflake.Core;
 using Zcy.BaseInterface;
@@ -129,11 +132,8 @@ namespace Zcy.MES.HttpService
             services.AddSingleton(_ => new IdGenerateExtension(new IdWorker(1, 1)));
 
             services.AddScoped<ILoginUserInfo, LoginUserInfo>();
-            services.AddTransient<IUserService, UserService>();
 
-            services.AddTransient<ISystemRoleService, SystemRoleService>();
-            services.AddTransient<ISystemRoleMenuService, SystemRoleMenuService>();
-            services.AddTransient<ISystemMenuService, SystemMenuService>();
+            services.AddAllService();
 
             //services.AddTransient<IWebConfigService, WebConfigService>();
             //services.AddTransient<IWebConfigAdminService, WebConfigAdminService>();
@@ -159,6 +159,65 @@ namespace Zcy.MES.HttpService
             services.AddSingleton(_ =>
                 new ZcyMongodbContext(new MongoClient(connectionString), databaseName, services));
             services.AddMongodbRepository();
+            return services;
+        }
+
+        /// <summary>
+        /// 添加Redis
+        /// </summary>
+        /// <returns></returns>
+        public static IServiceCollection AddRedis(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var connectionString = configuration.GetValue<string>("ConnectionStrings:RedisConnStr");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException("未配置Redis连接信息，请检查ConnectionStrings:RedisConnStr");
+            }
+
+            // 配置Redis分布式缓存
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = connectionString; // Redis服务器地址
+                options.InstanceName = "ZcyMes";
+            });
+            return services;
+        }
+
+        /// <summary>
+        /// 服务自动注入
+        /// </summary>
+        /// <returns></returns>
+        internal static IServiceCollection AddAllService(this IServiceCollection services)
+        {
+            //加载当前项目程序集
+            var assemblies = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "Zcy.*.dll")
+                .Select(Assembly.LoadFrom)
+                .ToArray();
+
+            //所有程序集类型声明
+            var allTypes = new List<Type>();
+            foreach (var itemAssemblies in assemblies)
+            {
+                allTypes.AddRange(itemAssemblies.GetTypes());
+            }
+            //公用的接口
+            var baseType = typeof(IZcyBaseService);
+            //过滤需要用到的服务声明接口
+            var useType = allTypes.Where(a => baseType.IsAssignableFrom(a) && a.IsAbstract == false).ToList();
+            foreach (var item in useType)
+            {
+                //该服务所属接口
+                var currentInterface = item.GetInterfaces().FirstOrDefault(a => a.Name.EndsWith(item.Name));
+                if (currentInterface == null)
+                {
+                    continue;
+                }
+
+                //每次请求，都获取一个新的实例。同一个请求获取多次会得到相同的实例
+                services.AddTransient(currentInterface, item);
+            }
+
             return services;
         }
     }

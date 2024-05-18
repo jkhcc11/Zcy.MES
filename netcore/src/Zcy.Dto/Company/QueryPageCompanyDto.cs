@@ -1,21 +1,16 @@
-﻿using Zcy.BaseInterface.Entities;
+﻿using Zcy.BaseInterface.BaseModel;
 
-namespace Zcy.Entity.Company
+namespace Zcy.Dto.Company
 {
     /// <summary>
-    /// 公司
+    /// 查询公司列表
     /// </summary>
-    public class SystemCompany : BaseEntity<long>
+    public class QueryPageCompanyDto : BaseFullAuditEntityDto<long>
     {
-        /// <summary>
-        /// 公司
-        /// </summary>
-        /// <param name="companyName">名</param>
-        /// <param name="shortName">缩写</param>
-        public SystemCompany(string companyName, string shortName)
+        public QueryPageCompanyDto(string companyName, string shortName)
         {
-            ShortName = shortName;
             CompanyName = companyName;
+            ShortName = shortName;
         }
 
         /// <summary>

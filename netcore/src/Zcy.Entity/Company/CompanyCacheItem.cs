@@ -1,21 +1,14 @@
-﻿using Zcy.BaseInterface.Entities;
-
-namespace Zcy.Entity.Company
+﻿namespace Zcy.Entity.Company
 {
     /// <summary>
-    /// 公司
+    /// 公司缓存Item
     /// </summary>
-    public class SystemCompany : BaseEntity<long>
+    public class CompanyCacheItem
     {
-        /// <summary>
-        /// 公司
-        /// </summary>
-        /// <param name="companyName">名</param>
-        /// <param name="shortName">缩写</param>
-        public SystemCompany(string companyName, string shortName)
+        public CompanyCacheItem(string companyName, string shortName)
         {
-            ShortName = shortName;
             CompanyName = companyName;
+            ShortName = shortName;
         }
 
         /// <summary>

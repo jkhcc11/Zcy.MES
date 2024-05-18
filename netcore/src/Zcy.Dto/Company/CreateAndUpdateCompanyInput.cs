@@ -1,26 +1,27 @@
-﻿using Zcy.BaseInterface.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Zcy.Entity.Company
+namespace Zcy.Dto.Company
 {
     /// <summary>
-    /// 公司
+    /// 创建|修改 公司信息
     /// </summary>
-    public class SystemCompany : BaseEntity<long>
+    public class CreateAndUpdateCompanyInput
     {
-        /// <summary>
-        /// 公司
-        /// </summary>
-        /// <param name="companyName">名</param>
-        /// <param name="shortName">缩写</param>
-        public SystemCompany(string companyName, string shortName)
+        public CreateAndUpdateCompanyInput(string companyName, string shortName)
         {
-            ShortName = shortName;
             CompanyName = companyName;
+            ShortName = shortName;
         }
+
+        /// <summary>
+        /// Key
+        /// </summary>
+        public long? Id { get; set; }
 
         /// <summary>
         /// 公司名
         /// </summary>
+        [Required(ErrorMessage = "公司名必填")]
         public string CompanyName { get; set; }
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace Zcy.Entity.Company
         /// <remarks>
         /// 一般用于订单号拼接
         /// </remarks>
+        [Required(ErrorMessage = "公司缩写必填")]
         public string ShortName { get; set; }
 
         /// <summary>
