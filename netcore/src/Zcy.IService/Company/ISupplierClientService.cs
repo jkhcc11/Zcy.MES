@@ -2,6 +2,7 @@
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.Service;
 using Zcy.Dto.Company;
+using Zcy.Entity.Company;
 
 namespace Zcy.IService.Company
 {
@@ -29,7 +30,7 @@ namespace Zcy.IService.Company
         ///  超管获取所有 其他仅获取当前公司
         /// </remarks>
         /// <returns></returns>
-        Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync();
+        Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync(ClientTypeEnum clientType);
 
         /// <summary>
         /// 批量删除

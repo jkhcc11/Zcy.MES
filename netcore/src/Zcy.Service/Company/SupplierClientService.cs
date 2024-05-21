@@ -51,6 +51,12 @@ namespace Zcy.Service.Company
         /// <returns></returns>
         public async Task<KdyResult> CreateAndUpdateSupplierClientAsync(CreateAndUpdateSupplierClientInput input)
         {
+            if (LoginUserInfo.IsSuperAdmin == false &&
+                input.CompanyId != LoginUserInfo.CompanyId)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "参数错误，公司不存在");
+            }
+
             if (await _companyRepository.AnyAsync(a => a.Id == input.CompanyId) == false)
             {
                 return KdyResult.Error(KdyResultCode.Error, "参数错误，公司不存在");
@@ -71,10 +77,11 @@ namespace Zcy.Service.Company
         ///  超管获取所有 其他仅获取当前公司
         /// </remarks>
         /// <returns></returns>
-        public async Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync()
+        public async Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync(ClientTypeEnum clientType)
         {
             var query = await _supplierClientRepository.GetQueryableAsync();
-            query = query.Where(a => a.ClientStatus == PublicStatusEnum.Normal);
+            query = query.Where(a => a.ClientStatus == PublicStatusEnum.Normal &&
+                                     a.ClientType == clientType);
             if (LoginUserInfo.IsSuperAdmin == false)
             {
                 query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);

@@ -3,8 +3,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
+using Zcy.IRepository.FinancialMemo;
 using Zcy.IRepository.SysBaseInfo;
 using Zcy.IRepository.User;
+using Zcy.MongoDB.FinancialMemo;
 using Zcy.MongoDB.SysBaseInfo;
 using Zcy.MongoDB.User;
 
@@ -20,6 +22,8 @@ namespace Zcy.MongoDB
         {
             //db utc  展示 local time
             BsonSerializer.RegisterSerializer(DateTimeSerializer.LocalInstance);
+            // 注册自定义的 decimal 序列化器
+            BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer());
 
             //todo:默认全局仓储，特殊单独注入单独的
             services.TryAdd(ServiceDescriptor.Transient(typeof(IBaseRepository<,>), typeof(CommonRepository<,>)));
@@ -28,6 +32,8 @@ namespace Zcy.MongoDB
 
             services.AddTransient<ISystemMenuRepository, SystemMenuRepository>();
             services.AddTransient<ISystemRoleMenuRepository, SystemRoleMenuRepository>();
+
+            services.AddTransient<IProceedsRecordRepository, ProceedsRecordRepository>();
 
             //services.AddTransient<IActivationCodeRepository, ActivationCodeRepository>();
             //services.AddTransient<IPerUseActivationCodeRecordRepository, PerUseActivationCodeRecordRepository>();

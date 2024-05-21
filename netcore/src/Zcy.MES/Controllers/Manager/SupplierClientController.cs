@@ -2,6 +2,7 @@
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.Dto.Company;
+using Zcy.Entity.Company;
 using Zcy.IService.Company;
 
 namespace Zcy.MES.Controllers.Manager
@@ -69,9 +70,9 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-open-client")]
-        public async Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync()
+        public async Task<KdyResult<List<GetValidSupplierClientDto>>> GetValidSupplierClientAsync(ClientTypeEnum clientType)
         {
-            var result = await _supplierClientService.GetValidSupplierClientAsync();
+            var result = await _supplierClientService.GetValidSupplierClientAsync(clientType);
             return result;
         }
     }

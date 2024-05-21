@@ -79,7 +79,7 @@ namespace Zcy.Entity.User
         /// <param name="normalPwd">未加密密码</param>
         public void ModifyPwd(string normalPwd)
         {
-            UserPwd = normalPwd.ToMd5();
+            UserPwd = normalPwd.ToSha256();
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Zcy.Entity.User
         /// </summary>
         public void SetDefaultPwd()
         {
-            UserPwd = DefaultPwd.ToMd5();
+            UserPwd = DefaultPwd.ToSha256();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Zcy.Entity.User
                 return false;
             }
 
-            var tempPwd = normalPwd.ToMd5();
+            var tempPwd = normalPwd.ToSha256();
             return tempPwd == UserPwd;
         }
     }

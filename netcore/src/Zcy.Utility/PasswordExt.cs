@@ -6,12 +6,12 @@ namespace Zcy.Utility
     public static class PasswordExt
     {
         /// <summary>
-        /// 转Md5
+        /// 转Sha256
         /// </summary>
         /// <param name="str">源</param>
         /// <param name="slot">盐</param>
         /// <returns></returns>
-        public static string ToMd5(this string str,
+        public static string ToSha256(this string str,
             string slot = "U2FsdGVkX1/0BrXJSaS3r/ivTTZa+E7MeV+4vC8R28E=")
         {
             var hash = SHA256.Create();

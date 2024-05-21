@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Zcy.Dto.Company;
+using Zcy.Dto.FinancialMemo;
 using Zcy.Dto.SysBaseInfo;
 using Zcy.Dto.User;
 using Zcy.Entity.Company;
+using Zcy.Entity.FinancialMemo;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.Entity.User;
 
@@ -32,6 +34,10 @@ namespace Zcy.Dto
             CreateMap<SupplierClient, GetValidSupplierClientDto>();
             CreateMap<SystemCompany, CompanyCacheItem>();
             CreateMap<SystemCompany, QueryPageCompanyDto>();
+
+            //财务备忘录
+            CreateMap<IncomeRecord, QueryPageIncomeRecordDto>();
+            CreateMap<ProceedsRecord, QueryPageProceedsRecordDto>();
 
             //CreateMap<ActivationCodeTypeV2, QueryPageCodeTypeDto>()
             //    .ForMember(dest => dest.CardTypeName, target => target.MapFrom(source => source.CodeName));
