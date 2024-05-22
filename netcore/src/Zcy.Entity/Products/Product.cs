@@ -1,4 +1,5 @@
-﻿using Zcy.BaseInterface.Entities;
+﻿using System.Collections.Generic;
+using Zcy.BaseInterface.Entities;
 using Zcy.Entity.Company;
 
 namespace Zcy.Entity.Products
@@ -89,6 +90,11 @@ namespace Zcy.Entity.Products
         /// 公司Id
         /// </summary>
         public long CompanyId { get; set; }
+
+        /// <summary>
+        /// 产品工序
+        /// </summary>
+        public virtual ICollection<ProductProcess> ProductProcesses { get; set; }
 
         /// <summary>
         /// 禁用

@@ -1,5 +1,6 @@
 - [x] Mongodb中decimal 问题
 - [x] 全局过滤器（目前使用统一的Quable）
+- [ ] Mongodb嵌入文档和事务问题（产品和产品工序那）
 - [ ] Mongodb部属后时间问题，是否为+8
 - [x] 动态查询是否好使
 - [x] Mongodb批量更新需要测试

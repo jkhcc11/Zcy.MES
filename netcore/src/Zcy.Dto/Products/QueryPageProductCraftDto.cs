@@ -1,28 +1,17 @@
-﻿using Zcy.BaseInterface.Entities;
+﻿using Zcy.BaseInterface.BaseModel;
 using Zcy.Entity.Company;
+using Zcy.Entity.Products;
 
-namespace Zcy.Entity.Products
+namespace Zcy.Dto.Products
 {
     /// <summary>
-    /// 产品工艺
+    /// 分页查询产品工艺
     /// </summary>
-    public class ProductCraft : BaseEntity<long>, IBaseCompany
+    public class QueryPageProductCraftDto : BaseFullAuditEntityDto<long>
     {
-        /// <summary>
-        /// 工艺
-        /// </summary>
-        /// <param name="craftName">工艺名</param>
-        /// <param name="craftType">工艺类型</param>
-        /// <param name="billingType">计费类型</param>
-        /// <param name="unitPrice">单价</param>
-        public ProductCraft(string craftName, CraftTypeEnum craftType,
-            BillingTypeEnum billingType, decimal unitPrice)
+        public QueryPageProductCraftDto(string craftName)
         {
             CraftName = craftName;
-            CraftType = craftType;
-            BillingType = billingType;
-            UnitPrice = unitPrice;
-            CraftStatus = PublicStatusEnum.Normal;
         }
 
         /// <summary>
@@ -47,7 +36,7 @@ namespace Zcy.Entity.Products
         /// <summary>
         /// 工艺状态
         /// </summary>
-        public PublicStatusEnum CraftStatus { get; protected set; }
+        public PublicStatusEnum CraftStatus { get; set; }
 
         /// <summary>
         /// 单价
@@ -68,19 +57,8 @@ namespace Zcy.Entity.Products
         public long CompanyId { get; set; }
 
         /// <summary>
-        /// 禁用
+        /// 公司名
         /// </summary>
-        public void Ban()
-        {
-            CraftStatus = PublicStatusEnum.Ban;
-        }
-
-        /// <summary>
-        /// 启用
-        /// </summary>
-        public void Open()
-        {
-            CraftStatus = PublicStatusEnum.Normal;
-        }
+        public string? CompanyName { get; set; }
     }
 }

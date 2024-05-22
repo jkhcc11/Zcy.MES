@@ -1,4 +1,5 @@
-﻿using Zcy.Entity.FinancialMemo;
+﻿using System.Collections.Generic;
+using Zcy.Entity.FinancialMemo;
 
 namespace Zcy.Entity.PurchaseSale
 {
@@ -36,6 +37,8 @@ namespace Zcy.Entity.PurchaseSale
         /// 采购总价
         /// </summary>
         public decimal SumPurchasePrice { get; protected set; }
+
+        public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
 
         /// <summary>
         /// 设置采购总价
