@@ -1,5 +1,6 @@
 ﻿using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
+using Zcy.BaseInterface.Entities;
 using Zcy.Dto.Products;
 using Zcy.Entity.Company;
 using Zcy.Entity.Products;
@@ -14,10 +15,13 @@ namespace Zcy.Service.Products
     public class ProductCraftService : ZcyBaseService, IProductCraftService
     {
         private readonly IProductCraftRepository _productCraftRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
 
-        public ProductCraftService(IProductCraftRepository productCraftRepository)
+        public ProductCraftService(IProductCraftRepository productCraftRepository,
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _productCraftRepository = productCraftRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -35,6 +39,10 @@ namespace Zcy.Service.Products
             query = query.CreateConditions(input);
             var result = await BaseQueryPageEntityAsync<ProductCraft, QueryPageProductCraftDto>(
                 _productCraftRepository, query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
 
             return result;
         }
@@ -53,8 +61,7 @@ namespace Zcy.Service.Products
 
             var entity = new ProductCraft(input.CraftName, input.CraftType, input.BillingType, input.UnitPrice)
             {
-                Remark = input.Remark,
-                CompanyId = LoginUserInfo.CompanyId
+                Remark = input.Remark
             };
             await _productCraftRepository.CreateAsync(entity);
             return KdyResult.Success();
@@ -66,6 +73,15 @@ namespace Zcy.Service.Products
         /// <returns></returns>
         public async Task<KdyResult> BatchDeleteAsync(BatchOperationsInput input)
         {
+            var validCountQuery = await _productCraftRepository.GetQueryableAsync();
+            validCountQuery = validCountQuery.Where(a => input.Ids.Contains(a.Id) &&
+                                                         a.CraftStatus == PublicStatusEnum.Ban);
+            var validCount = await _productCraftRepository.CountAsync(validCountQuery);
+            if (validCount != input.Ids.Count)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "操作失败，有效数据不一致");
+            }
+
             return await BaseBatchDeleteAsync(_productCraftRepository, input);
         }
 

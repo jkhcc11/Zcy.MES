@@ -130,7 +130,7 @@ namespace Zcy.MongoDB
             return true;
         }
 
-        public async Task<bool> UpdateAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<bool> UpdateAsync(IEnumerable<TEntity> entities)
         {
             // 定义批量操作列表
             var updates = new List<WriteModel<TEntity>>();
@@ -165,7 +165,7 @@ namespace Zcy.MongoDB
             return true;
         }
 
-        public async Task<bool> DeleteAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<bool> DeleteAsync(IEnumerable<TEntity> entities)
         {
             // 定义批量操作列表
             var updates = new List<WriteModel<TEntity>>();
@@ -191,7 +191,7 @@ namespace Zcy.MongoDB
         /// 硬删除
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> ForcedDeleteAsync(TEntity entity)
+        public virtual async Task<bool> ForcedDeleteAsync(TEntity entity)
         {
             await DbCollection.DeleteOneAsync(a => Equals(a.Id, entity.Id));
             return true;
@@ -232,7 +232,7 @@ namespace Zcy.MongoDB
         /// 分页查询(原始Entity)
         /// </summary>
         /// <returns></returns>
-        public async Task<QueryPageDto<TEntity>> QueryPageListAsync(IQueryable<TEntity> query, int page, int pageSize)
+        public virtual async Task<QueryPageDto<TEntity>> QueryPageListAsync(IQueryable<TEntity> query, int page, int pageSize)
         {
             var dbQuery = ToMongoQueryable(query);
 
@@ -269,7 +269,7 @@ namespace Zcy.MongoDB
         /// 无过滤器
         /// </remarks>
         /// <returns></returns>
-        public async Task<IQueryable<TEntity>> GetNoFilterQueryableAsync()
+        public virtual async Task<IQueryable<TEntity>> GetNoFilterQueryableAsync()
         {
             await Task.CompletedTask;
             var query = DbCollection.AsQueryable();
@@ -280,7 +280,7 @@ namespace Zcy.MongoDB
         /// 是否存在
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var dbQuery = await GetQueryableAsync();
             return await ToMongoQueryable(dbQuery).AnyAsync(predicate);
@@ -290,13 +290,13 @@ namespace Zcy.MongoDB
         /// 列表
         /// </summary>
         /// <returns></returns>
-        public async Task<IReadOnlyList<TEntity>> ToListAsync()
+        public virtual async Task<IReadOnlyList<TEntity>> ToListAsync()
         {
             var dbQuery = await GetQueryableAsync();
             return await ToMongoQueryable(dbQuery).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TEntity>> ToListAsync(IQueryable<TEntity> query)
+        public virtual async Task<IReadOnlyList<TEntity>> ToListAsync(IQueryable<TEntity> query)
         {
             var dbQuery = ToMongoQueryable(query);
             return await dbQuery.ToListAsync();
@@ -306,13 +306,13 @@ namespace Zcy.MongoDB
         /// 统计
         /// </summary>
         /// <returns></returns>
-        public async Task<int> CountAsync(IQueryable<TEntity> query)
+        public virtual async Task<int> CountAsync(IQueryable<TEntity> query)
         {
             var dbQuery = ToMongoQueryable(query);
             return await dbQuery.CountAsync();
         }
 
-        public async Task<long> LongCountAsync(IQueryable<TEntity> query)
+        public virtual async Task<long> LongCountAsync(IQueryable<TEntity> query)
         {
             var dbQuery = ToMongoQueryable(query);
             return await dbQuery.LongCountAsync();

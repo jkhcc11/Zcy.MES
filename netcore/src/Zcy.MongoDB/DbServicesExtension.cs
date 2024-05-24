@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
+using Zcy.Entity.Products;
 using Zcy.IRepository.FinancialMemo;
 using Zcy.IRepository.Products;
 using Zcy.IRepository.SysBaseInfo;
@@ -22,6 +23,13 @@ namespace Zcy.MongoDB
         /// <returns></returns>
         public static IServiceCollection AddMongodbRepository(this IServiceCollection services)
         {
+            // 配置类映射
+            BsonClassMap.RegisterClassMap<Product>(cm =>
+            {
+                cm.AutoMap();
+                cm.UnmapMember(c => c.ProductProcesses); // 忽略
+            });
+
             //db utc  展示 local time
             BsonSerializer.RegisterSerializer(DateTimeSerializer.LocalInstance);
             // 注册自定义的 decimal 序列化器
@@ -29,7 +37,7 @@ namespace Zcy.MongoDB
 
             //todo:默认全局仓储，特殊单独注入单独的
             services.TryAdd(ServiceDescriptor.Transient(typeof(IBaseRepository<,>), typeof(CommonRepository<,>)));
-            
+
             services.AddTransient<ISystemUserRepository, SystemUserRepository>();
 
             services.AddTransient<ISystemMenuRepository, SystemMenuRepository>();
@@ -38,6 +46,7 @@ namespace Zcy.MongoDB
             services.AddTransient<IProceedsRecordRepository, ProceedsRecordRepository>();
 
             services.AddTransient<IProductCraftRepository, ProductCraftRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
             //services.AddTransient<IActivationCodeRepository, ActivationCodeRepository>();
             //services.AddTransient<IPerUseActivationCodeRecordRepository, PerUseActivationCodeRecordRepository>();
             //services.AddTransient<IActivationCodeTypeV2Repository, ActivationCodeTypeV2Repository>();

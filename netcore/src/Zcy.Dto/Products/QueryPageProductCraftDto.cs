@@ -1,4 +1,5 @@
 ﻿using Zcy.BaseInterface.BaseModel;
+using Zcy.BaseInterface.Entities;
 using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 
@@ -7,7 +8,7 @@ namespace Zcy.Dto.Products
     /// <summary>
     /// 分页查询产品工艺
     /// </summary>
-    public class QueryPageProductCraftDto : BaseFullAuditEntityDto<long>
+    public class QueryPageProductCraftDto : BaseFullAuditEntityDto<long>, IBaseCompanyDto
     {
         public QueryPageProductCraftDto(string craftName)
         {

@@ -10,9 +10,10 @@ namespace Zcy.Entity.Products
         /// <summary>
         /// 产品工序
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="productId">产品Id</param>
         /// <param name="craftId">工艺Id</param>
-        public ProductProcess(long productId, long craftId)
+        public ProductProcess(long id, long productId, long craftId) : base(id)
         {
             ProductId = productId;
             CraftId = craftId;

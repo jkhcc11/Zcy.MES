@@ -36,5 +36,10 @@ namespace Zcy.Entity.Products
         {
             TypeStatus = PublicStatusEnum.Ban;
         }
+
+        public void Open()
+        {
+            TypeStatus = PublicStatusEnum.Normal;
+        }
     }
 }

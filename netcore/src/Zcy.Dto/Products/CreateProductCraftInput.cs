@@ -1,4 +1,5 @@
-﻿using Zcy.Entity.Company;
+﻿using System.ComponentModel.DataAnnotations;
+using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 
 namespace Zcy.Dto.Products
@@ -16,6 +17,7 @@ namespace Zcy.Dto.Products
         /// <summary>
         /// 工艺名
         /// </summary>
+        [Required(ErrorMessage = "工艺名不能为空")]
         public string CraftName { get; set; }
 
         /// <summary>
@@ -25,11 +27,13 @@ namespace Zcy.Dto.Products
         /// 独立工艺: ■一般为计时 不用配置产品线使用。比如捡货计时|收货计时 <br/>
         /// 加工工艺：■配合产品使用
         /// </remarks>
+        [EnumDataType(typeof(CraftTypeEnum))]
         public CraftTypeEnum CraftType { get; set; }
 
         /// <summary>
         /// 计费类型
         /// </summary>
+        [EnumDataType(typeof(BillingTypeEnum))]
         public BillingTypeEnum BillingType { get; set; }
 
         /// <summary>
@@ -38,6 +42,7 @@ namespace Zcy.Dto.Products
         /// <remarks>
         /// 工序基础价格，如果有根据产品+工序的在产品选择工序后加
         /// </remarks>
+        [Range(0.01, 99999999)]
         public decimal UnitPrice { get; set; }
 
         /// <summary>

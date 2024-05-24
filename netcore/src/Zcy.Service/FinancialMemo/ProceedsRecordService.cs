@@ -2,6 +2,7 @@
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.Dto.FinancialMemo;
+using Zcy.Entity.Company;
 using Zcy.Entity.FinancialMemo;
 using Zcy.IRepository.FinancialMemo;
 using Zcy.IService.FinancialMemo;
@@ -14,10 +15,13 @@ namespace Zcy.Service.FinancialMemo
     public class ProceedsRecordService : ZcyBaseService, IProceedsRecordService
     {
         private readonly IProceedsRecordRepository _proceedsRecordRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
 
-        public ProceedsRecordService(IProceedsRecordRepository proceedsRecordRepository)
+        public ProceedsRecordService(IProceedsRecordRepository proceedsRecordRepository,
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _proceedsRecordRepository = proceedsRecordRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -30,6 +34,11 @@ namespace Zcy.Service.FinancialMemo
             var result = await BaseQueryPageEntityAsync<ProceedsRecord, QueryPageProceedsRecordDto>(
                 _proceedsRecordRepository,
                 query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
             return result;
         }
 
@@ -56,8 +65,7 @@ namespace Zcy.Service.FinancialMemo
             var entity = new ProceedsRecord(input.SupplierClientId, recordData, input.AccountType,
                 input.Money)
             {
-                Remark = input.Remark,
-                CompanyId = LoginUserInfo.CompanyId
+                Remark = input.Remark
             };
             await _proceedsRecordRepository.CreateAsync(entity);
             return KdyResult.Success();

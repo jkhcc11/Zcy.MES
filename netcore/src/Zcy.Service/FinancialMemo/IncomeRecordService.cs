@@ -2,6 +2,7 @@
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.Dto.FinancialMemo;
+using Zcy.Entity.Company;
 using Zcy.Entity.FinancialMemo;
 using Zcy.IService.FinancialMemo;
 
@@ -13,10 +14,13 @@ namespace Zcy.Service.FinancialMemo
     public class IncomeRecordService : ZcyBaseService, IIncomeRecordService
     {
         private readonly IBaseRepository<IncomeRecord, long> _incomeRecordRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
 
-        public IncomeRecordService(IBaseRepository<IncomeRecord, long> incomeRecordRepository)
+        public IncomeRecordService(IBaseRepository<IncomeRecord, long> incomeRecordRepository, 
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _incomeRecordRepository = incomeRecordRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -29,6 +33,11 @@ namespace Zcy.Service.FinancialMemo
             var result = await BaseQueryPageEntityAsync<IncomeRecord, QueryPageIncomeRecordDto>(
                 _incomeRecordRepository,
                 query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
             return result;
         }
 
@@ -59,8 +68,7 @@ namespace Zcy.Service.FinancialMemo
             var entity = new IncomeRecord(input.IncomeType, input.AccountType,
                 input.RecordName, input.Money, recordData, managerUser)
             {
-                Remark = input.Remark,
-                CompanyId = LoginUserInfo.CompanyId
+                Remark = input.Remark
             };
             await _incomeRecordRepository.CreateAsync(entity);
             return KdyResult.Success();

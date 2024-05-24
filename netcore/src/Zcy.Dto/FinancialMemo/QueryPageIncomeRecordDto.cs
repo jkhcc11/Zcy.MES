@@ -1,4 +1,5 @@
 ﻿using Zcy.BaseInterface.BaseModel;
+using Zcy.BaseInterface.Entities;
 using Zcy.Entity.FinancialMemo;
 
 namespace Zcy.Dto.FinancialMemo
@@ -6,7 +7,7 @@ namespace Zcy.Dto.FinancialMemo
     /// <summary>
     /// 查询收支记录 dto
     /// </summary>
-    public class QueryPageIncomeRecordDto : BaseFullAuditEntityDto<long>
+    public class QueryPageIncomeRecordDto : BaseFullAuditEntityDto<long>, IBaseCompanyDto
     {
         public QueryPageIncomeRecordDto(string recordName)
         {

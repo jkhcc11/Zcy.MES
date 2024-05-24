@@ -44,6 +44,13 @@ namespace Zcy.Dto
             //产品
             CreateMap<ProductCraft, QueryPageProductCraftDto>();
             CreateMap<ProductCraft, QueryValidProductCraftDto>();
+            CreateMap<Product, QueryPageProductDto>();
+            CreateMap<Product, QueryValidProductDto>();
+            CreateMap<Product, GetProductDetailDto>();
+            CreateMap<ProductProcess, ProductProcessItem>();
+            CreateMap<ProductType, QueryPageProductTypeDto>();
+            CreateMap<ProductType, QueryValidProductTypeDto>();
+
 
             //CreateMap<ActivationCodeTypeV2, QueryPageCodeTypeDto>()
             //    .ForMember(dest => dest.CardTypeName, target => target.MapFrom(source => source.CodeName));

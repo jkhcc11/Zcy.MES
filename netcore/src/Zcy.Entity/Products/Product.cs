@@ -12,20 +12,21 @@ namespace Zcy.Entity.Products
         /// <summary>
         /// 产品
         /// </summary>
+        /// <param name="id">主键</param>
         /// <param name="productTypeId">产品分类Id</param>
         /// <param name="productName">产品名</param>
         /// <param name="productType">产品类型</param>
         /// <param name="isLoose">是否散件</param>
         /// <param name="unit">单位</param>
-        public Product(long productTypeId, string productName, ProductTypeEnum productType,
-            bool isLoose, string unit)
+        public Product(long id, long productTypeId, string productName, ProductTypeEnum productType,
+            bool isLoose, string unit) : base(id)
         {
             ProductName = productName;
             ProductType = productType;
             IsLoose = isLoose;
             Unit = unit;
             ProductTypeId = productTypeId;
-            ProductStatus = PublicStatusEnum.Normal;
+            ProductStatus = PublicStatusEnum.Ban;
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Zcy.Entity.Products
         /// <summary>
         /// 产品工序
         /// </summary>
-        public virtual ICollection<ProductProcess> ProductProcesses { get; set; }
+        public virtual ICollection<ProductProcess>? ProductProcesses { get; set; }
 
         /// <summary>
         /// 禁用
@@ -102,6 +103,34 @@ namespace Zcy.Entity.Products
         public void Ban()
         {
             ProductStatus = PublicStatusEnum.Ban;
+        }
+
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public void Open()
+        {
+            ProductStatus = PublicStatusEnum.Normal;
+        }
+
+        public void SetProductTypeId(long productTypeId)
+        {
+            ProductTypeId = productTypeId;
+        }
+
+        public void SetProductName(string productName)
+        {
+            ProductName = productName;
+        }
+
+        public void SetProductType(ProductTypeEnum productType)
+        {
+            ProductType = productType;
+        }
+
+        public void SetUnit(string unit)
+        {
+            Unit = unit;
         }
     }
 }

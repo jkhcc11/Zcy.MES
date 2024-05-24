@@ -5,6 +5,7 @@ using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.BaseInterface.Service;
+using Zcy.Entity.Company;
 
 namespace Zcy.Service
 {
@@ -62,6 +63,25 @@ namespace Zcy.Service
 
             await entityRepository.DeleteAsync(dbList);
             return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 设置公司信息
+        /// </summary>
+        protected virtual async Task SetCompanyInfoAsync<TDto>(IReadOnlyList<TDto> items,
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
+        where TDto : class, IBaseCompanyDto
+        {
+            if (LoginUserInfo.IsSuperAdmin == false)
+            {
+                return;
+            }
+
+            var dbCompany = await systemCompanyRepository.ToListAsync();
+            foreach (var item in items)
+            {
+                item.CompanyName = dbCompany.FirstOrDefault(a => a.Id == item.CompanyId)?.CompanyName;
+            }
         }
     }
 }
