@@ -5,10 +5,12 @@ using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
 using Zcy.Entity.Products;
 using Zcy.IRepository.FinancialMemo;
+using Zcy.IRepository.Production;
 using Zcy.IRepository.Products;
 using Zcy.IRepository.SysBaseInfo;
 using Zcy.IRepository.User;
 using Zcy.MongoDB.FinancialMemo;
+using Zcy.MongoDB.Production;
 using Zcy.MongoDB.Products;
 using Zcy.MongoDB.SysBaseInfo;
 using Zcy.MongoDB.User;
@@ -23,12 +25,7 @@ namespace Zcy.MongoDB
         /// <returns></returns>
         public static IServiceCollection AddMongodbRepository(this IServiceCollection services)
         {
-            // 配置类映射
-            BsonClassMap.RegisterClassMap<Product>(cm =>
-            {
-                cm.AutoMap();
-                cm.UnmapMember(c => c.ProductProcesses); // 忽略
-            });
+            SetMongodbMap();
 
             //db utc  展示 local time
             BsonSerializer.RegisterSerializer(DateTimeSerializer.LocalInstance);
@@ -47,12 +44,31 @@ namespace Zcy.MongoDB
 
             services.AddTransient<IProductCraftRepository, ProductCraftRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
+
+            services.AddTransient<IReportWorkRepository, ReportWorkRepository>();
             //services.AddTransient<IActivationCodeRepository, ActivationCodeRepository>();
             //services.AddTransient<IPerUseActivationCodeRecordRepository, PerUseActivationCodeRecordRepository>();
             //services.AddTransient<IActivationCodeTypeV2Repository, ActivationCodeTypeV2Repository>();
             //services.AddTransient<IGptWebConfigRepository, GptWebConfigRepository>();
             services.AddTransient<IQueryableExecute, QueryableExecuteWithMongoDb>();
             return services;
+        }
+
+        private static void SetMongodbMap()
+        {
+            // 配置类映射
+            BsonClassMap.RegisterClassMap<Product>(cm =>
+            {
+                cm.AutoMap();
+                cm.UnmapMember(c => c.ProductProcesses); // 忽略
+            });
+
+            BsonClassMap.RegisterClassMap<ProductProcess>(cm =>
+            {
+                cm.AutoMap();
+                cm.UnmapMember(c => c.Product);
+                cm.UnmapMember(c => c.ProductCraft); // 忽略
+            });
         }
     }
 }

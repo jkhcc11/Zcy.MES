@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static Zcy.BaseInterface.AuthorizationConst;
 
 namespace Zcy.Dto.Company
 {
@@ -41,6 +42,7 @@ namespace Zcy.Dto.Company
         /// <summary>
         /// 备注
         /// </summary>
+        [StringLength(EntityConst.BaseRemarkLength)]
         public string? Remark { get; set; }
     }
 }

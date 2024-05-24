@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Zcy.Entity.Products;
+using static Zcy.BaseInterface.AuthorizationConst;
 
 namespace Zcy.Dto.Products
 {
@@ -66,6 +67,7 @@ namespace Zcy.Dto.Products
         /// <summary>
         /// 产品备注
         /// </summary>
+        [StringLength(EntityConst.BaseRemarkLength)]
         public string? ProductRemark { get; set; }
 
         /// <summary>
@@ -76,6 +78,11 @@ namespace Zcy.Dto.Products
 
     public class ProductProcessItem
     {
+        /// <summary>
+        /// 产品工序Id
+        /// </summary>
+        public long ProductProcessId { get; set; }
+
         /// <summary>
         /// 工艺Id
         /// </summary>

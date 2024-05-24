@@ -45,5 +45,14 @@ namespace Zcy.BaseInterface
             public const string UserNo = "ZcyUserNo";
             public const string CompanyId = "ZcyCompanyId";
         }
+
+        public class EntityConst
+        {
+            /// <summary>
+            /// 通用备注
+            /// </summary>
+            public const int BaseRemarkLength = 150;
+        }
+
     }
 }

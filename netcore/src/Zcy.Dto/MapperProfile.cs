@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Zcy.Dto.Company;
 using Zcy.Dto.FinancialMemo;
+using Zcy.Dto.Production;
 using Zcy.Dto.Products;
 using Zcy.Dto.SysBaseInfo;
 using Zcy.Dto.User;
 using Zcy.Entity.Company;
 using Zcy.Entity.FinancialMemo;
+using Zcy.Entity.Production;
 using Zcy.Entity.Products;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.Entity.User;
@@ -47,10 +49,13 @@ namespace Zcy.Dto
             CreateMap<Product, QueryPageProductDto>();
             CreateMap<Product, QueryValidProductDto>();
             CreateMap<Product, GetProductDetailDto>();
-            CreateMap<ProductProcess, ProductProcessItem>();
+            CreateMap<ProductProcess, ProductProcessItem>()
+                .ForMember(dest => dest.ProductProcessId, target => target.MapFrom(source => source.Id));
             CreateMap<ProductType, QueryPageProductTypeDto>();
             CreateMap<ProductType, QueryValidProductTypeDto>();
 
+            //生产
+            CreateMap<ReportWork, QueryPageReportWorkDto>();
 
             //CreateMap<ActivationCodeTypeV2, QueryPageCodeTypeDto>()
             //    .ForMember(dest => dest.CardTypeName, target => target.MapFrom(source => source.CodeName));

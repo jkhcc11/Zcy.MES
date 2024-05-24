@@ -70,7 +70,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-detail/{id}")]
-        public async Task<KdyResult> GetProductDetailAsync(long id)
+        public async Task<KdyResult<GetProductDetailDto>> GetProductDetailAsync(long id)
         {
             var result = await _productService.GetProductDetailAsync(id);
             return result;

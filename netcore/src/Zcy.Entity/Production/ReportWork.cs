@@ -7,7 +7,7 @@ namespace Zcy.Entity.Production
     /// <summary>
     /// 报工
     /// </summary>
-    public class ReportWork : BaseEntity<long>
+    public class ReportWork : BaseEntity<long>, IBaseCompany
     {
         /// <summary>
         /// 报工
@@ -23,7 +23,7 @@ namespace Zcy.Entity.Production
             EmployeeId = employeeId;
             ProductProcessId = productProcessId;
             WordDuration = wordDuration;
-            ReportWorkDate= reportWorkDate;
+            ReportWorkDate = reportWorkDate;
         }
 
         /// <summary>
@@ -64,6 +64,11 @@ namespace Zcy.Entity.Production
         /// </summary>
         public string? Remark { get; set; }
 
+        /// <summary>
+        /// 公司Id
+        /// </summary>
+        public long CompanyId { get; set; }
+
         #region 冗余
         /// <summary>
         /// 加工价 冗余
@@ -77,7 +82,7 @@ namespace Zcy.Entity.Production
         /// 工艺价格 冗余
         /// </summary>
         /// <remarks>
-        /// 工序基础价格，如果有根据产品+工序的在产品选择工序后加
+        /// 基础价格，如果有根据产品+工序的在产品选择工序后加
         /// </remarks>
         public decimal UnitPrice { get; set; }
 
@@ -105,15 +110,23 @@ namespace Zcy.Entity.Production
         /// <summary>
         /// 设置工序信息
         /// </summary>
-        /// <param name="processingPrice">工艺价格</param>
-        /// <param name="unitPrice">工序价格</param>
+        /// <param name="processingPrice">加工价</param>
+        /// <param name="craftPrice">工艺价格</param>
         /// <param name="billingType">工艺计费类型</param>
-        public void SetProductProcessInfo(decimal processingPrice, decimal unitPrice,
+        public void SetProductProcessInfo(decimal processingPrice, decimal craftPrice,
             BillingTypeEnum billingType)
         {
             ProcessingPrice = processingPrice;
-            UnitPrice = unitPrice;
+            UnitPrice = craftPrice;
             BillingType = billingType;
+        }
+
+        /// <summary>
+        /// 设置实际价格
+        /// </summary>
+        public void SetActualSettlementPrice(decimal actualSettlementPrice)
+        {
+            ActualSettlementPrice = actualSettlementPrice;
         }
     }
 }

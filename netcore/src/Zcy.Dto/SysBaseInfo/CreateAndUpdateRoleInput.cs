@@ -1,4 +1,7 @@
-﻿namespace Zcy.Dto.SysBaseInfo
+﻿using static Zcy.BaseInterface.AuthorizationConst;
+using System.ComponentModel.DataAnnotations;
+
+namespace Zcy.Dto.SysBaseInfo
 {
     /// <summary>
     /// 创建|修改角色
@@ -34,6 +37,7 @@
         /// <summary>
         /// 备注
         /// </summary>
+        [StringLength(EntityConst.BaseRemarkLength)]
         public string? Remark { get; set; }
     }
 }

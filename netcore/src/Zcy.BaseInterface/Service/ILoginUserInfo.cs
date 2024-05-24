@@ -55,5 +55,10 @@ namespace Zcy.BaseInterface.Service
         /// 角色名
         /// </summary>
         List<string> Roles { get; set; }
+
+        /// <summary>
+        /// 是否Boss
+        /// </summary>
+        bool IsBoss { get; set; }
     }
 }

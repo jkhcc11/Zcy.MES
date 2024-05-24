@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 using Zcy.IRepository.Products;
 
@@ -10,11 +11,15 @@ namespace Zcy.MongoDB.Products
     public class ProductRepository : BaseMongodbRepository<Product, long>, IProductRepository
     {
         private readonly IMongoCollection<ProductProcess> _productProcessCollection;
+        private readonly IMongoCollection<ProductCraft> _productCraftCollection;
 
         public ProductRepository(ZcyMongodbContext zcyDbContext) : base(zcyDbContext)
         {
             var productProcessDbName = $"{MongoDBConsts.DbPrefix}{nameof(ProductProcess)}";
             _productProcessCollection = ZcyMongodbContext.Database.GetCollection<ProductProcess>(productProcessDbName);
+
+            var productCraftDbName = $"{MongoDBConsts.DbPrefix}{nameof(ProductCraft)}";
+            _productCraftCollection = ZcyMongodbContext.Database.GetCollection<ProductCraft>(productCraftDbName);
         }
 
         /// <summary>
@@ -163,6 +168,41 @@ namespace Zcy.MongoDB.Products
             }
 
             return await base.UpdateAsync(entity);
+        }
+
+        /// <summary>
+        /// 根据工序Id获取产品工序
+        /// </summary>
+        /// <param name="productProcessesId">工序Id</param>
+        /// <remarks>
+        ///  会获取有效的产品工艺和产品
+        /// </remarks>
+        /// <returns></returns>
+        public async Task<ProductProcess?> GetProductProcessesAsync(long productProcessesId)
+        {
+            var productProcesses = await _productProcessCollection
+                .Find(a => a.Id == productProcessesId)
+                .FirstOrDefaultAsync();
+            if (productProcesses == null)
+            {
+                return default;
+            }
+
+            productProcesses.Product = await DbCollection
+                .Find(a => a.Id == productProcesses.ProductId &&
+                           a.CompanyId == productProcesses.CompanyId &&
+                           a.ProductStatus == PublicStatusEnum.Normal &&
+                           a.IsDelete == false)
+                .FirstOrDefaultAsync();
+
+            productProcesses.ProductCraft = await _productCraftCollection
+                .Find(a => a.Id == productProcesses.CraftId &&
+                           a.CompanyId == productProcesses.CompanyId &&
+                           a.CraftStatus == PublicStatusEnum.Normal &&
+                           a.IsDelete == false)
+                .FirstOrDefaultAsync();
+
+            return productProcesses;
         }
 
         /// <summary>

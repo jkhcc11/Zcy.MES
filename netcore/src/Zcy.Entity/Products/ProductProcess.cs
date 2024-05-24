@@ -41,5 +41,15 @@ namespace Zcy.Entity.Products
         /// 公司Id
         /// </summary>
         public long CompanyId { get; set; }
+
+        /// <summary>
+        /// 产品工艺
+        /// </summary>
+        public virtual ProductCraft? ProductCraft { get; set; }
+
+        /// <summary>
+        /// 产品
+        /// </summary>
+        public virtual Product? Product { get; set; }
     }
 }

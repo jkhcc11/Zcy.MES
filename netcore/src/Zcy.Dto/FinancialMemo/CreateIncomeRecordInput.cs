@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Zcy.Entity.FinancialMemo;
+using static Zcy.BaseInterface.AuthorizationConst;
 
 namespace Zcy.Dto.FinancialMemo
 {
@@ -52,6 +53,7 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 备注
         /// </summary>
+        [StringLength(EntityConst.BaseRemarkLength)]
         public string? Remark { get; set; }
     }
 }

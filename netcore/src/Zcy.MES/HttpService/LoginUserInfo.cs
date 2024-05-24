@@ -56,6 +56,11 @@ namespace Zcy.MES.HttpService
         public List<string> Roles { get; set; }
 
         /// <summary>
+        /// 是否Boss
+        /// </summary>
+        public bool IsBoss { get; set; }
+
+        /// <summary>
         /// 从当前请求初始化登录信息
         /// </summary>
         internal void InitUserInfo(HttpContext httpContext)
@@ -89,6 +94,11 @@ namespace Zcy.MES.HttpService
             {
                 Type: JwtClaimTypes.Role,
                 Value: AuthorizationConst.NormalRoleName.SuperAdmin
+            });
+            IsBoss = user.HasClaim(a => a is
+            {
+                Type: JwtClaimTypes.Role,
+                Value: AuthorizationConst.NormalRoleName.Boss
             });
             //httpContext.Request.Headers.TryGetValue("Authorization", out var loginToken);
             //LoginToken = loginToken + "";
