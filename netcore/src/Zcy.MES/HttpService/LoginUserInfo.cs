@@ -53,6 +53,20 @@ namespace Zcy.MES.HttpService
             return UserId.Value;
         }
 
+        /// <summary>
+        /// 获取用户Name
+        /// </summary>
+        /// <returns></returns>
+        public string GetUserName()
+        {
+            if (string.IsNullOrEmpty(UserName))
+            {
+                throw new ZcyCustomException("UserName is null");
+            }
+
+            return UserName;
+        }
+
         public List<string> Roles { get; set; }
 
         /// <summary>

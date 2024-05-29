@@ -73,8 +73,14 @@ namespace Zcy.Service.Company
         {
             var result = await _distributedCache.GetOrCreateAsync(companyId.ToString(), async () =>
             {
-                var dbEntity = await _systemCompanyRepository.FirstOrDefaultAsync(companyId) ??
-                               new SystemCompany("default", "default");
+                var dbEntity = await _systemCompanyRepository.FirstOrDefaultAsync(companyId);
+                if (dbEntity == null)
+                {
+                    return new CompanyCacheItem()
+                    {
+                        CompanyId = companyId
+                    };
+                }
 
                 return BaseMapper.Map<SystemCompany, CompanyCacheItem>(dbEntity);
             });

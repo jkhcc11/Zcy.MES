@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Zcy.Entity.Company;
 using static Zcy.BaseInterface.AuthorizationConst;
 
 namespace Zcy.Dto.Company
@@ -32,6 +33,7 @@ namespace Zcy.Dto.Company
         /// 一般用于订单号拼接
         /// </remarks>
         [Required(ErrorMessage = "公司缩写必填")]
+        [StringLength(SystemCompany.ShorNameLength, MinimumLength = 2, ErrorMessage = "公司缩写在2-4位")]
         public string ShortName { get; set; }
 
         /// <summary>

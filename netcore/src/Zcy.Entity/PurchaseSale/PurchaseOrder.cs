@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Zcy.Entity.FinancialMemo;
 
 namespace Zcy.Entity.PurchaseSale
@@ -17,8 +19,10 @@ namespace Zcy.Entity.PurchaseSale
         /// <param name="orderNo">订单号</param>
         /// <param name="managerUserId">经办人Id</param>
         /// <param name="managerUser">经办人昵称</param>
+        /// <param name="orderDate">订单日期</param>
         public PurchaseOrder(long orderId, string orderNo, long managerUserId,
-            string managerUser) : base(orderId, orderNo, managerUserId, managerUser)
+            string managerUser, DateTime orderDate) :
+            base(orderId, orderNo, managerUserId, managerUser, orderDate)
         {
 
         }
@@ -31,21 +35,43 @@ namespace Zcy.Entity.PurchaseSale
         /// <summary>
         /// 供应商|客户Id
         /// </summary>
-        public virtual long SupplierClientId { get; set; }
+        public long SupplierClientId { get; set; }
 
         /// <summary>
-        /// 采购总价
+        /// 供应商|客户 名
         /// </summary>
-        public decimal SumPurchasePrice { get; protected set; }
-
-        public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
+        /// <remarks>
+        /// 创建订单时的名称，修改后根据供应商|客户Id来
+        /// </remarks>
+        public string SupplierClientName { get; set; }
 
         /// <summary>
-        /// 设置采购总价
+        /// 订单价格
         /// </summary>
-        public void SetSumSalePrice(decimal sumPurchasePrice)
+        /// <remarks>
+        /// 可能包含商品价格以外的价格
+        /// </remarks>
+        public decimal OrderPrice { get; protected set; }
+
+        /// <summary>
+        /// 订单商品总价
+        /// </summary>
+        public decimal SumProductPrice { get; protected set; }
+
+        public virtual ICollection<PurchaseOrderDetail>? OrderDetails { get; set; }
+
+        /// <summary>
+        /// 计算订单商品总价
+        /// </summary>
+        public void TotalProductSumPrice()
         {
-            SumPurchasePrice = sumPurchasePrice;
+            if (OrderDetails == null)
+            {
+                throw new ArgumentException("PurchaseOrder OrderDetails is null");
+            }
+
+            SumProductPrice = OrderDetails.Sum(a => a.SumPrice);
+            OrderPrice = SumProductPrice;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Zcy.BaseInterface;
+﻿using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.Dto.SysBaseInfo;
@@ -27,14 +26,12 @@ namespace Zcy.Service.SysBaseInfo
         public async Task<KdyResult<QueryPageDto<QueryPageRoleDto>>> QueryPageRoleAsync(QueryPageRoleInput input)
         {
             var query = await _roleRepository.GetQueryableAsync();
-            if (string.IsNullOrEmpty(input.KeyWord) == false)
-            {
-                query = query.Where(a => a.RoleName.Contains(input.KeyWord) ||
-                                         a.RoleShowName.Contains(input.KeyWord));
-            }
+            query = query.CreateConditions(input);
+            var result = await BaseQueryPageEntityAsync<SystemRole, QueryPageRoleDto>(_roleRepository,
+                query,
+                input);
 
-            var result = await _roleRepository.QueryPageListAsync<QueryPageRoleDto>(query, input.Page, input.PageSize);
-            return KdyResult.Success(result);
+            return result;
         }
 
         /// <summary>

@@ -1,4 +1,7 @@
-﻿using Zcy.Entity.FinancialMemo;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Zcy.Entity.FinancialMemo;
 
 namespace Zcy.Entity.PurchaseSale
 {
@@ -17,9 +20,10 @@ namespace Zcy.Entity.PurchaseSale
         /// <param name="saleOrderStatus">订单状态</param>
         /// <param name="managerUserId">经办人Id</param>
         /// <param name="managerUser">经办人昵称</param>
+        /// <param name="orderDate">订单日期</param>
         public SaleOrder(long orderId, string orderNo, long managerUserId,
-            string managerUser, SaleOrderStatusEnum saleOrderStatus)
-            : base(orderId, orderNo, managerUserId, managerUser)
+            string managerUser, SaleOrderStatusEnum saleOrderStatus, DateTime orderDate)
+            : base(orderId, orderNo, managerUserId, managerUser, orderDate)
         {
             SaleOrderStatus = saleOrderStatus;
         }
@@ -38,6 +42,11 @@ namespace Zcy.Entity.PurchaseSale
         public long SupplierClientId { get; set; }
 
         /// <summary>
+        /// 客户名
+        /// </summary>
+        public string? SupplierClientName { get; set; }
+
+        /// <summary>
         /// 销售单状态
         /// </summary>
         public SaleOrderStatusEnum SaleOrderStatus { get; protected set; }
@@ -51,7 +60,7 @@ namespace Zcy.Entity.PurchaseSale
         /// 销售总价
         /// </summary>
         /// <remarks>
-        ///  不含运费
+        ///  订单详情总价（不含运费）
         /// </remarks>
         public decimal SumSalePrice { get; protected set; }
 
@@ -59,9 +68,11 @@ namespace Zcy.Entity.PurchaseSale
         /// 订单价格
         /// </summary>
         /// <remarks>
-        ///  销售总价+运费价格
+        ///  运费+销售总价
         /// </remarks>
         public decimal OrderPrice { get; protected set; }
+
+        public virtual ICollection<SaleOrderDetail>? OrderDetails { get; set; }
 
         /// <summary>
         /// 设置已完成
@@ -80,12 +91,18 @@ namespace Zcy.Entity.PurchaseSale
         }
 
         /// <summary>
-        /// 设置销售总价
+        /// 计算订单价格
         /// </summary>
-        public void SetSumSalePrice(decimal sumSalePrice)
+        public void TotalsPrice()
         {
-            SumSalePrice = sumSalePrice;
-            OrderPrice = SumSalePrice + FreightPrice;
+            if (OrderDetails == null ||
+                OrderDetails.Any() == false)
+            {
+                throw new ArgumentException("SaleOrder OrderDetails is null");
+            }
+
+            SumSalePrice = OrderDetails.Sum(a => a.SumPrice);
+            OrderPrice = FreightPrice + SumSalePrice;
         }
     }
 }

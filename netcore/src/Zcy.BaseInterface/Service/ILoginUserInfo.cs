@@ -52,6 +52,12 @@ namespace Zcy.BaseInterface.Service
         long GetUserId();
 
         /// <summary>
+        /// 获取用户Name
+        /// </summary>
+        /// <returns></returns>
+        string GetUserName();
+
+        /// <summary>
         /// 角色名
         /// </summary>
         List<string> Roles { get; set; }

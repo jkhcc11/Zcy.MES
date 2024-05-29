@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 using Zcy.IRepository.Products;
@@ -203,6 +204,18 @@ namespace Zcy.MongoDB.Products
                 .FirstOrDefaultAsync();
 
             return productProcesses;
+        }
+
+        /// <summary>
+        /// 获取有效产品列表
+        /// </summary>
+        /// <param name="productIds">产品Id集合</param>
+        public async Task<List<Product>> GetValidProductListAsync(long[] productIds)
+        {
+            var query = await GetQueryableAsync();
+            query = query.Where(a => productIds.Contains(a.Id) &&
+                                     a.ProductStatus==PublicStatusEnum.Normal);
+            return await (ToMongoQueryable(query)).ToListAsync();
         }
 
         /// <summary>

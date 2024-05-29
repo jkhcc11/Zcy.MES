@@ -18,6 +18,7 @@ namespace Zcy.BaseInterface.Entities
         /// <returns></returns>
         Task<TEntity?> FirstOrDefaultAsync(TKey keyId);
         Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity?> FirstOrDefaultAsync(IQueryable<TEntity> queryable);
 
         /// <summary>
         /// 根据Id获取实体
@@ -61,7 +62,7 @@ namespace Zcy.BaseInterface.Entities
         /// 分页查询
         /// </summary>
         /// <returns></returns>
-        Task<QueryPageDto<TDto>> QueryPageListAsync<TDto>(IQueryable<TEntity> query, int page, int pageSize);
+        Task<QueryPageDto<TDto>> QueryPageListAsync<TDto>(IQueryable<TEntity> query, QueryPageInput pageInput);
 
         /// <summary>
         /// 分页查询(原始Entity)

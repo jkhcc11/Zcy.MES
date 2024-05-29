@@ -16,6 +16,7 @@ namespace Zcy.Entity.PurchaseSale
         public ShipmentOrderDetail(long orderId, long productId, int count)
             : base(orderId, productId, count)
         {
+
         }
 
         /// <summary>

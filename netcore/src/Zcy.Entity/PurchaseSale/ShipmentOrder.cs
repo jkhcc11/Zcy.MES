@@ -1,4 +1,7 @@
-﻿namespace Zcy.Entity.PurchaseSale
+﻿using System;
+using System.Collections.Generic;
+
+namespace Zcy.Entity.PurchaseSale
 {
     /// <summary>
     /// 出货订单
@@ -17,8 +20,10 @@
         /// <param name="orderNo">订单号</param>
         /// <param name="managerUserId">经办人Id</param>
         /// <param name="managerUser">经办人昵称</param>
-        public ShipmentOrder(long orderId, string orderNo, long managerUserId, string managerUser)
-            : base(orderId, orderNo, managerUserId, managerUser)
+        /// <param name="orderDate">订单日期</param>
+        public ShipmentOrder(long orderId, string orderNo, long managerUserId, string managerUser,
+            DateTime orderDate)
+            : base(orderId, orderNo, managerUserId, managerUser, orderDate)
         {
 
         }
@@ -29,6 +34,11 @@
         public long SupplierClientId { get; set; }
 
         /// <summary>
+        /// 客户名
+        /// </summary>
+        public string? SupplierClientName { get; set; }
+
+        /// <summary>
         /// 提货人
         /// </summary>
         /// <remarks>
@@ -36,5 +46,10 @@
         ///  ？？这个不确定是不是客户那边的用户
         /// </remarks>
         public string? PickUpUser { get; set; }
+
+        /// <summary>
+        /// 订单详情
+        /// </summary>
+        public virtual ICollection<ShipmentOrderDetail>? OrderDetails { get; set; }
     }
 }

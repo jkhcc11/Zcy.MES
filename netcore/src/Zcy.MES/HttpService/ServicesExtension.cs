@@ -179,7 +179,7 @@ namespace Zcy.MES.HttpService
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = connectionString; // Redis服务器地址
-                options.InstanceName = "ZcyMes";
+                options.InstanceName = "ZcyMes:";
             });
             return services;
         }

@@ -37,6 +37,11 @@ namespace Zcy.Entity.PurchaseSale
 
         #region 产品冗余
         /// <summary>
+        /// 产品名
+        /// </summary>
+        public virtual string ProductName { get; set; }
+
+        /// <summary>
         /// 是否散件 冗余
         /// </summary>
         /// <remarks>
@@ -73,13 +78,15 @@ namespace Zcy.Entity.PurchaseSale
         /// <summary>
         /// 设置产品冗余信息
         /// </summary>
+        /// <param name="productName">产品名</param>
         /// <param name="isLoose">是否散件</param>
         /// <param name="unit">单位</param>
         /// <param name="spec">规格</param>
         /// <param name="specCount">规格数</param>
-        public void SetProductInfo(bool isLoose, string unit,
-            string spec, int specCount)
+        public void SetProductInfo(string productName, bool isLoose, string unit,
+            string? spec, int specCount)
         {
+            ProductName = productName;
             IsLoose = isLoose;
             Unit = unit;
             Spec = spec;

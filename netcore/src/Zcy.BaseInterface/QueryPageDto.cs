@@ -2,6 +2,17 @@
 
 namespace Zcy.BaseInterface
 {
+    /// <summary>
+    /// 排序入参 接口
+    /// </summary>
+    public interface IZcySortInput
+    {
+        /// <summary>
+        /// 排序
+        /// </summary>
+        List<ZcyOrderConditions>? OrderBy { get; set; }
+    }
+
     public class QueryPageDto<TDto>
     {
         /// <summary>
@@ -15,7 +26,7 @@ namespace Zcy.BaseInterface
         public IReadOnlyList<TDto> Items { get; set; } = new List<TDto>();
     }
 
-    public abstract class QueryPageInput
+    public abstract class QueryPageInput: IZcySortInput
     {
         protected const int MaxPageSize = 1000;
         private int _pageSize = 10;
@@ -33,5 +44,10 @@ namespace Zcy.BaseInterface
         /// 页
         /// </summary>
         public int Page { get; set; } = 1;
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public List<ZcyOrderConditions>? OrderBy { get; set; }
     }
 }

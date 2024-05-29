@@ -5,7 +5,7 @@ namespace Zcy.Dto.SysBaseInfo
     /// <summary>
     /// 查询菜单列表
     /// </summary>
-    public class QueryPageMenuDto : BaseEntityDto<long>
+    public class QueryPageMenuDto : BaseFullAuditEntityDto<long>
     {
         public QueryPageMenuDto(string menuUrl, string menuName, string routeName)
         {

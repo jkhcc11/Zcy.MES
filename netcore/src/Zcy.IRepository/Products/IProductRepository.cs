@@ -25,5 +25,11 @@ namespace Zcy.IRepository.Products
         /// </remarks>
         /// <returns></returns>
         Task<ProductProcess?> GetProductProcessesAsync(long productProcessesId);
+
+        /// <summary>
+        /// 获取产品列表
+        /// </summary>
+        /// <param name="productIds">产品Id集合</param>
+        Task<List<Product>> GetValidProductListAsync(long[] productIds);
     }
 }

@@ -23,5 +23,13 @@ namespace Zcy.IRepository.User
         /// </summary>
         /// <returns></returns>
         Task<List<SystemRole>> GetUserRoleAsync(long userId);
+
+        /// <summary>
+        /// 获取公司员工列表
+        /// </summary>
+        /// <param name="companyId">公司Id</param>
+        /// <param name="loginUserId">登录用户ID</param>
+        /// <returns></returns>
+        Task<List<SystemUser>> GetCompanyAllEmployeeAsync(long companyId, long loginUserId);
     }
 }

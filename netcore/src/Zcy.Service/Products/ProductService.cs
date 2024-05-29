@@ -18,16 +18,13 @@ namespace Zcy.Service.Products
         private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
         private readonly IBaseRepository<ProductType, long> _productTypeRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IdGenerateExtension _idGenerateExtension;
 
         public ProductService(IProductRepository productRepository,
-            IdGenerateExtension idGenerateExtension,
             IBaseRepository<ProductType, long> productTypeRepository,
             IBaseRepository<SystemCompany, long> systemCompanyRepository,
             IProductCraftRepository productCraftRepository)
         {
             _productRepository = productRepository;
-            _idGenerateExtension = idGenerateExtension;
             _productTypeRepository = productTypeRepository;
             _systemCompanyRepository = systemCompanyRepository;
             _productCraftRepository = productCraftRepository;
@@ -71,6 +68,12 @@ namespace Zcy.Service.Products
         /// <returns></returns>
         public async Task<KdyResult> CreateAndUpdateProductAsync(CreateAndUpdateProductInput input)
         {
+            if (input.IsLoose == false &&
+                input.SpecCount.HasValue == false)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "非散件，请填写规格数");
+            }
+
             if (input.ProductType != ProductTypeEnum.Processing &&
                 input.ProductProcesses != null &&
                 input.ProductProcesses.Any())
@@ -177,7 +180,7 @@ namespace Zcy.Service.Products
                 return KdyResult.Error(KdyResultCode.Error, "产品名称已存在，创建失败");
             }
 
-            var entity = new Product(_idGenerateExtension.GenerateId(), input.ProductTypeId,
+            var entity = new Product(IdGenerateExtension.GenerateId(), input.ProductTypeId,
                 input.ProductName, input.ProductType, input.IsLoose,
                 input.Unit)
             {
@@ -200,7 +203,7 @@ namespace Zcy.Service.Products
                 }
 
                 entity.ProductProcesses = input.ProductProcesses
-                    .Select(a => new ProductProcess(_idGenerateExtension.GenerateId(),
+                    .Select(a => new ProductProcess(IdGenerateExtension.GenerateId(),
                         entity.Id,
                         a.CraftId)
                     {
@@ -259,7 +262,7 @@ namespace Zcy.Service.Products
                 }
 
                 entity.ProductProcesses = input.ProductProcesses
-                    .Select(a => new ProductProcess(_idGenerateExtension.GenerateId(),
+                    .Select(a => new ProductProcess(IdGenerateExtension.GenerateId(),
                         entity.Id,
                         a.CraftId)
                     {

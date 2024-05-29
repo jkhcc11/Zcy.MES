@@ -7,6 +7,8 @@ namespace Zcy.Entity.Company
     /// </summary>
     public class SystemCompany : BaseEntity<long>
     {
+        public const int ShorNameLength = 4;
+
         /// <summary>
         /// 公司
         /// </summary>

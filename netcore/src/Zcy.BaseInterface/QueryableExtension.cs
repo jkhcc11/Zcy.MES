@@ -1,12 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Text;
 using Zcy.Utility;
 
 namespace Zcy.BaseInterface
 {
     public static class QueryableExtension
     {
+        /// <summary>
+        /// 排序扩展
+        /// </summary>
+        /// <returns></returns>
+        public static IQueryable<TEntity> KdyOrderBy<TEntity>(this IQueryable<TEntity> query, IZcySortInput sortInput)
+        {
+            if (sortInput.OrderBy == null ||
+                sortInput.OrderBy.Any() == false)
+            {
+                return query;
+            }
+
+            var orderByStr = new StringBuilder();
+            foreach (var item in sortInput.OrderBy)
+            {
+                if (string.IsNullOrEmpty(item.Key))
+                {
+                    continue;
+                }
+
+                orderByStr.Append($"{item.Key} {item.OrderBy},");
+            }
+
+            return query.OrderBy(orderByStr.ToString().Trim(','));
+
+        }
+
         /// <summary>
         /// 生成动态表达式
         /// </summary>

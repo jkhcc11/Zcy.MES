@@ -8,6 +8,8 @@ namespace Zcy.Entity.PurchaseSale
     /// </summary>
     public abstract class BaseOrder : BaseEntity<long>, IBaseCompany
     {
+        public const int OrderNoLength = 25;
+
         /// <summary>
         /// 基础订单
         /// </summary>
@@ -15,13 +17,16 @@ namespace Zcy.Entity.PurchaseSale
         /// <param name="orderNo">订单号</param>
         /// <param name="managerUserId">经办人Id</param>
         /// <param name="managerUser">经办人昵称</param>
-        protected BaseOrder(long orderId, string orderNo, long managerUserId, string managerUser)
+        /// <param name="orderDate">订单日期</param>
+        protected BaseOrder(long orderId, string orderNo,
+            long managerUserId, string managerUser,
+            DateTime orderDate)
         {
             Id = orderId;
             OrderNo = orderNo;
             ManagerUserId = managerUserId;
             ManagerUser = managerUser;
-            OrderDate = DateTime.Today;
+            OrderDate = orderDate;
         }
 
         /// <summary>
@@ -37,6 +42,9 @@ namespace Zcy.Entity.PurchaseSale
         /// <summary>
         /// 经办人昵称
         /// </summary>
+        /// <remarks>
+        /// 创建订单时的昵称，修改后根据经办人Id来
+        /// </remarks>
         public virtual string ManagerUser { get; set; }
 
         /// <summary>

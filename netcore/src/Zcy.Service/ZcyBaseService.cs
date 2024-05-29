@@ -18,6 +18,7 @@ namespace Zcy.Service
         public IConfiguration Configuration { get; set; }
         protected readonly ILoginUserInfo LoginUserInfo;
         protected readonly IMapper BaseMapper;
+        protected readonly IdGenerateExtension IdGenerateExtension;
 
         protected ZcyBaseService()
         {
@@ -29,6 +30,8 @@ namespace Zcy.Service
                          throw new ArgumentException("ZcyBaseService BaseMapper is null");
             Configuration = serviceProvider.GetService<IConfiguration>() ??
                            throw new ArgumentException("ZcyBaseService Configuration is null");
+            IdGenerateExtension = serviceProvider.GetService<IdGenerateExtension>() ??
+                                  throw new ArgumentException("ZcyBaseService IdGenerateExtension is null");
         }
 
         /// <summary>
@@ -40,8 +43,20 @@ namespace Zcy.Service
             IQueryable<TEntity> query, QueryPageInput baseInput)
             where TEntity : BaseEntity<long>
         {
-            var result = await entityRepository.QueryPageListAsync<TDto>(query, baseInput.Page,
-                baseInput.PageSize);
+            if (baseInput.OrderBy == null ||
+                baseInput.OrderBy.Any() == false)
+            {
+                baseInput.OrderBy = new List<ZcyOrderConditions>()
+                {
+                    new()
+                    {
+                        Key = nameof(IBaseTimeKey.CreatedTime),
+                        OrderBy = ZcyOrderByEnum.Desc
+                    }
+                };
+            }
+
+            var result = await entityRepository.QueryPageListAsync<TDto>(query, baseInput);
 
             return KdyResult.Success(result);
         }

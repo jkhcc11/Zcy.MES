@@ -328,5 +328,18 @@ namespace Zcy.Service.User
 
             return KdyResult.Success();
         }
+
+        /// <summary>
+        /// 获取当前公司所有员工列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<List<GetCurrentCompanyAllEmployeeDto>>> GetCurrentCompanyAllEmployeeAsync()
+        {
+            var companyId = LoginUserInfo.CompanyId;
+            var userId = LoginUserInfo.GetUserId();
+            var allEmployee = await _userRepository.GetCompanyAllEmployeeAsync(companyId, userId);
+            var result = BaseMapper.Map<List<SystemUser>, List<GetCurrentCompanyAllEmployeeDto>>(allEmployee);
+            return KdyResult.Success(result);
+        }
     }
 }

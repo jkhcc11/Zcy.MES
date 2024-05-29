@@ -4,6 +4,7 @@ using Zcy.BaseInterface.Entities;
 using Zcy.Dto.Production;
 using Zcy.Entity.Company;
 using Zcy.Entity.Production;
+using Zcy.Entity.Products;
 using Zcy.IRepository.Production;
 using Zcy.IRepository.Products;
 using Zcy.IRepository.User;
@@ -52,6 +53,7 @@ namespace Zcy.Service.Production
                 return result;
             }
 
+            await SetEmployeeInfoAsync(result.Data.Items);
             await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
             if (LoginUserInfo is { IsSuperAdmin: false, IsBoss: false })
             {
@@ -154,6 +156,64 @@ namespace Zcy.Service.Production
 
             await _reportWorkRepository.UpdateAsync(entity);
             return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 获取报工汇总
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync(QueryPageReportWorkInput input)
+        {
+            var query = await _reportWorkRepository.GetQueryableAsync();
+            if (LoginUserInfo.IsSuperAdmin == false)
+            {
+                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
+            }
+
+            query = query.CreateConditions(input);
+            //todo:量大可能有问题
+            var dbList = await _reportWorkRepository.ToListAsync(query);
+            var groupTemp = dbList
+                .GroupBy(a => a.BillingType)
+                .Select(a => new
+                {
+                    BillingType = a.Key,
+                    WordDuration = a.Sum(b => b.WordDuration),
+                    ActualSettlementPrice = a.Sum(b => b.ActualSettlementPrice),
+                    ReceivableSettlementPrice = a.Sum(b => b.ReceivableSettlementPrice),
+                }).ToList();
+
+            return KdyResult.Success(new GetReportWorkTotalsDto()
+            {
+                TotalActualSettlementPrice = groupTemp.Sum(a => a.ActualSettlementPrice),
+                TotalReceivableSettlementPrice = groupTemp.Sum(a => a.ReceivableSettlementPrice),
+                CountingWordDuration = groupTemp
+                    .FirstOrDefault(a => a.BillingType == BillingTypeEnum.Counting)
+                    ?.WordDuration,
+                TimingWordDuration = groupTemp
+                    .FirstOrDefault(a => a.BillingType == BillingTypeEnum.Timing)
+                    ?.WordDuration,
+            });
+        }
+
+        /// <summary>
+        /// 设置员工信息
+        /// </summary>
+        /// <returns></returns>
+        private async Task SetEmployeeInfoAsync(IReadOnlyList<QueryPageReportWorkDto> dtoItems)
+        {
+            var employeeIds = dtoItems.Select(a => a.EmployeeId).ToArray();
+            var companyId = LoginUserInfo.CompanyId;
+            var dbUserForCompanyQuery = await _systemUserRepository.GetQueryableAsync();
+            dbUserForCompanyQuery = dbUserForCompanyQuery
+                .Where(a => a.CompanyId == companyId &&
+                            employeeIds.Contains(a.Id));
+            var dbUserForCompany = await _systemUserRepository.ToListAsync(dbUserForCompanyQuery);
+            foreach (var item in dtoItems)
+            {
+                item.EmployeeName = dbUserForCompany.FirstOrDefault(a => a.Id == item.EmployeeId)?.UserNick;
+            }
+
         }
     }
 }

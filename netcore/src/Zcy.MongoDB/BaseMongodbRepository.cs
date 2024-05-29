@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -53,6 +54,12 @@ namespace Zcy.MongoDB
         {
             var query = await GetQueryableAsync();
             return await ToMongoQueryable(query.Where(predicate))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<TEntity?> FirstOrDefaultAsync(IQueryable<TEntity> queryable)
+        {
+            return await ToMongoQueryable(queryable)
                 .FirstOrDefaultAsync();
         }
 
@@ -210,15 +217,20 @@ namespace Zcy.MongoDB
         /// 分页查询
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<QueryPageDto<TDto>> QueryPageListAsync<TDto>(IQueryable<TEntity> query, int page, int pageSize)
+        public virtual async Task<QueryPageDto<TDto>> QueryPageListAsync<TDto>(IQueryable<TEntity> query,
+            QueryPageInput pageInput)
         {
-            var dbQuery = ToMongoQueryable(query);
+            if (pageInput.OrderBy != null &&
+                pageInput.OrderBy.Any())
+            {
+                query = query.KdyOrderBy(pageInput);
+            }
 
+            var dbQuery = ToMongoQueryable(query);
             var total = await dbQuery.LongCountAsync();
             var dbResult = await dbQuery
-                .OrderByDescending(a => a.CreatedTime)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pageInput.Page - 1) * pageInput.PageSize)
+                .Take(pageInput.PageSize)
                 .ToListAsync();
 
             return new QueryPageDto<TDto>()
@@ -253,6 +265,9 @@ namespace Zcy.MongoDB
         /// <summary>
         /// 获取Queryable
         /// </summary>
+        /// <remarks>
+        /// 已过滤删除数据
+        /// </remarks>
         /// <returns></returns>
         public virtual async Task<IQueryable<TEntity>> GetQueryableAsync()
         {

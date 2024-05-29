@@ -33,5 +33,11 @@ namespace Zcy.IService.Production
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> UpdateReportWorkAsync(UpdateReportWorkInput input);
+
+        /// <summary>
+        /// 获取报工汇总
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync(QueryPageReportWorkInput input);
     }
 }

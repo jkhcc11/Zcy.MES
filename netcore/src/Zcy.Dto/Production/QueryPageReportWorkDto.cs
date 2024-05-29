@@ -19,6 +19,8 @@ namespace Zcy.Dto.Production
         /// </summary>
         public long EmployeeId { get; set; }
 
+        public string? EmployeeName { get; set; }
+
         /// <summary>
         /// 产品工序Id
         /// </summary>

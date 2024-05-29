@@ -73,6 +73,11 @@ namespace Zcy.IService.User
         /// <returns></returns>
         Task<KdyResult> InitUserAsync();
 
+        /// <summary>
+        /// 获取当前公司所有员工列表
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<List<GetCurrentCompanyAllEmployeeDto>>> GetCurrentCompanyAllEmployeeAsync();
         ///// <summary>
         ///// 批量导入用户
         ///// </summary>
