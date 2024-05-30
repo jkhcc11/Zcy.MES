@@ -7,6 +7,12 @@ namespace Zcy.MES.JsonConvert
     {
         public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Number)
+            {
+                //兼容入参long型不加引号
+                return reader.GetInt64();
+            }
+
             long.TryParse(reader.GetString(), out long temp);
             return temp;
         }

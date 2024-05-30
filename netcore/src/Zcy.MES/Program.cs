@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Serilog;
 using Zcy.BaseInterface;
+using Zcy.MES.Filter;
 using Zcy.MES.HttpService;
 using Zcy.MES.JsonConvert;
 
@@ -26,6 +29,14 @@ namespace Zcy.MES
 
                 // Add services to the container.
                 builder.Services.AddSerilog();
+
+                //自定义模型校验
+                builder.Services.Configure<ApiBehaviorOptions>(option =>
+                {
+                    option.SuppressModelStateInvalidFilter = true;
+                });
+                builder.Services.AddControllersWithViews(options => { options.Filters.Add<ModelStateValidFilter>(); });
+
                 builder.Services.AddControllers()
                     .AddJsonOptions(conf =>
                     {
@@ -57,6 +68,7 @@ namespace Zcy.MES
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+                app.UseKdyLog();
                 app.MapControllers();
 
                 app.Run();
