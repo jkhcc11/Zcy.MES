@@ -5,11 +5,15 @@
     /// </summary>
     public class GetAllRoleDto
     {
-        public GetAllRoleDto(long roleId, string roleShowName)
+        public GetAllRoleDto(string roleName)
         {
-            RoleId = roleId;
-            RoleShowName = roleShowName;
+            RoleName = roleName;
         }
+
+        /// <summary>
+        /// 角色名
+        /// </summary>
+        public string RoleName { get; set; }
 
         /// <summary>
         /// 角色Id
@@ -19,6 +23,6 @@
         /// <summary>
         /// 角色显示名
         /// </summary>
-        public string RoleShowName { get; set; }
+        public string? RoleShowName { get; set; }
     }
 }

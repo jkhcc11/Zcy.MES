@@ -17,11 +17,13 @@ namespace Zcy.Dto.Company
         /// <summary>
         /// Key
         /// </summary>
+        [Range(9999999, long.MaxValue)]
         public long? Id { get; set; }
 
         /// <summary>
         /// 公司Id
         /// </summary>
+        [Range(9999999, long.MaxValue)]
         public long CompanyId { get; set; }
 
         /// <summary>

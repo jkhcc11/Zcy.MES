@@ -14,11 +14,13 @@ namespace Zcy.Dto.SysBaseInfo
             RouteName = routeName;
         }
 
+        [Range(9999999, long.MaxValue)]
         public long? Id { get; set; }
 
         /// <summary>
         /// 父菜单Id
         /// </summary>
+        [Range(0, long.MaxValue)]
         public long? ParentMenuId { get; set; }
 
         /// <summary>

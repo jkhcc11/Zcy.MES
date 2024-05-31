@@ -35,6 +35,12 @@ namespace Zcy.IService.SysBaseInfo
         Task<IList<GetAllRoleDto>> GetAllRoleAsync();
 
         /// <summary>
+        /// 获取角色列表(缓存)
+        /// </summary>
+        /// <returns></returns>
+        Task<IList<GetAllRoleDto>?> GetAllRoleCacheAsync();
+
+        /// <summary>
         /// 初始化角色
         /// </summary>
         /// <returns></returns>

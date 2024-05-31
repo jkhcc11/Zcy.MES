@@ -17,6 +17,7 @@ namespace Zcy.Dto.SysBaseInfo
         /// <summary>
         /// 主键
         /// </summary>
+        [Range(9999999, long.MaxValue)]
         public long? Id { get; set; }
 
         /// <summary>

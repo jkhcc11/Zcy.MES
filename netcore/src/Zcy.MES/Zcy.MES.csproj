@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Zcy.Service\Zcy.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Login\" />
-  </ItemGroup>
-
 </Project>

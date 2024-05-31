@@ -1,4 +1,6 @@
-﻿namespace Zcy.Dto.SysBaseInfo
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Zcy.Dto.SysBaseInfo
 {
     /// <summary>
     /// 创建和更新角色菜单
@@ -14,6 +16,7 @@
         /// <summary>
         /// 角色Id
         /// </summary>
+        [Range(9999999, long.MaxValue)]
         public long RoleId { get; set; }
 
         /// <summary>
@@ -27,6 +30,7 @@
         /// <summary>
         /// 菜单Id
         /// </summary>
+        [Range(9999999, long.MaxValue)]
         public long MenuId { get; set; }
     }
 }

@@ -51,6 +51,19 @@ namespace Zcy.MES
                 builder.Services.AddServices();
                 builder.Services.AddJwtAuth(builder.Configuration);
 
+                //cros
+                var defaultPolicy = "DefaultCorsPolicy";
+                var corsHost = builder.Configuration.GetValue<string>("CorsHosts") ?? "http://localhost:5173";
+                builder.Services.AddCors(options =>
+                {
+                    options.AddPolicy(defaultPolicy, corsBuilder =>
+                    {
+                        corsBuilder.WithOrigins(corsHost.Split(","))
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+                });
+
                 var app = builder.Build();
 
                 app.UseSerilogRequestLogging();
@@ -68,6 +81,7 @@ namespace Zcy.MES
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+                app.UseCors(defaultPolicy);
                 app.UseKdyLog();
                 app.MapControllers();
 

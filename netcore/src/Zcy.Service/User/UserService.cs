@@ -10,6 +10,7 @@ using Zcy.Dto.User;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.Entity.User;
 using Zcy.IRepository.User;
+using Zcy.IService.SysBaseInfo;
 using Zcy.IService.User;
 
 namespace Zcy.Service.User
@@ -20,15 +21,16 @@ namespace Zcy.Service.User
     public class UserService : ZcyBaseService, IUserService
     {
         private readonly ISystemUserRepository _userRepository;
-        private readonly IBaseRepository<SystemRole, long> _roleRepository;
         private readonly IBaseRepository<SystemUserRole, long> _userRoleRepository;
+        private readonly ISystemRoleService _systemRoleService;
 
-        public UserService(ISystemUserRepository userRepository, IBaseRepository<SystemRole, long> roleRepository,
-            IBaseRepository<SystemUserRole, long> userRoleRepository)
+        public UserService(ISystemUserRepository userRepository,
+            IBaseRepository<SystemUserRole, long> userRoleRepository,
+            ISystemRoleService systemRoleService)
         {
             _userRepository = userRepository;
-            _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
+            _systemRoleService = systemRoleService;
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace Zcy.Service.User
             }
 
             //用户角色
-            var allRole = await _roleRepository.GetAllListAsync();
+            var allRole = await _systemRoleService.GetAllRoleCacheAsync();
             var userRoleQuery = await _userRoleRepository.GetQueryableAsync();
             var userIds = dbResult.Items.Select(a => a.Id).ToArray();
             userRoleQuery = userRoleQuery.Where(a => userIds.Contains(a.UserId));
@@ -79,7 +81,7 @@ namespace Zcy.Service.User
                 }
 
                 item.Roles = allRole
-                    .Where(a => currentRoleIds.Contains(a.Id))
+                    .Where(a => currentRoleIds.Contains(a.RoleId))
                     .Select(a => a.RoleShowName)
                     .ToList();
                 item.RoleIds = currentRoleIds;
@@ -145,7 +147,8 @@ namespace Zcy.Service.User
             return KdyResult.Success(new UserLoginDto(userInfo.CompanyId, userInfo.UserNick, encodedToken)
             {
                 BaseSettlement = userInfo.BaseSettlement,
-                UserNo = userInfo.UserNo
+                UserNo = userInfo.UserNo,
+                UserId = userInfo.Id
             });
         }
 
@@ -302,9 +305,9 @@ namespace Zcy.Service.User
         /// <returns></returns>
         public async Task<KdyResult> InitUserAsync()
         {
+            var allRole = await _systemRoleService.GetAllRoleCacheAsync();
             //角色
-            var roleEntity =
-                await _roleRepository.FirstOrDefaultAsync(a =>
+            var roleEntity = allRole.FirstOrDefault(a =>
                     a.RoleName == AuthorizationConst.NormalRoleName.SuperAdmin);
             if (roleEntity == null)
             {
@@ -323,7 +326,7 @@ namespace Zcy.Service.User
             await _userRepository.CreateAsync(entity);
 
             //用户角色
-            var userRoleEntity = new SystemUserRole(entity.Id, roleEntity.Id);
+            var userRoleEntity = new SystemUserRole(entity.Id, roleEntity.RoleId);
             await _userRoleRepository.CreateAsync(userRoleEntity);
 
             return KdyResult.Success();

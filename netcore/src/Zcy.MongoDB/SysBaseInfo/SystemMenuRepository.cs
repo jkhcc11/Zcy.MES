@@ -43,7 +43,7 @@ namespace Zcy.MongoDB.SysBaseInfo
         /// <returns></returns>
         public async Task<IReadOnlyList<SystemMenu>> GetAllMenuAsync()
         {
-            return await GetAllListAsync();
+            return await ToListAsync();
         }
     }
 }

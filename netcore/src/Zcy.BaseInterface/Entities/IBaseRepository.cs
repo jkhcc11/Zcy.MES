@@ -53,12 +53,6 @@ namespace Zcy.BaseInterface.Entities
         Task<bool> ForcedDeleteAsync(TEntity entity);
 
         /// <summary>
-        /// 获取所有
-        /// </summary>
-        /// <returns></returns>
-        Task<IReadOnlyList<TEntity>> GetAllListAsync();
-
-        /// <summary>
         /// 分页查询
         /// </summary>
         /// <returns></returns>

@@ -18,7 +18,7 @@ namespace Zcy.BaseInterface
         /// <summary>
         /// 总数
         /// </summary>
-        public long Total { get; set; }
+        public int Total { get; set; }
 
         /// <summary>
         /// 列表

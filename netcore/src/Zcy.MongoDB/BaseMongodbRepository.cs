@@ -205,15 +205,6 @@ namespace Zcy.MongoDB
         }
 
         /// <summary>
-        /// 获取所有
-        /// </summary>
-        /// <returns></returns>
-        public virtual async Task<IReadOnlyList<TEntity>> GetAllListAsync()
-        {
-            return await DbCollection.AsQueryable().ToListAsync();
-        }
-
-        /// <summary>
         /// 分页查询
         /// </summary>
         /// <returns></returns>
@@ -227,7 +218,7 @@ namespace Zcy.MongoDB
             }
 
             var dbQuery = ToMongoQueryable(query);
-            var total = await dbQuery.LongCountAsync();
+            var total = await dbQuery.CountAsync();
             var dbResult = await dbQuery
                 .Skip((pageInput.Page - 1) * pageInput.PageSize)
                 .Take(pageInput.PageSize)
@@ -248,7 +239,7 @@ namespace Zcy.MongoDB
         {
             var dbQuery = ToMongoQueryable(query);
 
-            var total = await dbQuery.LongCountAsync();
+            var total = await dbQuery.CountAsync();
             var dbResult = await dbQuery
                 .OrderByDescending(a => a.CreatedTime)
                 .Skip((page - 1) * pageSize)

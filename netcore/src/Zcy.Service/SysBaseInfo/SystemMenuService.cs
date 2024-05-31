@@ -26,12 +26,34 @@ namespace Zcy.Service.SysBaseInfo
         public async Task<KdyResult<QueryPageDto<QueryPageMenuDto>>> QueryPageMenuAsync(QueryPageMenuInput input)
         {
             var query = await _systemMenuRepository.GetQueryableAsync();
-            query = query.CreateConditions(input);
-            var result = await BaseQueryPageEntityAsync<SystemMenu, QueryPageMenuDto>(_systemMenuRepository,
-                query,
-                input);
+            if (string.IsNullOrEmpty(input.KeyWord) == false)
+            {
+                query = query.Where(a => a.MenuName.Contains(input.KeyWord) ||
+                                         a.MenuUrl.Contains(input.KeyWord) ||
+                                         a.RouteName.Contains(input.KeyWord));
+            }
 
-            return result;
+            var dbList = await _systemMenuRepository.ToListAsync(query
+                .OrderByDescending(a => a.OrderBy)
+                .ThenByDescending(a => a.CreatedTime));
+            var tempDto = BaseMapper.Map<IReadOnlyList<SystemMenu>, List<QueryPageMenuDto>>(dbList);
+            var resultList = QueryPageMenuDto.GenerateMenuTree(tempDto);
+            if (resultList == null ||
+                resultList.Any() == false)
+            {
+                return KdyResult.Success(new QueryPageDto<QueryPageMenuDto>()
+                {
+                    Total = dbList.Count,
+                    Items = new List<QueryPageMenuDto>()
+                });
+            }
+
+            var resultDto = KdyResult.Success(new QueryPageDto<QueryPageMenuDto>()
+            {
+                Total = resultList.Count,
+                Items = resultList.Skip((input.Page - 1) * input.PageSize).Take(input.PageSize).ToList()
+            });
+            return resultDto;
         }
 
         /// <summary>

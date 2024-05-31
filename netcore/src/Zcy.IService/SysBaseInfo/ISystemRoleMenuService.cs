@@ -25,6 +25,6 @@ namespace Zcy.IService.SysBaseInfo
         /// 获取角色已激活菜单树
         /// </summary>
         /// <returns></returns>
-        Task<KdyResult<List<GetRoleActivateMenuTreeDto>?>> GetRoleActivateMenuTreeAsync(long[] roleIds);
+        Task<KdyResult<List<GetRoleActivateMenuTreeDto>?>> GetRoleActivateMenuTreeAsync(string[] roleNames);
     }
 }
