@@ -30,13 +30,7 @@ namespace Zcy.Service.Company
         public async Task<KdyResult<QueryPageDto<QueryPageCompanyDto>>> QueryPageCompanyAsync(QueryPageCompanyInput input)
         {
             var query = await _systemCompanyRepository.GetQueryableAsync();
-            if (string.IsNullOrEmpty(input.KeyWord) == false)
-            {
-                query = query.Where(a => a.CompanyName.Contains(input.KeyWord) ||
-                                         (string.IsNullOrEmpty(a.CompanyShowName) == false &&
-                                                               a.CompanyShowName.Contains(input.KeyWord)) ||
-                                         a.ShortName.Contains(input.KeyWord));
-            }
+            query = query.CreateConditions(input);
 
             return await BaseQueryPageEntityAsync<SystemCompany, QueryPageCompanyDto>(_systemCompanyRepository,
                 query, input);

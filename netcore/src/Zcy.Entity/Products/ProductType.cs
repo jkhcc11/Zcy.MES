@@ -8,6 +8,8 @@ namespace Zcy.Entity.Products
     /// </summary>
     public class ProductType : BaseEntity<long>, IBaseCompany
     {
+        public const int TypeNameLength = 10;
+
         public ProductType(string typeName)
         {
             TypeName = typeName;

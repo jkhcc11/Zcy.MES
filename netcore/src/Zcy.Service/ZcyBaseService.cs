@@ -98,5 +98,23 @@ namespace Zcy.Service
                 item.CompanyName = dbCompany.FirstOrDefault(a => a.Id == item.CompanyId)?.CompanyName;
             }
         }
+
+        /// <summary>
+        /// 设置客户|供应商信息
+        /// </summary>
+        protected virtual async Task SetSupplierClientAsync<TDto>(IReadOnlyList<TDto> items,
+            IBaseRepository<SupplierClient, long> supplierClientRepository)
+            where TDto : class, IBaseSupplierClientDto
+        {
+            var clientIds = items.Select(a => a.SupplierClientId).ToArray();
+
+            var dbSupplierClientQuery = await supplierClientRepository.GetQueryableAsync();
+            dbSupplierClientQuery = dbSupplierClientQuery.Where(a => clientIds.Contains(a.Id));
+            var dbCompany = await supplierClientRepository.ToListAsync(dbSupplierClientQuery);
+            foreach (var item in items)
+            {
+                item.SupplierClientName = dbCompany.FirstOrDefault(a => a.Id == item.SupplierClientId)?.ClientName;
+            }
+        }
     }
 }

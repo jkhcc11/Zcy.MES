@@ -4,6 +4,7 @@ using Zcy.BaseInterface.Entities;
 using Zcy.Dto.Products;
 using Zcy.Entity.Company;
 using Zcy.Entity.Products;
+using Zcy.IRepository.Products;
 using Zcy.IService.Products;
 
 namespace Zcy.Service.Products
@@ -15,12 +16,15 @@ namespace Zcy.Service.Products
     {
         private readonly IBaseRepository<ProductType, long> _productTypeRepository;
         private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
+        private readonly IProductRepository _productRepository;
 
         public ProductTypeService(IBaseRepository<ProductType, long> productTypeRepository,
-            IBaseRepository<SystemCompany, long> systemCompanyRepository)
+            IBaseRepository<SystemCompany, long> systemCompanyRepository,
+            IProductRepository productRepository)
         {
             _productTypeRepository = productTypeRepository;
             _systemCompanyRepository = systemCompanyRepository;
+            _productRepository = productRepository;
         }
 
         /// <summary>
@@ -73,6 +77,11 @@ namespace Zcy.Service.Products
             if (validCount != input.Ids.Count)
             {
                 return KdyResult.Error(KdyResultCode.Error, "操作失败，有效数据不一致");
+            }
+
+            if (await _productRepository.ExistByProductTypeAsync(input.Ids.ToArray()))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "操作失败，分类存在产品，请调整");
             }
 
             return await BaseBatchDeleteAsync(_productTypeRepository, input);

@@ -5,9 +5,9 @@ namespace Zcy.Dto.User
     /// <summary>
     /// 获取当前公司所有员工列表
     /// </summary>
-    public class GetCurrentCompanyAllEmployeeDto : BaseEntity<long>
+    public class GetCurrentCompanyValidEmployeeDto : BaseEntity<long>
     {
-        public GetCurrentCompanyAllEmployeeDto(string userName, string userNick)
+        public GetCurrentCompanyValidEmployeeDto(string userName, string userNick)
         {
             UserName = userName;
             UserNick = userNick;

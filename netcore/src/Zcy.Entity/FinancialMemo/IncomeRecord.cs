@@ -9,6 +9,11 @@ namespace Zcy.Entity.FinancialMemo
     public class IncomeRecord : BaseEntity<long>, IBaseCompany
     {
         /// <summary>
+        /// 记录名长度
+        /// </summary>
+        public const int RecordNameLength = 20;
+
+        /// <summary>
         /// 收支记录
         /// </summary>
         /// <param name="incomeType">收支类型</param>
@@ -23,7 +28,14 @@ namespace Zcy.Entity.FinancialMemo
             IncomeType = incomeType;
             AccountType = accountType;
             RecordName = recordName;
-            Money = money;
+
+            var tempMoney = money;
+            if (incomeType == IncomeTypeEnum.Out)
+            {
+                tempMoney = -1 * money;
+            }
+
+            Money = tempMoney;
             RecordDate = recordDate;
             ManagerUser = managerUser;
         }
@@ -46,6 +58,10 @@ namespace Zcy.Entity.FinancialMemo
         /// <summary>
         /// 金额
         /// </summary>
+        /// <remarks>
+        /// 进账 为+
+        /// 出账 为-
+        /// </remarks>
         public decimal Money { get; protected set; }
 
         /// <summary>

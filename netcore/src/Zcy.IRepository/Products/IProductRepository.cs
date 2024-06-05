@@ -31,5 +31,12 @@ namespace Zcy.IRepository.Products
         /// </summary>
         /// <param name="productIds">产品Id集合</param>
         Task<List<Product>> GetValidProductListAsync(long[] productIds);
+
+        /// <summary>
+        /// 根据产品分类是否存在产品
+        /// </summary>
+        /// <param name="productTypeIds">产品分类ids</param>
+        /// <returns></returns>
+        Task<bool> ExistByProductTypeAsync(long[] productTypeIds);
     }
 }

@@ -9,11 +9,23 @@ namespace Zcy.Dto.FinancialMemo
     /// </summary>
     public class CreateProceedsRecordInput
     {
+        public CreateProceedsRecordInput(string proceedsRecordName)
+        {
+            ProceedsRecordName = proceedsRecordName;
+        }
+
         /// <summary>
         /// 供应商|客户Id
         /// </summary>
         [Range(99999, long.MaxValue)]
         public long SupplierClientId { get; set; }
+
+        /// <summary>
+        /// 收款记录名
+        /// </summary>
+        [Required(ErrorMessage = "收款记录名必填")]
+        [StringLength(IncomeRecord.RecordNameLength)]
+        public string ProceedsRecordName { get; set; }
 
         /// <summary>
         /// 记录日期

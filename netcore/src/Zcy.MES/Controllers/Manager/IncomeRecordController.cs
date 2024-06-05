@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 收支记录
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
     public class IncomeRecordController : BaseManagerController
     {
         private readonly IIncomeRecordService _incomeRecordService;
@@ -25,7 +25,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建收支记录
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreateIncomeRecordAsync(CreateIncomeRecordInput input)
         {
             var result = await _incomeRecordService.CreateIncomeRecordAsync(input);

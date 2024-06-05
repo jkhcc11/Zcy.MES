@@ -7,6 +7,9 @@ namespace Zcy.Entity.SysBaseInfo
     /// </summary>
     public class SystemMenu : BaseEntity<long>
     {
+        public const int MenuUrlLength = 200;
+        public const int IconLength = 20;
+
         /// <summary>
         /// 角色菜单
         /// </summary>

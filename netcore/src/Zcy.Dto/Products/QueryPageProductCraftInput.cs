@@ -14,6 +14,7 @@ namespace Zcy.Dto.Products
         /// 关键字
         /// </summary>
         [ZcyQuery(nameof(ProductCraft.CraftName), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ProductCraft.Remark), ZcyOperator.Like)]
         public string? KeyWord { get; set; }
 
         /// <summary>

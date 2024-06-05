@@ -21,6 +21,7 @@ namespace Zcy.Dto.Products
         /// 产品名
         /// </summary>
         [Required(ErrorMessage = "产品名必填")]
+        [StringLength(Product.ProductNameLength)]
         public string ProductName { get; set; }
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace Zcy.Dto.Products
         ///  kg/个
         /// </remarks>
         [Required(ErrorMessage = "单位必填")]
+        [StringLength(Product.UnitLength)]
         public string Unit { get; set; }
 
         /// <summary>
@@ -53,6 +55,7 @@ namespace Zcy.Dto.Products
         /// <remarks>
         ///  箱/盒/袋
         /// </remarks>
+        [StringLength(Product.UnitLength)]
         public string? Spec { get; set; }
 
         /// <summary>
@@ -76,12 +79,55 @@ namespace Zcy.Dto.Products
         public List<ProductProcessItem>? ProductProcesses { get; set; }
     }
 
+    /// <summary>
+    /// 产品工艺Item
+    /// </summary>
+    public class ProductCraftItem
+    {
+        /// <summary>
+        /// 工艺Id
+        /// </summary>
+        public long CraftId { get; set; }
+
+        /// <summary>
+        /// 工艺名
+        /// </summary>
+        public string CraftName { get; set; }
+
+        /// <summary>
+        /// 工艺计费类型
+        /// </summary>
+        public BillingTypeEnum BillingType { get; set; }
+
+        /// <summary>
+        /// 工艺价格
+        /// </summary>
+        public decimal CraftPrice { get; set; }
+    }
+
+    /// <summary>
+    /// 产品工序Item
+    /// </summary>
     public class ProductProcessItem
     {
         /// <summary>
         /// 产品工序Id
         /// </summary>
         public long ProductProcessId { get; set; }
+
+        /// <summary>
+        /// 产品工艺
+        /// </summary>
+        public ProductCraftItem? ProductCraft { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <remarks>
+        /// 越大越靠前
+        /// </remarks>
+        [Range(0, 999, ErrorMessage = "排序错误")]
+        public int OrderBy { get; set; }
 
         /// <summary>
         /// 工艺Id
@@ -95,7 +141,12 @@ namespace Zcy.Dto.Products
         /// <remarks>
         /// 计算工资使用
         /// </remarks>
-        [Range(0.01, 99999999, ErrorMessage = "加工价参数错误")]
+        [Range(0, 99999999, ErrorMessage = "加工价参数错误")]
         public decimal ProcessingPrice { get; set; }
+
+        /// <summary>
+        /// 工序计费价
+        /// </summary>
+        public decimal SumPrice => (ProductCraft?.CraftPrice ?? 0) + ProcessingPrice;
     }
 }

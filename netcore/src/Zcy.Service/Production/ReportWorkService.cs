@@ -46,6 +46,20 @@ namespace Zcy.Service.Production
             }
 
             query = query.CreateConditions(input);
+            var startTime = DateTime.Today.AddDays(-30);
+            var endTime = DateTime.Today;
+            if (input.StartTime.HasValue)
+            {
+                startTime = input.StartTime.Value.Date;
+            }
+
+            if (input.EndTime.HasValue)
+            {
+                endTime = input.EndTime.Value.Date;
+            }
+
+            query = query.Where(a => a.ReportWorkDate >= startTime &&
+                                     a.ReportWorkDate <= endTime);
             var result = await BaseQueryPageEntityAsync<ReportWork, QueryPageReportWorkDto>(
                 _reportWorkRepository, query, input);
             if (result.Data.Items.Any() == false)
@@ -111,7 +125,8 @@ namespace Zcy.Service.Production
             };
             entity.SetProductProcessInfo(productProcess.ProcessingPrice,
                 productProcess.ProductCraft.UnitPrice,
-                productProcess.ProductCraft.BillingType);
+                productProcess.ProductCraft.BillingType,
+                $"{productProcess.Product?.ProductName}/{productProcess.ProductCraft.CraftName}");
             entity.TotalReceivablePrice();
             await _reportWorkRepository.CreateAsync(entity);
             return KdyResult.Success();

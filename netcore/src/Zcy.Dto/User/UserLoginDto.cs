@@ -38,7 +38,7 @@
         /// <remarks>
         ///  员工的薪资结算基数
         /// </remarks>
-        public decimal BaseSettlement { get; set; }
+        public decimal? BaseSettlement { get; set; }
 
         /// <summary>
         /// token
@@ -49,5 +49,10 @@
         /// 刷新Token
         /// </summary>
         public string RefreshToken { get; set; }
+
+        /// <summary>
+        /// 是否超管
+        /// </summary>
+        public bool IsSuperAdmin { get; set; }
     }
 }

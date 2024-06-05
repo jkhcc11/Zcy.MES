@@ -1,4 +1,7 @@
-﻿namespace Zcy.Dto.User
+﻿using static Zcy.BaseInterface.AuthorizationConst;
+using System.ComponentModel.DataAnnotations;
+
+namespace Zcy.Dto.User
 {
     /// <summary>
     /// 创建用户
@@ -14,21 +17,27 @@
         /// <summary>
         /// 用户名
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
+        [Required(ErrorMessage = "用户名必填")]
         public string UserName { get; set; }
 
         /// <summary>
         /// 用户昵称
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
+        [Required(ErrorMessage = "用户昵称必填")]
         public string UserNick { get; set; }
 
         /// <summary>
         /// 用户手机号
         /// </summary>
-        public string UserPhone { get; set; }
+        [StringLength(EntityConst.CommonName)]
+        public string? UserPhone { get; set; }
 
         /// <summary>
         /// 用户编号
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
         public string? UserNo { get; set; }
 
         /// <summary>
@@ -53,6 +62,6 @@
         /// <remarks>
         ///  员工的薪资结算基数
         /// </remarks>
-        public decimal BaseSettlement { get; set; }
+        public decimal? BaseSettlement { get; set; }
     }
 }

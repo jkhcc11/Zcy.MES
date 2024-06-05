@@ -1,5 +1,6 @@
 ﻿using static Zcy.BaseInterface.AuthorizationConst;
 using System.ComponentModel.DataAnnotations;
+using Zcy.Entity.SysBaseInfo;
 
 namespace Zcy.Dto.SysBaseInfo
 {
@@ -23,11 +24,13 @@ namespace Zcy.Dto.SysBaseInfo
         /// <summary>
         /// 角色名
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
         public string RoleName { get; set; }
 
         /// <summary>
         /// 角色显示名
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
         public string RoleShowName { get; set; }
 
         /// <summary>

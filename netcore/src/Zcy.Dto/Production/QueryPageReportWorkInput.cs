@@ -11,7 +11,8 @@ namespace Zcy.Dto.Production
         /// <summary>
         /// 关键字
         /// </summary>
-        [ZcyQuery(nameof(ReportWork.Remark), ZcyOperator.Equal)]
+        [ZcyQuery(nameof(ReportWork.Remark), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ReportWork.ProductProcessName), ZcyOperator.Like)]
         public string? KeyWord { get; set; }
 
         /// <summary>
@@ -27,10 +28,13 @@ namespace Zcy.Dto.Production
         public long? ProductProcessId { get; set; }
 
         /// <summary>
-        /// 报工日期
+        /// 开始时间
         /// </summary>
-        [ZcyQuery(nameof(ReportWork.ReportWorkDate), ZcyOperator.Equal)]
-        public DateTime? ReportWorkDate { get; set; }
+        public DateTime? StartTime { get; set; }
 
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public DateTime? EndTime { get; set; }
     }
 }

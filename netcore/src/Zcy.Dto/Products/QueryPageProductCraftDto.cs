@@ -43,7 +43,7 @@ namespace Zcy.Dto.Products
         /// 单价
         /// </summary>
         /// <remarks>
-        /// 工序基础价格，如果有根据产品+工序的在产品选择工序后加
+        /// 工艺基础价格，如果有根据产品+工序的在产品选择工序后加
         /// </remarks>
         public decimal UnitPrice { get; set; }
 

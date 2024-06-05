@@ -50,12 +50,25 @@ namespace Zcy.Entity.Company
         /// </summary>
         public long CompanyId { get; set; }
 
+        public void SetClientName(string clientName)
+        {
+            ClientName = clientName;
+        }
+
         /// <summary>
         /// 禁用
         /// </summary>
         public void Ban()
         {
             ClientStatus = PublicStatusEnum.Ban;
+        }
+
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public void Open()
+        {
+            ClientStatus = PublicStatusEnum.Normal;
         }
     }
 }

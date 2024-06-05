@@ -23,4 +23,17 @@
         /// </summary>
         public string? CompanyName { get; set; }
     }
+
+    public interface IBaseSupplierClientDto
+    {
+        /// <summary>
+        /// 供应商|客户Id
+        /// </summary>
+        public long SupplierClientId { get; set; }
+
+        /// <summary>
+        /// 供应商|客户名
+        /// </summary>
+        public string? SupplierClientName { get; set; }
+    }
 }

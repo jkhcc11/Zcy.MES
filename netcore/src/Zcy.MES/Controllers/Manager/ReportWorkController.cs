@@ -23,7 +23,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建报工
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreateReportWorkAsync(CreateReportWorkInput input)
         {
             var result = await _reportWorkService.CreateReportWorkAsync(input);
@@ -72,7 +72,7 @@ namespace Zcy.MES.Controllers.Manager
         /// <returns></returns>
         [HttpGet("get-totals")]
         [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
-        public async Task<KdyResult> GetReportWorkTotalsAsync([FromQuery] QueryPageReportWorkInput input)
+        public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync([FromQuery] QueryPageReportWorkInput input)
         {
             var result = await _reportWorkService.GetReportWorkTotalsAsync(input);
             return result;

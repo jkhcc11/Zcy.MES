@@ -1,11 +1,13 @@
 ﻿using Zcy.BaseInterface.BaseModel;
+using Zcy.BaseInterface.Entities;
+using Zcy.Entity.User;
 
 namespace Zcy.Dto.User
 {
     /// <summary>
     /// 分页查询用户 dto
     /// </summary>
-    public class QueryPageUserDto : BaseEntityDto<long>
+    public class QueryPageUserDto : BaseFullAuditEntityDto<long>, IBaseCompanyDto
     {
         /// <summary>
         /// 用户名
@@ -55,6 +57,11 @@ namespace Zcy.Dto.User
         ///  员工的薪资结算基数
         /// </remarks>
         public decimal BaseSettlement { get; set; }
+
+        /// <summary>
+        /// 用户状态
+        /// </summary>
+        public UserStatusEnum UserStatus { get; set; }
 
         /// <summary>
         /// 角色列表

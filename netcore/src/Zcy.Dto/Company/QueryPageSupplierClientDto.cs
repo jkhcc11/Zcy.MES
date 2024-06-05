@@ -1,4 +1,5 @@
 ﻿using Zcy.BaseInterface.BaseModel;
+using Zcy.BaseInterface.Entities;
 using Zcy.Entity.Company;
 
 namespace Zcy.Dto.Company
@@ -6,7 +7,7 @@ namespace Zcy.Dto.Company
     /// <summary>
     /// 查询供应商客户信息列表 dto
     /// </summary>
-    public class QueryPageSupplierClientDto : BaseFullAuditEntityDto<long>
+    public class QueryPageSupplierClientDto : BaseFullAuditEntityDto<long>, IBaseCompanyDto
     {
         public QueryPageSupplierClientDto(string clientName)
         {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Zcy.Entity.Products;
 
 namespace Zcy.Dto.Products
 {
@@ -18,6 +19,7 @@ namespace Zcy.Dto.Products
         /// 分类名
         /// </summary>
         [Required(ErrorMessage = "分类名必填")]
+        [StringLength(ProductType.TypeNameLength)]
         public string TypeName { get; set; }
     }
 }

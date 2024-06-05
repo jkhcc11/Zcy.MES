@@ -12,7 +12,7 @@ namespace Zcy.Dto.Production
         /// <summary>
         /// 报工日期
         /// </summary>
-        public DateTime ReportWorkDate { get; set; }
+        public string ReportWorkDate { get; set; }
 
         /// <summary>
         /// 员工用户Id
@@ -80,6 +80,14 @@ namespace Zcy.Dto.Production
         /// 工艺计费类型 冗余
         /// </summary>
         public BillingTypeEnum BillingType { get; set; }
+
+        /// <summary>
+        /// 产品工序名称  冗余
+        /// </summary>
+        /// <remarks>
+        /// 产品名/工序名
+        /// </remarks>
+        public string? ProductProcessName { get; set; }
         #endregion
 
     }

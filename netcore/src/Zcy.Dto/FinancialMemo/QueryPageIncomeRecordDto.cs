@@ -37,7 +37,7 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 记录日期
         /// </summary>
-        public DateTime RecordDate { get; set; }
+        public string RecordDate { get; set; }
 
         /// <summary>
         /// 经办人

@@ -20,7 +20,7 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 盈亏
         /// </summary>
-        public decimal ProfitMoney => InMoney - OutMoney;
+        public decimal ProfitMoney => InMoney + OutMoney;
 
         /// <summary>
         /// 账号类型列表
@@ -51,6 +51,6 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 盈亏
         /// </summary>
-        public decimal ProfitMoney => InMoney - OutMoney;
+        public decimal ProfitMoney => InMoney + OutMoney;
     }
 }

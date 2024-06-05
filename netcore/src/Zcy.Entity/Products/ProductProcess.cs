@@ -43,6 +43,14 @@ namespace Zcy.Entity.Products
         public long CompanyId { get; set; }
 
         /// <summary>
+        /// 排序
+        /// </summary>
+        /// <remarks>
+        /// 越大越靠前
+        /// </remarks>
+        public int OrderBy { get; set; }
+
+        /// <summary>
         /// 产品工艺
         /// </summary>
         public virtual ProductCraft? ProductCraft { get; set; }

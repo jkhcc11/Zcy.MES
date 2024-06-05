@@ -1,4 +1,5 @@
 ﻿using Zcy.BaseInterface;
+using Zcy.Entity.Company;
 
 namespace Zcy.Dto.Company
 {
@@ -10,6 +11,8 @@ namespace Zcy.Dto.Company
         /// <summary>
         /// 关键字
         /// </summary>
+        [ZcyQuery(nameof(SupplierClient.PhoneNumber), ZcyOperator.Like)]
+        [ZcyQuery(nameof(SupplierClient.ClientName), ZcyOperator.Like)]
         public string? KeyWord { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Zcy.BaseInterface;
 using Zcy.Dto.Company;
 using Zcy.Dto.FinancialMemo;
 using Zcy.Dto.Production;
@@ -22,7 +23,7 @@ namespace Zcy.Dto
         {
             //用户
             CreateMap<SystemUser, QueryPageUserDto>();
-            CreateMap<SystemUser, GetCurrentCompanyAllEmployeeDto>();
+            CreateMap<SystemUser, GetCurrentCompanyValidEmployeeDto>();
 
 
             //角色菜单
@@ -47,13 +48,20 @@ namespace Zcy.Dto
 
 
             //财务备忘录
-            CreateMap<IncomeRecord, QueryPageIncomeRecordDto>();
-            CreateMap<ProceedsRecord, QueryPageProceedsRecordDto>();
+            CreateMap<IncomeRecord, QueryPageIncomeRecordDto>()
+                .ForMember(dest => dest.RecordDate,
+                    target => target.MapFrom(source => source.RecordDate.ToString(ZcyMesConst.DateFormat)));
+            CreateMap<ProceedsRecord, QueryPageProceedsRecordDto>()
+                .ForMember(dest => dest.RecordDate,
+                    target => target.MapFrom(source => source.RecordDate.ToString(ZcyMesConst.DateFormat)));
 
 
             //产品
             CreateMap<ProductCraft, QueryPageProductCraftDto>();
             CreateMap<ProductCraft, QueryValidProductCraftDto>();
+            CreateMap<ProductCraft, ProductCraftItem>()
+                .ForMember(dest => dest.CraftId, target => target.MapFrom(source => source.Id))
+                .ForMember(dest => dest.CraftPrice, target => target.MapFrom(source => source.UnitPrice));
             CreateMap<Product, QueryPageProductDto>();
             CreateMap<Product, QueryValidProductDto>();
             CreateMap<Product, GetProductDetailDto>();
@@ -64,7 +72,9 @@ namespace Zcy.Dto
 
 
             //生产
-            CreateMap<ReportWork, QueryPageReportWorkDto>();
+            CreateMap<ReportWork, QueryPageReportWorkDto>()
+                .ForMember(dest => dest.ReportWorkDate,
+                    target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
 
 
             //订单

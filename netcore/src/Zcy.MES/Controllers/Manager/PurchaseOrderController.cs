@@ -24,7 +24,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建采购订单
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreatePurchaseOrderAsync(CreatePurchaseOrderInput input)
         {
             var result = await _purchaseOrderService.CreatePurchaseOrderAsync(input);

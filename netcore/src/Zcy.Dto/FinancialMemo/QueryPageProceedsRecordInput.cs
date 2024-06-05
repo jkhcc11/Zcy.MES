@@ -18,6 +18,7 @@ namespace Zcy.Dto.FinancialMemo
         /// 关键字
         /// </summary>
         [ZcyQuery(nameof(ProceedsRecord.Remark), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ProceedsRecord.ProceedsRecordName), ZcyOperator.Like)]
         public string? KeyWord { get; set; }
 
         /// <summary>

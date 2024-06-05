@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 收款记录
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
     public class ProceedsRecordController : BaseManagerController
     {
         private readonly IProceedsRecordService _proceedsRecordService;
@@ -24,7 +24,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建收款记录
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreateProceedsRecordAsync(CreateProceedsRecordInput input)
         {
             var result = await _proceedsRecordService.CreateProceedsRecordAsync(input);

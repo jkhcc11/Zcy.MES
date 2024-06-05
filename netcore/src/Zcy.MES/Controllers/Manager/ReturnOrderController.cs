@@ -23,7 +23,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建退货订单
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreateReturnOrderAsync(CreateReturnOrderInput input)
         {
             var result = await _returnOrderService.CreateReturnOrderAsync(input);

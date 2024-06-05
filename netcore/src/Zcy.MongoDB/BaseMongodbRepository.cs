@@ -84,9 +84,9 @@ namespace Zcy.MongoDB
                 entity.Id = (TKey)(object)IdGenerateExtension.GenerateId();
             }
 
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (entity is IBaseCompany companyEntity)
+            if (entity is IBaseCompany { CompanyId: 0 } companyEntity)
             {
+                //未设置公司Id则默认
                 companyEntity.CompanyId = LoginUserInfo?.CompanyId ?? 0;
             }
 

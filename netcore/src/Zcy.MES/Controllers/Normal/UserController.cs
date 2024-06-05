@@ -22,9 +22,20 @@ namespace Zcy.MES.Controllers.Normal
         /// </summary>
         /// <returns></returns>
         [HttpPost("login")]
-        public async Task<KdyResult> UserLoginAsync(UserLoginInput input)
+        public async Task<KdyResult<UserLoginDto>> UserLoginAsync(UserLoginInput input)
         {
             var result = await _userService.UserLoginAsync(input);
+            return result;
+        }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("modify-pwd")]
+        public async Task<KdyResult> ModifyUserPwdAsync(ModifyUserPwdInput input)
+        {
+            var result = await _userService.ModifyUserPwdAsync(input);
             return result;
         }
     }

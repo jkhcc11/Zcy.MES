@@ -11,13 +11,15 @@ namespace Zcy.Entity.FinancialMemo
         /// <summary>
         /// 收款记录
         /// </summary>
+        /// <param name="proceedsRecordName">收款记录名</param>
         /// <param name="supplierClientId">客户Id</param>
         /// <param name="recordDate">记录日期</param>
         /// <param name="accountType">收款账户类型</param>
         /// <param name="money">收款金额</param>
-        public ProceedsRecord(long supplierClientId, DateTime recordDate, 
+        public ProceedsRecord(string proceedsRecordName, long supplierClientId, DateTime recordDate,
             AccountTypeEnum accountType, decimal money)
         {
+            ProceedsRecordName = proceedsRecordName;
             SupplierClientId = supplierClientId;
             RecordDate = recordDate;
             AccountType = accountType;
@@ -28,6 +30,11 @@ namespace Zcy.Entity.FinancialMemo
         /// 供应商|客户Id
         /// </summary>
         public long SupplierClientId { get; protected set; }
+
+        /// <summary>
+        /// 收款记录名
+        /// </summary>
+        public string ProceedsRecordName { get; protected set; }
 
         /// <summary>
         /// 记录日期

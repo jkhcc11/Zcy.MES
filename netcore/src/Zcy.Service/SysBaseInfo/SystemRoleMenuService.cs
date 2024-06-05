@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Zcy.BaseInterface;
+﻿using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
-using Zcy.BaseInterface.Entities;
 using Zcy.Dto.SysBaseInfo;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.IRepository.SysBaseInfo;

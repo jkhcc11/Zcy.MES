@@ -23,12 +23,15 @@ namespace Zcy.MongoDB.Production
         /// <param name="employeeId">员工Id</param>
         /// <param name="productProcessId">产品工序Id</param>
         /// <returns></returns>
-        public async Task<bool> IsTodayExistReportWorkAsync(long companyId, DateTime reportWorkDate, long employeeId, long productProcessId)
+        public async Task<bool> IsTodayExistReportWorkAsync(long companyId, DateTime reportWorkDate,
+            long employeeId, long productProcessId)
         {
             return await DbCollection
                 .Find(a => a.CompanyId == companyId &&
                          a.ReportWorkDate == reportWorkDate &&
-                         a.EmployeeId == employeeId)
+                         a.EmployeeId == employeeId &&
+                         a.ProductProcessId == productProcessId &&
+                         a.IsDelete == false)
                 .AnyAsync();
         }
     }

@@ -219,6 +219,18 @@ namespace Zcy.MongoDB.Products
         }
 
         /// <summary>
+        /// 根据产品分类是否存在产品
+        /// </summary>
+        /// <param name="productTypeIds">产品分类ids</param>
+        /// <returns></returns>
+        public async Task<bool> ExistByProductTypeAsync(long[] productTypeIds)
+        {
+            var query = await GetQueryableAsync();
+            query = query.Where(a => productTypeIds.Contains(a.ProductTypeId));
+            return await (ToMongoQueryable(query)).AnyAsync();
+        }
+
+        /// <summary>
         /// 删除产品工序
         /// </summary>
         /// <returns></returns>

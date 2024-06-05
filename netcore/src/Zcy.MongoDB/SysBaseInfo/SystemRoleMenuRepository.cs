@@ -21,7 +21,8 @@ namespace Zcy.MongoDB.SysBaseInfo
         {
             var dbRoleMenus = await DbCollection
                 .Find(a => a.RoleId == roleId &&
-                           a.IsActivate)
+                           a.IsActivate &&
+                           a.IsDelete == false)
                 .ToListAsync();
             var menuIds = dbRoleMenus.Select(a => a.MenuId).ToArray();
             if (menuIds.Any() == false)
@@ -31,7 +32,8 @@ namespace Zcy.MongoDB.SysBaseInfo
 
             var menuDbName = $"{MongoDBConsts.DbPrefix}{nameof(SystemMenu)}";
             var menuCollection = ZcyMongodbContext.Database.GetCollection<SystemMenu>(menuDbName);
-            var dbMenus = await menuCollection.Find(a => menuIds.Contains(a.Id)).ToListAsync();
+            var dbMenus = await menuCollection.Find(a => menuIds.Contains(a.Id) &&
+                                                         a.IsDelete == false).ToListAsync();
             return dbMenus;
         }
 
@@ -43,7 +45,8 @@ namespace Zcy.MongoDB.SysBaseInfo
         {
             var dbRoleMenus = await DbCollection
                 .Find(a => roleIds.Contains(a.RoleId) &&
-                           a.IsActivate)
+                           a.IsActivate &&
+                           a.IsDelete == false)
                 .ToListAsync();
             var menuIds = dbRoleMenus.Select(a => a.MenuId).ToArray();
             if (menuIds.Any() == false)
@@ -54,7 +57,8 @@ namespace Zcy.MongoDB.SysBaseInfo
             var menuDbName = $"{MongoDBConsts.DbPrefix}{nameof(SystemMenu)}";
             var menuCollection = ZcyMongodbContext.Database.GetCollection<SystemMenu>(menuDbName);
             var dbMenus = await menuCollection
-                .Find(a => menuIds.Contains(a.Id))
+                .Find(a => menuIds.Contains(a.Id) &&
+                           a.IsDelete == false)
                 .ToListAsync();
             return dbMenus.Distinct().ToList();
         }
@@ -66,7 +70,8 @@ namespace Zcy.MongoDB.SysBaseInfo
         public async Task<List<SystemRoleMenu>> GetAllMenuByRoleIdAsync(long roleId)
         {
             var dbRoleMenus = await DbCollection
-                .Find(a => a.RoleId == roleId)
+                .Find(a => a.RoleId == roleId &&
+                           a.IsDelete == false)
                 .ToListAsync();
             return dbRoleMenus;
         }

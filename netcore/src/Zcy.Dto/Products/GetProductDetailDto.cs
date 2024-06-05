@@ -14,6 +14,11 @@ namespace Zcy.Dto.Products
         public long ProductTypeId { get; set; }
 
         /// <summary>
+        /// 产品名
+        /// </summary>
+        public string ProductName { get; set; }
+
+        /// <summary>
         /// 产品类型
         /// </summary>
         public ProductTypeEnum ProductType { get; set; }

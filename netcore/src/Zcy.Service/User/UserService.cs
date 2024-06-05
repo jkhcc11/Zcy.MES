@@ -7,11 +7,13 @@ using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.Dto.User;
+using Zcy.Entity.Company;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.Entity.User;
 using Zcy.IRepository.User;
 using Zcy.IService.SysBaseInfo;
 using Zcy.IService.User;
+using static Zcy.BaseInterface.AuthorizationConst;
 
 namespace Zcy.Service.User
 {
@@ -22,15 +24,18 @@ namespace Zcy.Service.User
     {
         private readonly ISystemUserRepository _userRepository;
         private readonly IBaseRepository<SystemUserRole, long> _userRoleRepository;
-        private readonly ISystemRoleService _systemRoleService;
+        private readonly IBaseRepository<SystemRole, long> _roleRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
 
         public UserService(ISystemUserRepository userRepository,
             IBaseRepository<SystemUserRole, long> userRoleRepository,
-            ISystemRoleService systemRoleService)
+            IBaseRepository<SystemRole, long> roleRepository,
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
-            _systemRoleService = systemRoleService;
+            _roleRepository = roleRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -58,7 +63,7 @@ namespace Zcy.Service.User
             }
 
             //用户角色
-            var allRole = await _systemRoleService.GetAllRoleCacheAsync();
+            var allRole = await _roleRepository.ToListAsync();
             var userRoleQuery = await _userRoleRepository.GetQueryableAsync();
             var userIds = dbResult.Items.Select(a => a.Id).ToArray();
             userRoleQuery = userRoleQuery.Where(a => userIds.Contains(a.UserId));
@@ -81,12 +86,13 @@ namespace Zcy.Service.User
                 }
 
                 item.Roles = allRole
-                    .Where(a => currentRoleIds.Contains(a.RoleId))
+                    .Where(a => currentRoleIds.Contains(a.Id))
                     .Select(a => a.RoleShowName)
                     .ToList();
                 item.RoleIds = currentRoleIds;
             }
 
+            await SetCompanyInfoAsync(result.Items, _systemCompanyRepository);
             return KdyResult.Success(result);
         }
 
@@ -100,6 +106,11 @@ namespace Zcy.Service.User
             if (userInfo == null)
             {
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "用户名或密码错误,请检测用户名或密码01");
+            }
+
+            if (userInfo.UserStatus != UserStatusEnum.Normal)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "账户已禁用，请联系管理者");
             }
 
             if (userInfo.IsEnableLogin == false)
@@ -148,7 +159,8 @@ namespace Zcy.Service.User
             {
                 BaseSettlement = userInfo.BaseSettlement,
                 UserNo = userInfo.UserNo,
-                UserId = userInfo.Id
+                UserId = userInfo.Id,
+                IsSuperAdmin = userRole.Any(a => a.RoleName == NormalRoleName.SuperAdmin)
             });
         }
 
@@ -158,9 +170,28 @@ namespace Zcy.Service.User
         /// <returns></returns>
         public async Task<KdyResult> CreateUserAsync(CreateUserInput input)
         {
+            if (LoginUserInfo.IsSuperAdmin == false &&
+                input.CompanyId != LoginUserInfo.CompanyId)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "创建失败，无权限");
+            }
+
+            if (LoginUserInfo.IsSuperAdmin &&
+                input.CompanyId == default)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "参数错误，超管请选择公司");
+            }
+
             if (await _userRepository.AnyAsync(a => a.UserName == input.UserName))
             {
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "用户名已存在，创建失败");
+            }
+
+            if (string.IsNullOrEmpty(input.UserNo) == false &&
+                await _userRepository.AnyAsync(a => a.UserNo == input.UserNo &&
+                                                    a.CompanyId == LoginUserInfo.CompanyId))
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "创建失败,工号已存在");
             }
 
             var dbEntity = new SystemUser(input.UserName, input.UserNick)
@@ -190,6 +221,12 @@ namespace Zcy.Service.User
             if (dbEntity == null)
             {
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
+            }
+
+            if (LoginUserInfo.IsSuperAdmin == false &&
+                dbEntity.CompanyId != LoginUserInfo.CompanyId)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
             }
 
             dbEntity.ModifyNick(input.UserNick);
@@ -255,6 +292,17 @@ namespace Zcy.Service.User
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
             }
 
+            if (LoginUserInfo.IsSuperAdmin == false &&
+                dbEntity.CompanyId != LoginUserInfo.CompanyId)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
+            }
+
+            if (dbEntity.UserStatus == UserStatusEnum.Normal)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "失败，禁用后再操作");
+            }
+
             await _userRepository.DeleteAsync(dbEntity);
             return KdyResult.Success();
         }
@@ -274,6 +322,12 @@ namespace Zcy.Service.User
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
             }
 
+            if (LoginUserInfo.IsSuperAdmin == false &&
+                dbEntity.CompanyId != LoginUserInfo.CompanyId)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
+            }
+
             dbEntity.SetDefaultPwd();
             await _userRepository.UpdateAsync(dbEntity);
             return KdyResult.Success();
@@ -289,8 +343,12 @@ namespace Zcy.Service.User
             var userRolesQuery = await _userRoleRepository.GetQueryableAsync();
             userRolesQuery = userRolesQuery.Where(a => a.UserId == input.UserId);
             var userRoles = await _userRoleRepository.ToListAsync(userRolesQuery);
-            await _userRoleRepository.DeleteAsync(userRoles);
 
+            if (userRoles.Any())
+            {
+                await _userRoleRepository.DeleteAsync(userRoles);
+            }
+            
             //新增新的
             //todo:更换角色时 token问题
             var entities = input.RoleIds.Select(a => new SystemUserRole(input.UserId, a)).ToList();
@@ -305,9 +363,8 @@ namespace Zcy.Service.User
         /// <returns></returns>
         public async Task<KdyResult> InitUserAsync()
         {
-            var allRole = await _systemRoleService.GetAllRoleCacheAsync();
             //角色
-            var roleEntity = allRole.FirstOrDefault(a =>
+            var roleEntity = await _roleRepository.FirstOrDefaultAsync(a =>
                     a.RoleName == AuthorizationConst.NormalRoleName.SuperAdmin);
             if (roleEntity == null)
             {
@@ -326,7 +383,7 @@ namespace Zcy.Service.User
             await _userRepository.CreateAsync(entity);
 
             //用户角色
-            var userRoleEntity = new SystemUserRole(entity.Id, roleEntity.RoleId);
+            var userRoleEntity = new SystemUserRole(entity.Id, roleEntity.Id);
             await _userRoleRepository.CreateAsync(userRoleEntity);
 
             return KdyResult.Success();
@@ -336,12 +393,12 @@ namespace Zcy.Service.User
         /// 获取当前公司所有员工列表
         /// </summary>
         /// <returns></returns>
-        public async Task<KdyResult<List<GetCurrentCompanyAllEmployeeDto>>> GetCurrentCompanyAllEmployeeAsync()
+        public async Task<KdyResult<List<GetCurrentCompanyValidEmployeeDto>>> GetCurrentCompanyValidEmployeeAsync()
         {
             var companyId = LoginUserInfo.CompanyId;
             var userId = LoginUserInfo.GetUserId();
-            var allEmployee = await _userRepository.GetCompanyAllEmployeeAsync(companyId, userId);
-            var result = BaseMapper.Map<List<SystemUser>, List<GetCurrentCompanyAllEmployeeDto>>(allEmployee);
+            var allEmployee = await _userRepository.GetCurrentCompanyValidEmployeeAsync(companyId, userId);
+            var result = BaseMapper.Map<List<SystemUser>, List<GetCurrentCompanyValidEmployeeDto>>(allEmployee);
             return KdyResult.Success(result);
         }
     }

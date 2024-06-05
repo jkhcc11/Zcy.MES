@@ -29,20 +29,20 @@ namespace Zcy.Service.Company
         public async Task<KdyResult<QueryPageDto<QueryPageSupplierClientDto>>> QueryPageSupplierClientAsync(QueryPageSupplierClientInput input)
         {
             var query = await _supplierClientRepository.GetQueryableAsync();
-            if (string.IsNullOrEmpty(input.KeyWord) == false)
-            {
-                query = query.Where(a => a.ClientName.Contains(input.KeyWord) ||
-                                         (string.IsNullOrEmpty(a.PhoneNumber) == false &&
-                                          a.PhoneNumber.Contains(input.KeyWord)));
-            }
-
+            query = query.CreateConditions(input);
             if (LoginUserInfo.IsSuperAdmin == false)
             {
                 query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
             }
 
-            return await BaseQueryPageEntityAsync<SupplierClient, QueryPageSupplierClientDto>(_supplierClientRepository,
+            var result = await BaseQueryPageEntityAsync<SupplierClient, QueryPageSupplierClientDto>(_supplierClientRepository,
                 query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _companyRepository);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -51,11 +51,11 @@ namespace Zcy.Service.Company
         /// <returns></returns>
         public async Task<KdyResult> CreateAndUpdateSupplierClientAsync(CreateAndUpdateSupplierClientInput input)
         {
-            if (LoginUserInfo.IsSuperAdmin == false &&
-                input.CompanyId != LoginUserInfo.CompanyId)
-            {
-                return KdyResult.Error(KdyResultCode.Error, "参数错误，公司不存在");
-            }
+            //if (LoginUserInfo.IsSuperAdmin == false &&
+            //    input.CompanyId != LoginUserInfo.CompanyId)
+            //{
+            //    return KdyResult.Error(KdyResultCode.Error, "参数错误，公司不存在");
+            //}
 
             if (await _companyRepository.AnyAsync(a => a.Id == input.CompanyId) == false)
             {
@@ -98,6 +98,15 @@ namespace Zcy.Service.Company
         /// <returns></returns>
         public async Task<KdyResult> BatchDeleteAsync(BatchOperationsInput input)
         {
+            var validCountQuery = await _supplierClientRepository.GetQueryableAsync();
+            validCountQuery = validCountQuery.Where(a => input.Ids.Contains(a.Id) &&
+                                                         a.ClientStatus == PublicStatusEnum.Ban);
+            var validCount = await _supplierClientRepository.CountAsync(validCountQuery);
+            if (validCount != input.Ids.Count)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "操作失败，有效数据不一致");
+            }
+
             return await BaseBatchDeleteAsync(_supplierClientRepository, input);
         }
 
@@ -126,11 +135,18 @@ namespace Zcy.Service.Company
                 return KdyResult.Error(KdyResultCode.Error, "客户名称已存在");
             }
 
+            var companyId = LoginUserInfo.CompanyId;
+            if (LoginUserInfo.IsSuperAdmin &&
+                input.CompanyId.HasValue)
+            {
+                companyId = input.CompanyId.Value;
+            }
+
             var dbEntity = new SupplierClient(input.ClientName, input.ClientType)
             {
                 Remark = input.Remark,
                 PhoneNumber = input.PhoneNumber,
-                CompanyId = input.CompanyId
+                CompanyId = companyId
             };
 
             //非超管强制默认
@@ -162,8 +178,18 @@ namespace Zcy.Service.Company
                 return KdyResult.Error(KdyResultCode.Error, "客户名称已存在");
             }
 
+            dbEntity.SetClientName(input.ClientName);
             dbEntity.PhoneNumber = input.PhoneNumber;
             dbEntity.Remark = input.Remark;
+            if (input.ClientStatus == PublicStatusEnum.Normal)
+            {
+                dbEntity.Open();
+            }
+            else
+            {
+                dbEntity.Ban();
+            }
+
             await _supplierClientRepository.UpdateAsync(dbEntity);
             return KdyResult.Success();
         }

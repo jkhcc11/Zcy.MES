@@ -9,6 +9,9 @@ namespace Zcy.Entity.Products
     /// </summary>
     public class Product : BaseEntity<long>, IBaseCompany
     {
+        public const int ProductNameLength = 15;
+        public const int UnitLength = 5;
+
         /// <summary>
         /// 产品
         /// </summary>

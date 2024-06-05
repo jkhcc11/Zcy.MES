@@ -30,11 +30,13 @@ namespace Zcy.Dto.FinancialMemo
         /// 记录名
         /// </summary>
         [Required(ErrorMessage = "记录名必填")]
+        [StringLength(IncomeRecord.RecordNameLength)]
         public string RecordName { get; set; }
 
         /// <summary>
         /// 金额
         /// </summary>
+        [Range(0.01, 99999999)]
         public decimal Money { get; set; }
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 经办人
         /// </summary>
+        [StringLength(EntityConst.CommonPersonName)]
         public string? ManagerUser { get; set; }
 
         /// <summary>

@@ -21,6 +21,7 @@ namespace Zcy.Dto.PurchaseSale
         ///  应该是客户那边的人
         ///  ？？这个不确定是不是客户那边的用户
         /// </remarks>
+        [StringLength(EntityConst.CommonPersonName)]
         public string? ShipmentUser { get; set; }
 
         /// <summary>

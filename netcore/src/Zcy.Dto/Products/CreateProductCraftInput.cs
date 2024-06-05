@@ -19,6 +19,7 @@ namespace Zcy.Dto.Products
         /// 工艺名
         /// </summary>
         [Required(ErrorMessage = "工艺名不能为空")]
+        [StringLength(Product.ProductNameLength)]
         public string CraftName { get; set; }
 
         /// <summary>

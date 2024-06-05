@@ -90,6 +90,14 @@ namespace Zcy.Entity.Production
         /// 工艺计费类型 冗余
         /// </summary>
         public BillingTypeEnum BillingType { get; set; }
+
+        /// <summary>
+        /// 产品工序名称  冗余
+        /// </summary>
+        /// <remarks>
+        /// 产品名/工序名
+        /// </remarks>
+        public string ProductProcessName { get; set; }
         #endregion
 
         /// <summary>
@@ -113,12 +121,14 @@ namespace Zcy.Entity.Production
         /// <param name="processingPrice">加工价</param>
         /// <param name="craftPrice">工艺价格</param>
         /// <param name="billingType">工艺计费类型</param>
+        /// <param name="productProcessName">产品工序名称</param>
         public void SetProductProcessInfo(decimal processingPrice, decimal craftPrice,
-            BillingTypeEnum billingType)
+            BillingTypeEnum billingType,string productProcessName)
         {
             ProcessingPrice = processingPrice;
             UnitPrice = craftPrice;
             BillingType = billingType;
+            ProductProcessName = productProcessName;
         }
 
         /// <summary>

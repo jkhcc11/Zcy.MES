@@ -25,6 +25,7 @@ namespace Zcy.Dto.Company
         /// 公司名
         /// </summary>
         [Required(ErrorMessage = "公司名必填")]
+        [StringLength(EntityConst.CommonName)]
         public string CompanyName { get; set; }
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace Zcy.Dto.Company
         /// <summary>
         /// 公司抬头
         /// </summary>
+        [StringLength(EntityConst.CommonName)]
         public string? CompanyShowName { get; set; }
 
         /// <summary>

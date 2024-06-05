@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface;
 using Zcy.Dto.Products;
@@ -10,7 +9,6 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 产品分类
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
     public class ProductTypeController : BaseManagerController
     {
         private readonly IProductTypeService _productTypeService;

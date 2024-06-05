@@ -81,6 +81,13 @@ namespace Zcy.Service.Products
                 return KdyResult.Error(KdyResultCode.Error, "非加工产品，不能有产品工序");
             }
 
+            if (input.ProductType == ProductTypeEnum.Processing &&
+                (input.ProductProcesses == null ||
+                input.ProductProcesses.Any() == false))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "加工产品，请添加产品工序");
+            }
+
 
             if (await _productTypeRepository.AnyAsync(a => a.Id == input.ProductTypeId) == false)
             {
@@ -148,6 +155,23 @@ namespace Zcy.Service.Products
                 return KdyResult.Error<GetProductDetailDto>(KdyResultCode.Error, "Id参数无效");
             }
 
+            #region 加工产品
+            if (entity.ProductType == ProductTypeEnum.Processing &&
+                  entity.ProductProcesses != null)
+            {
+                var craftIds = entity.ProductProcesses.Select(a => a.CraftId).ToArray();
+                var validCountQuery = await _productCraftRepository.GetQueryableAsync();
+                validCountQuery = validCountQuery.Where(a => craftIds.Contains(a.Id) &&
+                                                             a.CraftStatus == PublicStatusEnum.Normal);
+                var validCraft = await _productCraftRepository.ToListAsync(validCountQuery);
+                foreach (var item in entity.ProductProcesses)
+                {
+                    item.ProductCraft = validCraft.FirstOrDefault(a => a.Id == item.CraftId);
+                }
+            }
+            #endregion
+
+
             var result = BaseMapper.Map<Product, GetProductDetailDto>(entity);
             return KdyResult.Success(result);
         }
@@ -184,11 +208,21 @@ namespace Zcy.Service.Products
                 input.ProductName, input.ProductType, input.IsLoose,
                 input.Unit)
             {
-                Spec = input.Spec,
-                SpecCount = input.SpecCount ?? 0,
                 ProductRemark = input.ProductRemark,
                 CompanyId = LoginUserInfo.CompanyId
             };
+
+            if (entity.IsLoose)
+            {
+                entity.Spec = null;
+                entity.SpecCount = 0;
+            }
+            else
+            {
+                entity.Spec = input.Spec;
+                entity.SpecCount = input.SpecCount ?? 0;
+            }
+
             if (input.ProductProcesses != null &&
                 input.ProductProcesses.Any())
             {
@@ -207,7 +241,8 @@ namespace Zcy.Service.Products
                         entity.Id,
                         a.CraftId)
                     {
-                        ProcessingPrice = a.ProcessingPrice
+                        ProcessingPrice = a.ProcessingPrice,
+                        OrderBy = a.OrderBy
                     })
                     .ToList();
             }
@@ -241,8 +276,18 @@ namespace Zcy.Service.Products
             entity.SetProductType(input.ProductType);
             entity.SetUnit(input.Unit);
             entity.IsLoose = input.IsLoose;
-            entity.Spec = input.Spec;
-            entity.SpecCount = input.SpecCount ?? 0;
+
+            if (entity.IsLoose)
+            {
+                entity.Spec = null;
+                entity.SpecCount = 0;
+            }
+            else
+            {
+                entity.Spec = input.Spec;
+                entity.SpecCount = input.SpecCount ?? 0;
+            }
+
             entity.ProductRemark = input.ProductRemark;
 
             //先删除旧的
@@ -266,7 +311,8 @@ namespace Zcy.Service.Products
                         entity.Id,
                         a.CraftId)
                     {
-                        ProcessingPrice = a.ProcessingPrice
+                        ProcessingPrice = a.ProcessingPrice,
+                        OrderBy = a.OrderBy
                     })
                     .ToList();
             }

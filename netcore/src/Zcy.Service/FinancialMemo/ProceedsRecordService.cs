@@ -16,12 +16,15 @@ namespace Zcy.Service.FinancialMemo
     {
         private readonly IProceedsRecordRepository _proceedsRecordRepository;
         private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
+        private readonly IBaseRepository<SupplierClient, long> _supplierClientRepository;
 
         public ProceedsRecordService(IProceedsRecordRepository proceedsRecordRepository,
-            IBaseRepository<SystemCompany, long> systemCompanyRepository)
+            IBaseRepository<SystemCompany, long> systemCompanyRepository,
+            IBaseRepository<SupplierClient, long> supplierClientRepository)
         {
             _proceedsRecordRepository = proceedsRecordRepository;
             _systemCompanyRepository = systemCompanyRepository;
+            _supplierClientRepository = supplierClientRepository;
         }
 
         /// <summary>
@@ -37,6 +40,7 @@ namespace Zcy.Service.FinancialMemo
             if (result.Data.Items.Any())
             {
                 await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+                await SetSupplierClientAsync(result.Data.Items, _supplierClientRepository);
             }
 
             return result;
@@ -62,7 +66,8 @@ namespace Zcy.Service.FinancialMemo
                 return KdyResult.Error(KdyResultCode.Error, "客户当天相同记录已存在");
             }
 
-            var entity = new ProceedsRecord(input.SupplierClientId, recordData, input.AccountType,
+            var entity = new ProceedsRecord(input.ProceedsRecordName, input.SupplierClientId,
+                recordData, input.AccountType,
                 input.Money)
             {
                 Remark = input.Remark

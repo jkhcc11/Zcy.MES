@@ -52,6 +52,16 @@ namespace Zcy.BaseInterface
             /// 通用备注
             /// </summary>
             public const int BaseRemarkLength = 150;
+
+            /// <summary>
+            /// 通用名称
+            /// </summary>
+            public const int CommonName = 20;
+
+            /// <summary>
+            /// 通用用户名称
+            /// </summary>
+            public const int CommonPersonName = 10;
         }
 
     }

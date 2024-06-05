@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 产品工艺
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
     public class ProductCraftController : BaseManagerController
     {
         private readonly IProductCraftService _productCraftService;
@@ -24,7 +24,7 @@ namespace Zcy.MES.Controllers.Manager
         /// 创建产品工艺
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<KdyResult> CreateProductCraftAsync(CreateProductCraftInput input)
         {
             var result = await _productCraftService.CreateProductCraftAsync(input);

@@ -24,12 +24,13 @@ namespace Zcy.Dto.Company
         /// 公司Id
         /// </summary>
         [Range(9999999, long.MaxValue)]
-        public long CompanyId { get; set; }
+        public long? CompanyId { get; set; }
 
         /// <summary>
         /// 客户名称
         /// </summary>
         [Required(ErrorMessage = "客户名称必填")]
+        [StringLength(EntityConst.CommonName)]
         public string ClientName { get; set; }
 
         /// <summary>
@@ -37,6 +38,12 @@ namespace Zcy.Dto.Company
         /// </summary>
         [EnumDataType(typeof(ClientTypeEnum))]
         public ClientTypeEnum ClientType { get; set; }
+
+        /// <summary>
+        /// 客户状态
+        /// </summary>
+        [EnumDataType(typeof(PublicStatusEnum))]
+        public PublicStatusEnum ClientStatus { get; set; }
 
         /// <summary>
         ///  联系方式

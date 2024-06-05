@@ -19,6 +19,7 @@ namespace Zcy.Entity.User
         {
             UserName = userName;
             UserNick = userNick;
+            UserStatus = UserStatusEnum.Normal;
         }
 
         /// <summary>
@@ -71,7 +72,12 @@ namespace Zcy.Entity.User
         /// <remarks>
         ///  员工的薪资结算基数
         /// </remarks>
-        public decimal BaseSettlement { get; set; }
+        public decimal? BaseSettlement { get; set; }
+
+        /// <summary>
+        /// 用户状态
+        /// </summary>
+        public UserStatusEnum UserStatus { get; protected set; }
 
         /// <summary>
         /// 修改密码
@@ -104,6 +110,7 @@ namespace Zcy.Entity.User
             }
 
             IsEnableLogin = true;
+            UserStatus = UserStatusEnum.Normal;
         }
 
         /// <summary>
@@ -111,7 +118,17 @@ namespace Zcy.Entity.User
         /// </summary>
         public void DisableLogin()
         {
+            UserStatus = UserStatusEnum.Ban;
             IsEnableLogin = false;
+        }
+
+        /// <summary>
+        /// 设置离职
+        /// </summary>
+        public void SetDepart()
+        {
+            IsEnableLogin = false;
+            UserStatus = UserStatusEnum.Depart;
         }
 
         /// <summary>

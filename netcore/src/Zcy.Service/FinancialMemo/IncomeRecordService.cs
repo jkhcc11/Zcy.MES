@@ -16,7 +16,7 @@ namespace Zcy.Service.FinancialMemo
         private readonly IBaseRepository<IncomeRecord, long> _incomeRecordRepository;
         private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
 
-        public IncomeRecordService(IBaseRepository<IncomeRecord, long> incomeRecordRepository, 
+        public IncomeRecordService(IBaseRepository<IncomeRecord, long> incomeRecordRepository,
             IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _incomeRecordRepository = incomeRecordRepository;
@@ -113,7 +113,7 @@ namespace Zcy.Service.FinancialMemo
         private async Task<IQueryable<IncomeRecord>> BuildFilterAsync(QueryPageIncomeRecordInput input)
         {
             DateTime startTime = DateTime.Now.AddDays(-30),
-                endTime = DateTime.Now;
+                endTime = DateTime.Now.AddDays(1);
             if (input.StartTime is { })
             {
                 startTime = input.StartTime.Value;
