@@ -36,7 +36,12 @@
       </template>
     </ModalDialog>
 
-    <ModalDialog ref="editModalDialog" @confirm="onEditConfirm" :submitLoading="submitLoading">
+    <ModalDialog
+      ref="editModalDialog"
+      @confirm="onEditConfirm"
+      :submitLoading="submitLoading"
+      content-height="50vh"
+    >
       <template #content>
         <DataForm
           ref="editForm"
@@ -102,6 +107,13 @@
             key: 'roleName',
           },
           {
+            title: '是否默认',
+            key: 'isDefault',
+            render(rowData) {
+              return rowData.isDefault ? '是' : '否'
+            },
+          },
+          {
             title: '备注',
             key: 'remark',
           },
@@ -144,6 +156,11 @@
       //编辑
       function onEdit(item: any) {
         EditRoleFormOptions.forEach((it: any) => {
+          if (it.key == 'isDefault') {
+            it.value.value = item[it.key] || false
+            return
+          }
+
           it.value.value = item[it.key] || null
         })
         editModalDialog.value?.show()

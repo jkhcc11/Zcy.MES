@@ -85,6 +85,7 @@
 <script lang="ts">
   import { get, post, sendDelete } from '@/api/http'
   import { usePagination, useRowKey, useTable, useTableColumn, useTableHeight } from '@/hooks/table'
+  import useUserStore from '@/store/modules/user'
   import { DataFormType, FormItem, ModalDialogType, TablePropsType } from '@/types/components'
   import { findByRemove, toOrderBy, sortColumns } from '@/utils'
   import { DataTableColumn, FormProps, useMessage } from 'naive-ui'
@@ -167,6 +168,7 @@
     },
     emits: ['LoadDataSuccess'],
     setup(props, { emit }) {
+      const useUser = useUserStore()
       const message = useMessage()
       const queryApiRef = toRef(props, 'queryApi')
       const rowKeyRef = toRef(props, 'rowKey')
@@ -194,6 +196,19 @@
       const tableRowKey = useRowKey(rowKeyRef.value ?? 'id')
       const checkedRowKeys = reactive<any[]>([])
       const checkedRows = reactive<any[]>([])
+
+      if (useUser.isSuperAdmin) {
+        const companyNameIndex = (tableColumnsRef.value?.length ?? 3) - 3
+        tableColumnsRef.value?.splice(companyNameIndex, 0, {
+          title: '公司名',
+          key: 'companyName',
+          width: 50,
+          ellipsis: {
+            tooltip: true,
+          },
+        })
+      }
+
       //如果要动态列  需要使用reactive 做响应式
       const localTableColumns = reactive(
         useTableColumn(tableColumnsRef.value ?? [], {

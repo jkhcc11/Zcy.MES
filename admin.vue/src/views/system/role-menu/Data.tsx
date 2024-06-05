@@ -199,6 +199,16 @@ export const EditRoleFormOptions = [
     //   }),
   },
   {
+    label: '是否默认',
+    key: 'isDefault',
+    required: true,
+    value: ref(false),
+    reset(formItem) {
+      formItem.value.value = false
+    },
+    render: (formItem) => renderSwitch(formItem.value),
+  },
+  {
     label: '角色备注',
     key: 'remark',
     value: ref(null),

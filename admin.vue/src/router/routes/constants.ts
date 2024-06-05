@@ -83,11 +83,11 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'vod-main-edit/:id?',
-        name: 'VodMainEdit',
-        component: () => import('@/views/vod/vod-main-edit.vue'),
+        path: 'product-edit/:id?',
+        name: 'ProductEdit',
+        component: () => import('@/views/products/product-edit.vue'),
         meta: {
-          title: '影片编辑',
+          title: '产品编辑',
         },
       },
     ],

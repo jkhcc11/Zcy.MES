@@ -1,3 +1,4 @@
+import { moneyMax } from '@/store/types'
 import {
   CheckboxGroupProps,
   CheckboxProps,
@@ -279,6 +280,28 @@ export function renderNumberInput(
 ) {
   return h(NInputNumber, {
     value: value.value,
+    onUpdateValue: (newVal: number) => {
+      value.value = newVal
+    },
+    ...options,
+  })
+}
+
+/**
+ * 渲染金额
+ * @param value
+ * @param options
+ * @returns
+ */
+export function renderMoneyInput(
+  value: Ref<number>,
+  options: InputNumberProps | AllowedComponentProps = {}
+) {
+  return h(NInputNumber, {
+    value: value.value,
+    min: 0.01,
+    max: moneyMax,
+    precision: 2,
     onUpdateValue: (newVal: number) => {
       value.value = newVal
     },

@@ -146,3 +146,85 @@ export const roleMenuApi = {
   createAndUpdateRole: '/mes-manager/RoleMenu/role/create-and-update',
   deleteRole: '/mes-manager/RoleMenu/role/delete',
 }
+
+//收支记录
+export const incomeRecordApi = {
+  query: '/mes-manager/IncomeRecord/query',
+  create: '/mes-manager/IncomeRecord/create',
+  delete: '/mes-manager/IncomeRecord/delete',
+  getTotals: '/mes-manager/IncomeRecord/get-totals',
+}
+
+//收款记录
+export const proceedsRecordApi = {
+  query: '/mes-manager/ProceedsRecord/query',
+  create: '/mes-manager/ProceedsRecord/create',
+  delete: '/mes-manager/ProceedsRecord/delete',
+  getTotals: '/mes-manager/ProceedsRecord/get-totals',
+}
+
+//客户|供应商
+export const supplierClientApi = {
+  query: '/mes-manager/SupplierClient/query',
+  createAndUpdate: '/mes-manager/SupplierClient/create-and-update',
+  delete: '/mes-manager/SupplierClient/delete',
+  ban: '/mes-manager/SupplierClient/ban',
+  getOpenClient: '/mes-manager/SupplierClient/get-open-client',
+}
+
+//公司
+export const companyApi = {
+  query: '/mes-manager/SystemCompany/query',
+  createAndUpdate: '/mes-manager/SystemCompany/create-and-update',
+  delete: '/mes-manager/SystemCompany/delete',
+  getValidEmployee: '/mes-manager/SystemCompany/get-valid-employee',
+}
+
+//产品分类
+export const productTypeApi = {
+  query: '/mes-manager/ProductType/query',
+  createAndUpdate: '/mes-manager/ProductType/create-or-update',
+  delete: '/mes-manager/ProductType/delete',
+  ban: '/mes-manager/ProductType/ban-or-enable',
+  getOpen: '/mes-manager/ProductType/query-valid',
+}
+
+//产品工艺
+export const productCraftApi = {
+  query: '/mes-manager/ProductCraft/query',
+  create: '/mes-manager/ProductCraft/create',
+  delete: '/mes-manager/ProductCraft/delete',
+  ban: '/mes-manager/ProductCraft/ban-or-enable',
+  getOpen: '/mes-manager/ProductCraft/query-valid',
+}
+
+//产品
+export const productApi = {
+  query: '/mes-manager/Product/query',
+  detail: '/mes-manager/Product/get-detail',
+  createOrUpdate: '/mes-manager/Product/create-or-update',
+  delete: '/mes-manager/Product/delete',
+  banOrEnable: '/mes-manager/Product/ban-or-enable',
+  getOpen: '/mes-manager/Product/query-valid',
+}
+
+//报工
+export const reportWorkApi = {
+  query: '/mes-manager/ReportWork/query',
+  create: '/mes-manager/ReportWork/create',
+  delete: '/mes-manager/ReportWork/delete',
+  update: '/mes-manager/ReportWork/update',
+  getTotals: '/mes-manager/ReportWork/get-totals',
+}
+
+//用户
+export const userApi = {
+  query: '/mes-manager/User/query',
+  create: '/mes-manager/User/create',
+  modify: '/mes-manager/User/modify',
+  delete: '/mes-manager/User/delete',
+
+  banOrEnable: '/mes-manager/User/enable-or-disable',
+  setUserRole: '/mes-manager/User/set-user-role',
+  resetPwd: '/mes-manager/User/reset-pwd',
+}

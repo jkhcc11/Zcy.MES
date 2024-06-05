@@ -3,6 +3,7 @@
     :theme-overrides="themeOverrides"
     :theme="theme"
     :locale="zhCN"
+    :date-locale="dateZhCN"
     style="height: 100%"
   >
     <n-global-style />
@@ -38,7 +39,7 @@
 
 <script lang="ts">
   import useAppConfigStore from '@/store/modules/app-config'
-  import { darkTheme, zhCN } from 'naive-ui'
+  import { darkTheme, zhCN, dateZhCN } from 'naive-ui'
   import { computed, defineComponent, onBeforeUnmount, onMounted } from 'vue'
   import { DeviceType, ThemeMode } from '@/store/types'
   import useAxios from '@/hooks/useAxios'
@@ -97,6 +98,7 @@
         themeOverrides,
         layoutMode,
         zhCN,
+        dateZhCN,
         closeMenu,
       }
     },

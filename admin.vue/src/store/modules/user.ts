@@ -18,6 +18,7 @@ const useUserStore = defineStore('user-info', {
       userNo: '',
       userNick: '',
       baseSettlement: 0,
+      isSuperAdmin: false,
       avatar: defaultAvatar,
     }
   },
@@ -35,7 +36,7 @@ const useUserStore = defineStore('user-info', {
         this.userNick = userInfo.userNick
         this.companyId = userInfo.companyId
         this.baseSettlement = userInfo.baseSettlement
-
+        this.isSuperAdmin = userInfo.isSuperAdmin
         resolve(userInfo)
       })
     },

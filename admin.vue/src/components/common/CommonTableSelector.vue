@@ -125,7 +125,7 @@
           .then((res) => {
             //请求成功处理
             table.handleSuccess(res.data)
-            pagination.setTotalSize(res.data.dataCount)
+            pagination.setTotalSize(res.data.total)
             //console.log(res.result.totalCount, res.result)
           })
           .catch(console.log)
