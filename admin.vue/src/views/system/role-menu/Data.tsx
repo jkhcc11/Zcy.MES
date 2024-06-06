@@ -139,6 +139,12 @@ export const EditFormOptions = [
     value: ref(false),
     render: (formItem) => renderSwitch(formItem.value),
   },
+  {
+    label: '是否隐藏',
+    key: 'isHidden',
+    value: ref(false),
+    render: (formItem) => renderSwitch(formItem.value),
+  },
 ] as Array<FormItem>
 
 //搜索

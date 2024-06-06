@@ -123,6 +123,13 @@
             },
           },
           {
+            title: '是否隐藏',
+            key: 'isHidden',
+            render: (rowData) => {
+              return h('div', null, { default: () => (rowData.isHidden ? '是' : '否') })
+            },
+          },
+          {
             title: '本地目录',
             key: 'localFilePath',
           },

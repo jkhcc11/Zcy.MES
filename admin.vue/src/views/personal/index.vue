@@ -1,30 +1,31 @@
 <template>
   <div class="main-container">
-    <n-card title="基础信息">
+    <n-card title="修改密码">
       <n-skeleton v-if="submitLoading" text :repeat="6" />
       <template v-else>
-        <DataForm ref="editForm" :form-config="formConfig" :options="PersonFormOptions" />
+        <DataForm ref="editForm" :form-config="formConfig" :options="ModifyPwdFormOptions" />
       </template>
       <n-button type="primary" @click="onConfirm" :loading="submitLoading"> 保存 </n-button>
+      <n-gradient-text type="warning"> 注：保存后将直接退出，需要重新登录 </n-gradient-text>
     </n-card>
   </div>
 </template>
 
 <script lang="ts">
-  import { get, post } from '@/api/http'
-  import { baseUserInfoApi } from '@/api/url'
+  import { post } from '@/api/http'
+  import { userApi } from '@/api/url'
   import { DataFormType, ModalDialogType } from '@/types/components'
   import { FormProps, useDialog, useMessage } from 'naive-ui'
-  import { defineComponent, h, onMounted, ref } from 'vue'
-  import { PersonFormOptions } from './Data'
-  import useUserParseConfigStore from '@/store/modules/user-parse-config'
+  import { defineComponent, onMounted, ref } from 'vue'
+  import { ModifyPwdFormOptions } from './Data'
+  import useUserStore from '@/store/modules/user'
   export default defineComponent({
     name: 'PersonalInfo',
     setup() {
       const submitLoading = ref(false)
       const naiveDialog = useDialog()
       const message = useMessage()
-      const userParseConfigStore = useUserParseConfigStore()
+      const useUser = useUserStore()
 
       //新增或编辑
       const modalDialog = ref<ModalDialogType | null>(null)
@@ -40,42 +41,44 @@
           const pd = editForm.value?.generatorParams()
           submitLoading.value = true
           post({
-            url: baseUserInfoApi.saveInfo,
+            url: userApi.modifyPwd,
             data: pd,
           })
             .then((res) => {
-              if (res.isSuccess) {
-                message.success(res.msg)
-              } else {
-                message.error(res.msg)
-              }
+              message.success(res.msg)
+              //变更后重新获取
+              useUser.logout()
+
+              naiveDialog.warning({
+                title: '提示',
+                content: '即将前往登录页面？',
+                positiveText: '确认',
+                onPositiveClick: () => {
+                  location.reload()
+                },
+              })
             })
             .finally(() => {
               submitLoading.value = false
-              //变更后重新获取
-              userParseConfigStore.reset()
-              userParseConfigStore.init()
             })
         }
       }
 
       //初始化数据
-      async function initData() {
-        const req = await get({
-          url: baseUserInfoApi.getLoginInfo,
-        })
-
-        PersonFormOptions.forEach((it: any) => {
-          it.value.value = req.data[it.key] || null
+      function initData() {
+        ModifyPwdFormOptions.forEach((it: any) => {
+          if (it.key == 'userNick') {
+            it.value.value = useUser.userNick
+          }
         })
       }
 
-      onMounted(async () => {
-        await initData()
+      onMounted(() => {
+        initData()
       })
       return {
         submitLoading,
-        PersonFormOptions,
+        ModifyPwdFormOptions,
         modalDialog,
         editForm,
         formConfig,

@@ -49,17 +49,6 @@ export const CreateSupplierClientFormOptions = [
     render: (formItem) => renderSelect(formItem.value, getListByEnum(ClientTypeEnum)),
   },
   {
-    label: '客户状态',
-    key: 'clientStatus',
-    value: ref(null),
-    required: true,
-    span: 1,
-    reset: function (formItem: any) {
-      formItem.value.value = PublicStatusEnum.正常
-    },
-    render: (formItem) => renderSelect(formItem.value, getListByEnum(PublicStatusEnum)),
-  },
-  {
     label: '联系方式',
     key: 'phoneNumber',
     value: ref(null),
@@ -70,13 +59,25 @@ export const CreateSupplierClientFormOptions = [
       }),
   },
   {
+    label: '客户状态',
+    key: 'clientStatus',
+    value: ref(PublicStatusEnum.正常),
+    required: true,
+    span: 1,
+    reset: function (formItem: any) {
+      formItem.value.value = PublicStatusEnum.正常
+    },
+    render: (formItem) => renderSelect(formItem.value, getListByEnum(PublicStatusEnum)),
+  },
+
+  {
     label: '备注',
     key: 'remark',
     value: ref(null),
-    span: 3, //grid-item 生效
+    span: 4, //grid-item 生效
     render: (formItem: any) =>
       renderInput(formItem.value, {
-        placeholder: '款项说明',
+        placeholder: '备注',
         type: 'textarea',
       }),
   },
@@ -108,7 +109,7 @@ export const CreateUserFormOptions = [
     key: 'userName',
     value: ref(null),
     required: true,
-    span: 3, //grid-item 生效
+    span: 1, //grid-item 生效
     disabled: ref(false),
     reset(formItem: any) {
       formItem.value.value = null
@@ -127,7 +128,7 @@ export const CreateUserFormOptions = [
     key: 'userNick',
     value: ref(null),
     required: true,
-    span: 2, //grid-item 生效
+    span: 1, //grid-item 生效
     render: (formItem: any) =>
       renderInput(formItem.value, {
         placeholder: '例如：张三',
@@ -151,7 +152,7 @@ export const CreateUserFormOptions = [
     label: '联系方式',
     key: 'userPhone',
     value: ref(null),
-    span: 2, //grid-item 生效
+    span: 1, //grid-item 生效
     render: (formItem: any) =>
       renderInput(formItem.value, {
         placeholder: '联系方式',
@@ -174,7 +175,7 @@ export const CreateUserFormOptions = [
     label: '结算基数',
     key: 'baseSettlement',
     value: ref(null),
-    span: 2,
+    span: 1,
     render: (formItem: any) =>
       renderNumberInput(formItem.value, {
         placeholder: '员工的薪资结算基数',

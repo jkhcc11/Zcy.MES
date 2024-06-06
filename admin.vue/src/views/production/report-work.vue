@@ -45,6 +45,19 @@
           labelAlign: 'right',
         }"
         preset="grid-item"
+        v-if="optType == 'create'"
+      />
+
+      <DataForm
+        ref="updateSubmitForm"
+        :options="UpdateReportWorkFormOptions"
+        :form-config="{
+          labelWidth: 100,
+          size: 'medium',
+          labelAlign: 'right',
+        }"
+        preset="grid-item"
+        v-if="optType == 'update'"
       />
     </template>
   </CommonQueryList>
@@ -54,10 +67,14 @@
   import { get, post, sendDelete } from '@/api/http'
   import { reportWorkApi } from '@/api/url'
   import { TableActionModel, useRenderAction, useTable } from '@/hooks/table'
-  import { useMessage, useDialog } from 'naive-ui'
+  import { useMessage, useDialog, NTag } from 'naive-ui'
   import { defineComponent, h, onMounted, reactive, ref } from 'vue'
   import { DataFormType } from '@/types/components'
-  import { SearchReportWorkOptions, CreateReportWorkFormOptions } from './Data'
+  import {
+    SearchReportWorkOptions,
+    CreateReportWorkFormOptions,
+    UpdateReportWorkFormOptions,
+  } from './Data'
   import { renderTagByEnum } from '@/hooks/form'
   import { BillingTypeEnum, ProductTypeEnum } from '@/store/types'
   import useProductCacheStore from '@/store/modules/product'
@@ -80,7 +97,9 @@
       //提交
       const submitLoading = ref(false)
       const submitForm = ref<DataFormType | null>(null)
+      const updateSubmitForm = ref<DataFormType | null>(null)
       const editTitle = ref('新增')
+      const optType = ref<'create' | 'update'>('create')
 
       //表格
       const table = useTable()
@@ -136,6 +155,21 @@
         {
           title: '实结算价格',
           key: 'actualSettlementPrice',
+          render: (rowData: any) => {
+            return h(
+              NTag,
+              {
+                type:
+                  rowData.receivableSettlementPrice == rowData.actualSettlementPrice
+                    ? 'default'
+                    : 'warning',
+                size: 'small',
+              },
+              {
+                default: () => rowData.actualSettlementPrice,
+              }
+            )
+          },
         },
 
         {
@@ -164,9 +198,14 @@
           title: '操作',
           key: 'actions',
           fixed: 'right',
-          width: 120,
+          width: 180,
           render: (rowData: any) => {
             const normalAction = useRenderAction([
+              {
+                label: '调整价格',
+                type: 'warning',
+                onClick: onBtnClick.update.bind(null, rowData),
+              },
               {
                 label: '删除',
                 type: 'error',
@@ -182,8 +221,18 @@
       const onBtnClick = {
         //创建
         create: function () {
+          optType.value = 'create'
           editTitle.value = '新增'
           submitForm.value?.reset()
+          commonQueryListRef.value?.showDialog()
+        },
+        //调整
+        update: function (rowData: any) {
+          optType.value = 'update'
+          editTitle.value = `【${rowData.employeeName}】调整价格`
+          UpdateReportWorkFormOptions.forEach((it: any) => {
+            it.value.value = rowData[it.key] || null
+          })
           commonQueryListRef.value?.showDialog()
         },
         //删除
@@ -209,14 +258,21 @@
         },
         //提交保存
         onSaveSubmit: function () {
-          if (submitForm.value?.validator()) {
-            const pd = submitForm.value?.generatorParams()
+          if (submitForm.value?.validator() || updateSubmitForm.value?.validator()) {
+            let pd = submitForm.value?.generatorParams()
             let postUrl = reportWorkApi.create
+            let method = 'PUT'
+            if (optType.value == 'update') {
+              pd = updateSubmitForm.value?.generatorParams()
+              postUrl = reportWorkApi.update
+              method = 'POST'
+            }
+
             submitLoading.value = true
             post({
               url: postUrl,
               data: pd,
-              method: 'PUT',
+              method: method,
             })
               .then((res) => {
                 message.success(res.msg)
@@ -231,9 +287,10 @@
         },
         //加载完成
         onLoadDataSuccess: function () {
+          const params = commonQueryListRef.value?.getQueryParams()
           get({
             url: reportWorkApi.getTotals,
-            data: {},
+            data: params,
           })
             .then((res) => {
               totalsRef.totalActualSettlementPrice = res.data.totalActualSettlementPrice
@@ -261,10 +318,13 @@
         tableColumns,
         SearchReportWorkOptions,
         CreateReportWorkFormOptions,
+        UpdateReportWorkFormOptions,
         submitLoading,
         submitForm,
+        updateSubmitForm,
         editTitle,
         totalsRef,
+        optType,
         onBtnClick,
       }
     },

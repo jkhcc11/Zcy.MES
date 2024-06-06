@@ -73,23 +73,23 @@ export const constantRoutes = [
       hidden: true,
     },
   },
-  {
-    path: '/only-page',
-    name: 'OnlyPage',
-    component: LAYOUT,
-    meta: {
-      title: '独立页',
-      hidden: true,
-    },
-    children: [
-      {
-        path: 'product-edit/:id?',
-        name: 'ProductEdit',
-        component: () => import('@/views/products/product-edit.vue'),
-        meta: {
-          title: '产品编辑',
-        },
-      },
-    ],
-  },
+  // {
+  //   path: '/only-page',
+  //   name: 'OnlyPage',
+  //   component: LAYOUT,
+  //   meta: {
+  //     title: '独立页',
+  //     hidden: true,
+  //   },
+  //   children: [
+  //     {
+  //       path: 'purchase-order-edit/:id?',
+  //       name: 'PurchaseOrderEdit',
+  //       component: () => import('@/views/purchaseSale/purchase-order-edit.vue'),
+  //       meta: {
+  //         title: '新增采购订单',
+  //       },
+  //     },
+  //   ],
+  // },
 ]

@@ -114,20 +114,35 @@ export const CreateProductCraftFormOptions = [
     key: 'craftName',
     value: ref(null),
     required: true,
-    span: 3,
+    span: 2,
     render: (formItem: any) =>
       renderInput(formItem.value, {
-        placeholder: '产品分类名称',
+        placeholder: '工艺名称',
         maxlength: 15,
         showCount: true,
       }),
+  },
+  {
+    label: '基础价格',
+    key: 'unitPrice',
+    value: ref(0.01),
+    required: true,
+    span: 1,
+    reset: function (formItem: any) {
+      formItem.value.value = 0.01
+    },
+    render: (formItem) => {
+      return renderMoneyInput(formItem.value, {
+        placeholder: '工序基础价格',
+      })
+    },
   },
   {
     label: '工艺类型',
     key: 'craftType',
     value: ref(null),
     required: true,
-    span: 1,
+    span: 2,
     render: (formItem) => renderSelect(formItem.value, getListByEnum(CraftTypeEnum)),
   },
   {
@@ -138,21 +153,7 @@ export const CreateProductCraftFormOptions = [
     span: 1,
     render: (formItem) => renderSelect(formItem.value, getListByEnum(BillingTypeEnum)),
   },
-  {
-    label: '工艺基础价格',
-    key: 'unitPrice',
-    value: ref(0.01),
-    required: true,
-    span: 3,
-    reset: function (formItem: any) {
-      formItem.value.value = 0.01
-    },
-    render: (formItem) => {
-      return renderMoneyInput(formItem.value, {
-        placeholder: '工序基础价格',
-      })
-    },
-  },
+
   {
     label: '备注',
     key: 'remark',

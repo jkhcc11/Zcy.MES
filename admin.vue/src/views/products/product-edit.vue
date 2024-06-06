@@ -257,7 +257,7 @@
           label: '工艺类型',
           key: 'craftType',
           value: ref(CraftTypeEnum.产品工艺),
-          hidden: true,
+          render: (formItem) => renderSelect(formItem.value, getListByEnum(CraftTypeEnum)),
         },
       ] as Array<FormItem>
 

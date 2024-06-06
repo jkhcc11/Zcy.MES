@@ -111,7 +111,7 @@ export default defineComponent({
                 NGrid,
                 {
                   responsive: 'screen',
-                  cols: 'xs:1 s:2 m:3 l:3 xl:4 2xl:4',
+                  cols: 'xs:1 s:2 m:3 l:3 xl:3 2xl:3',
                   xGap: 10,
                 },
                 {

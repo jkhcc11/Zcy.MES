@@ -1,6 +1,7 @@
 import { renderInput, renderMoneyInput, renderSelect } from '@/hooks/form'
 import useCompanyCacheStore from '@/store/modules/company'
 import useProductCacheStore from '@/store/modules/product'
+import { baseRemarkLength } from '@/store/types'
 import { FormItem } from '@/types/components'
 import { CascaderOption, NCascader, NDatePicker } from 'naive-ui'
 import { h, ref } from 'vue'
@@ -114,7 +115,7 @@ export const CreateReportWorkFormOptions = [
     key: 'employeeId',
     value: ref(null),
     required: true,
-    span: 3,
+    span: 2,
     render: (formItem) => {
       const useCompanyCache = useCompanyCacheStore()
       return renderSelect(formItem.value, useCompanyCache.cachedItems, {
@@ -124,11 +125,31 @@ export const CreateReportWorkFormOptions = [
     },
   },
   {
+    label: '报工日期',
+    key: 'reportWorkDate',
+    value: ref(null),
+    span: 1, //grid-item 生效
+    render: (formItem: any) => {
+      return h(NDatePicker, {
+        type: 'date',
+        valueFormat: 'yyyy-MM-dd 00:00:00',
+        defaultFormattedValue: formItem.value.value,
+        placeholder: '报工日期，不填为当天',
+        isDateDisabled: function (ts: number) {
+          return ts > Date.now()
+        },
+        onUpdateFormattedValue: function (newVal: any) {
+          formItem.value.value = newVal
+        },
+      })
+    },
+  },
+  {
     label: '产品工序',
     key: 'productProcessId',
     value: ref(null),
     required: true,
-    span: 3,
+    span: 2,
     render: (formItem) => {
       const useProductCache = useProductCacheStore()
       return h(NCascader, {
@@ -177,23 +198,40 @@ export const CreateReportWorkFormOptions = [
       })
     },
   },
+
   {
-    label: '报工日期',
-    key: 'reportWorkDate',
+    label: '备注',
+    key: 'remark',
     value: ref(null),
-    span: 2, //grid-item 生效
-    render: (formItem: any) => {
-      return h(NDatePicker, {
-        type: 'date',
-        valueFormat: 'yyyy-MM-dd 00:00:00',
-        defaultFormattedValue: formItem.value.value,
-        placeholder: '报工日期，不填为当天',
-        isDateDisabled: function (ts: number) {
-          return ts > Date.now()
-        },
-        onUpdateFormattedValue: function (newVal: any) {
-          formItem.value.value = newVal
-        },
+    span: 3, //grid-item 生效
+    render: (formItem: any) =>
+      renderInput(formItem.value, {
+        placeholder: '报工说明',
+        type: 'textarea',
+        maxlength: baseRemarkLength,
+        showCount: true,
+      }),
+  },
+] as Array<FormItem>
+
+//调整价格
+export const UpdateReportWorkFormOptions = [
+  {
+    key: 'id',
+    value: ref(null),
+    hidden: true,
+  },
+  {
+    label: '实际结算',
+    key: 'actualSettlementPrice',
+    value: ref(null),
+    required: true,
+    span: 3,
+    render: (formItem) => {
+      return renderMoneyInput(formItem.value, {
+        placeholder: '实际结算',
+        precision: 2,
+        min: 0.01,
       })
     },
   },

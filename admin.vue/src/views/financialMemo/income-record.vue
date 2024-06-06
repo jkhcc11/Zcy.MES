@@ -251,9 +251,10 @@
         },
         //加载完成
         onLoadDataSuccess: function () {
+          const params = commonQueryListRef.value?.getQueryParams()
           get({
             url: incomeRecordApi.getTotals,
-            data: {},
+            data: params,
           })
             .then((res) => {
               totalsRef.inMoney = res.data.inMoney

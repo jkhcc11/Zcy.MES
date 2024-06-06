@@ -496,3 +496,9 @@ export enum UserStatusEnum {
   离职 = 10,
   禁用 = 11,
 }
+
+//销售订单状态
+export enum SaleOrderStatusEnum {
+  待付款 = 5,
+  已完成 = 100,
+}

@@ -144,7 +144,7 @@ export const CreateIncomeRecordFormOptions = [
     label: '消费日期',
     key: 'recordDate',
     value: ref(null),
-    span: 2, //grid-item 生效
+    span: 1, //grid-item 生效
     render: (formItem: any) => {
       return h(NDatePicker, {
         type: 'date',

@@ -227,4 +227,41 @@ export const userApi = {
   banOrEnable: '/mes-manager/User/enable-or-disable',
   setUserRole: '/mes-manager/User/set-user-role',
   resetPwd: '/mes-manager/User/reset-pwd',
+  modifyPwd: '/mes-login/User/modify-pwd',
+}
+
+//销售订单
+export const saleOrderApi = {
+  query: '/mes-manager/SaleOrder/query',
+  create: '/mes-manager/SaleOrder/create',
+  delete: '/mes-manager/SaleOrder/delete',
+  detail: '/mes-manager/SaleOrder/get-detail',
+  getTotals: '/mes-manager/SaleOrder/get-totals',
+}
+
+//出货订单
+export const ShipmentOrderApi = {
+  query: '/mes-manager/ShipmentOrder/query',
+  create: '/mes-manager/ShipmentOrder/create',
+  delete: '/mes-manager/ShipmentOrder/delete',
+  detail: '/mes-manager/ShipmentOrder/get-detail',
+  getTotals: '/mes-manager/ShipmentOrder/get-totals',
+}
+
+//退货订单
+export const ReturnOrderApi = {
+  query: '/mes-manager/ReturnOrder/query',
+  create: '/mes-manager/ReturnOrder/create',
+  delete: '/mes-manager/ReturnOrder/delete',
+  detail: '/mes-manager/ReturnOrder/get-detail',
+  getTotals: '/mes-manager/ReturnOrder/get-totals',
+}
+
+//采购订单
+export const PurchaseOrderApi = {
+  query: '/mes-manager/PurchaseOrder/query',
+  create: '/mes-manager/PurchaseOrder/create',
+  delete: '/mes-manager/PurchaseOrder/delete',
+  detail: '/mes-manager/PurchaseOrder/get-detail',
+  getTotals: '/mes-manager/PurchaseOrder/get-totals',
 }

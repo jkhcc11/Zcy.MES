@@ -1,13 +1,12 @@
-import { renderInput, renderSwitch } from '@/hooks/form'
 import { FormItem } from '@/types/components'
-import { NInput, NSelect } from 'naive-ui'
+import { NInput } from 'naive-ui'
 import { ref, h } from 'vue'
 
-//编辑|新增
-export const PersonFormOptions = [
+//修改密码
+export const ModifyPwdFormOptions = [
   {
-    label: '用户标识',
-    key: 'userId',
+    label: '昵称',
+    key: 'userNick',
     value: ref(null),
     render: (formItem: any) => {
       return h(NInput, {
@@ -18,28 +17,28 @@ export const PersonFormOptions = [
     },
   },
   {
-    label: '到期时间',
-    key: 'expirationDateTime',
+    label: '旧密码',
+    key: 'oldPwd',
+    required: true,
     value: ref(null),
     render: (formItem: any) => {
-      return h(
-        NInput,
-        {
-          value: formItem.value.value,
-          readonly: true,
-          disabled: true,
-          placeholder: '无时间限制',
+      return h(NInput, {
+        value: formItem.value.value,
+        placeholder: '旧密码',
+        maxlength: 20,
+        showCount: true,
+        clearable: true,
+        type: 'password',
+        onUpdateValue: (val: any) => {
+          formItem.value.value = val
         },
-        {
-          suffix: () => '逾期最多7天',
-        }
-      )
+      })
     },
     // renderInput(formItem.value, ),
   },
   {
-    label: 'Api密钥',
-    key: 'apiToken',
+    label: '新密码',
+    key: 'newPwd',
     required: true,
     value: ref(null),
     render: (formItem: any) => {
@@ -47,30 +46,11 @@ export const PersonFormOptions = [
         NInput,
         {
           value: formItem.value.value,
-          readonly: true,
-          disabled: true,
-        },
-        {
-          suffix: () => 'Json使用',
-        }
-      )
-    },
-    // renderInput(formItem.value, ),
-  },
-  {
-    label: '昵称',
-    key: 'userNick',
-    required: true,
-    value: ref(null),
-    render: (formItem: any) => {
-      return h(
-        NInput,
-        {
-          value: formItem.value.value,
-          placeholder: '用户昵称',
-          maxlength: 15,
+          placeholder: '新密码',
+          maxlength: 20,
           showCount: true,
           clearable: true,
+          type: 'password',
           onUpdateValue: (val: any) => {
             formItem.value.value = val
           },
@@ -83,37 +63,29 @@ export const PersonFormOptions = [
     // renderInput(formItem.value, ),
   },
   {
-    label: '是否防盗',
-    key: 'isHoldLink',
-    value: ref(false),
-    render: (formItem: any) => renderSwitch(formItem.value),
-  },
-  {
-    label: '自定义域名',
-    key: 'customUrl',
-    value: ref(null),
-    render: (formItem: any) =>
-      renderInput(formItem.value, {
-        placeholder: '自由Api域名',
-      }),
-  },
-  {
-    label: '防盗域名',
-    key: 'holdLinkHost',
+    label: '确认新密码',
+    key: 'newPwd1',
+    required: true,
     value: ref(null),
     render: (formItem: any) => {
-      return h(NSelect, {
-        tag: true,
-        placeholder: '输入后直接回车后添加下一个',
-        show: false,
-        showArrow: false,
-        multiple: true,
-        filterable: true,
-        value: formItem.value,
-        onChange: function (v: any) {
-          formItem.value.value = v
+      return h(
+        NInput,
+        {
+          value: formItem.value.value,
+          placeholder: '确认新密码',
+          maxlength: 20,
+          showCount: true,
+          clearable: true,
+          type: 'password',
+          onUpdateValue: (val: any) => {
+            formItem.value.value = val
+          },
         },
-      })
+        {
+          suffix: () => '下次登录生效',
+        }
+      )
     },
+    // renderInput(formItem.value, ),
   },
 ] as Array<FormItem>

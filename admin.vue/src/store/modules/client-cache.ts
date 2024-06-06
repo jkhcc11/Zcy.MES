@@ -7,6 +7,7 @@ const useClientCacheStore = defineStore('ClientCache', {
   state: () => {
     return {
       cachedItems: [] as { lable: string; value: string }[],
+      supplierCacheItems: [] as { lable: string; value: string }[],
     }
   },
   getters: {},
@@ -20,6 +21,17 @@ const useClientCacheStore = defineStore('ClientCache', {
           }
         },
       })
+
+      if (clientType == ClientTypeEnum.供应商) {
+        this.supplierCacheItems = getResult.data.map((item: any) => {
+          return {
+            label: item.clientName,
+            value: item.id,
+          }
+        })
+
+        return
+      }
 
       this.cachedItems = getResult.data.map((item: any) => {
         return {

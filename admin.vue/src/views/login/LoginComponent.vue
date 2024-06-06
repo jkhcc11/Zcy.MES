@@ -28,8 +28,8 @@
           </div>
           <div class="mt-6 my-width flex-sub">
             <div class="flex justify-between">
-              <n-checkbox v-model:checked="autoLogin">自动登录</n-checkbox>
-              <a :underline="false" type="primary">忘记密码？</a>
+              <!-- <n-checkbox v-model:checked="autoLogin">自动登录</n-checkbox> -->
+              <a :underline="false" type="primary" @click="onForget">忘记密码？</a>
             </div>
           </div>
         </div>
@@ -82,8 +82,8 @@
           登录
         </n-button>
         <div class="flex justify-between mt-4">
-          <n-checkbox v-model:checked="autoLogin" color="#fff">自动登录</n-checkbox>
-          <a class="text-white" type="primary">忘记密码？</a>
+          <!-- <n-checkbox v-model:checked="autoLogin" color="#fff">自动登录</n-checkbox> -->
+          <a class="text-white" type="primary" @click="onForget">忘记密码？</a>
         </div>
       </div>
       <!-- <div class="footer">
@@ -108,23 +108,20 @@
   import { computed, defineComponent, ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import ImageBg1 from '@/assets/img_login_bg.png'
-  import { get, post, Response } from '@/api/http'
+  import { post, Response } from '@/api/http'
   import { login } from '@/api/url'
   import { DeviceType, UserState } from '@/store/types'
   import { useMessage } from 'naive-ui'
   import {
     PhonePortraitOutline as PhoneIcon,
     LockClosedOutline as PasswordIcon,
-    LogoGithub,
-    LogoAlipay,
-    LogoWechat,
   } from '@vicons/ionicons5'
   import useAppInfo from '@/hooks/useAppInfo'
   import useUserStore from '@/store/modules/user'
   import useAppConfigStore from '@/store/modules/app-config'
   export default defineComponent({
     name: 'Login',
-    components: { PhoneIcon, PasswordIcon, LogoGithub, LogoAlipay, LogoWechat },
+    components: { PhoneIcon, PasswordIcon },
     setup() {
       const { version } = useAppInfo()
       const username = ref('admin')
@@ -175,6 +172,10 @@
             loading.value = false
           })
       }
+
+      const onForget = () => {
+        message.info('请联系管理员,重置')
+      }
       return {
         isMobileScreen,
         username,
@@ -182,6 +183,7 @@
         autoLogin,
         loading,
         onLogin,
+        onForget,
         ImageBg1,
         version,
       }

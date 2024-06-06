@@ -248,11 +248,11 @@
       const onBtnClick = {
         //创建
         create: function () {
-          router.push('/only-page/product-edit')
+          router.push('/products/product-edit')
         },
         //编辑
         edit: function (rowData: any) {
-          router.push('/only-page/product-edit/' + rowData.id)
+          router.push('/products/product-edit/' + rowData.id)
         },
         //详情
         detail: function (rowData: any) {
