@@ -145,6 +145,7 @@ namespace Zcy.Service.SysBaseInfo
                 Icon = input.Icon,
                 IsRootPath = input.IsRootPath ?? false,
                 IsCache = input.IsCache ?? false,
+                IsHidden = input.IsHidden ?? false,
                 LocalFilePath = input.LocalFilePath,
                 OrderBy = input.OrderBy
             };
@@ -171,6 +172,7 @@ namespace Zcy.Service.SysBaseInfo
                 return KdyResult.Error(KdyResultCode.Error, "当前角色已存在此路由名");
             }
 
+            dbEntity.IsCache = input.IsCache ?? false;
             dbEntity.IconPrefix = input.IconPrefix;
             dbEntity.Icon = input.Icon;
             dbEntity.IsRootPath = input.IsRootPath ?? false;

@@ -34,7 +34,7 @@ namespace Zcy.Dto.PurchaseSale
         /// <summary>
         /// 订单日期
         /// </summary>
-        public virtual DateTime OrderDate { get; set; }
+        public virtual string OrderDate { get; set; }
 
         /// <summary>
         /// 公司Id

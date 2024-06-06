@@ -38,6 +38,7 @@ namespace Zcy.BaseInterface
             public const string SuperAdmin = "root";
             public const string Boss = "boss";
             public const string Admin = "admin";
+            public const string BossAndRoot = "root,boss";
         }
 
         public class ZcyClaimTypes

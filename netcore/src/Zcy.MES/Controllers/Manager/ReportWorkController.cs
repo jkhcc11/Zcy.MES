@@ -47,7 +47,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(BatchOperationsInput input)
         {
             var result = await _reportWorkService.BatchDeleteAsync(input);
@@ -59,7 +59,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpPost("update")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> UpdateReportWorkAsync(UpdateReportWorkInput input)
         {
             var result = await _reportWorkService.UpdateReportWorkAsync(input);
@@ -71,7 +71,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-totals")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync([FromQuery] QueryPageReportWorkInput input)
         {
             var result = await _reportWorkService.GetReportWorkTotalsAsync(input);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Zcy.Entity.PurchaseSale
 {
@@ -22,7 +23,7 @@ namespace Zcy.Entity.PurchaseSale
         /// <param name="managerUser">经办人昵称</param>
         /// <param name="orderDate">订单日期</param>
         public ReturnOrder(long orderId, string orderNo, long managerUserId,
-            string managerUser, DateTime orderDate) 
+            string managerUser, DateTime orderDate)
             : base(orderId, orderNo, managerUserId, managerUser, orderDate)
         {
 
@@ -48,8 +49,18 @@ namespace Zcy.Entity.PurchaseSale
         public string? ShipmentUser { get; set; }
 
         /// <summary>
+        /// 订单产品数量
+        /// </summary>
+        public int OrderProductCount { get; protected set; }
+
+        /// <summary>
         /// 订单详情
         /// </summary>
         public virtual ICollection<ReturnOrderDetail>? OrderDetails { get; set; }
+
+        public void TotalsOrderProductCount()
+        {
+            OrderProductCount = OrderDetails?.Sum(a => a.Count) ?? 0;
+        }
     }
 }

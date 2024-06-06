@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Zcy.Entity.PurchaseSale
 {
@@ -48,8 +49,18 @@ namespace Zcy.Entity.PurchaseSale
         public string? PickUpUser { get; set; }
 
         /// <summary>
+        /// 订单产品数量
+        /// </summary>
+        public int OrderProductCount { get; protected set; }
+
+        /// <summary>
         /// 订单详情
         /// </summary>
         public virtual ICollection<ShipmentOrderDetail>? OrderDetails { get; set; }
+
+        public void TotalProductCount()
+        {
+            OrderProductCount = OrderDetails?.Sum(a => a.Count) ?? 0;
+        }
     }
 }

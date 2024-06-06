@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 收支记录
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class IncomeRecordController : BaseManagerController
     {
         private readonly IIncomeRecordService _incomeRecordService;

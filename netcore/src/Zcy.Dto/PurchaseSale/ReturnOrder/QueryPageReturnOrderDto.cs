@@ -23,5 +23,10 @@
         ///  ？？这个不确定是不是客户那边的用户
         /// </remarks>
         public string? ShipmentUser { get; set; }
+
+        /// <summary>
+        /// 订单产品数量
+        /// </summary>
+        public int OrderProductCount { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 收款记录
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class ProceedsRecordController : BaseManagerController
     {
         private readonly IProceedsRecordService _proceedsRecordService;

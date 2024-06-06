@@ -36,7 +36,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<QueryPageDto<QueryPageSaleOrderDto>>> QueryPageSaleOrderAsync(
             [FromQuery] QueryPageSaleOrderInput input)
         {
@@ -49,7 +49,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete/{id}")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(long id)
         {
             var result = await _saleOrderService.DeleteAsync(id);
@@ -61,7 +61,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-detail/{id}")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<GetSaleOrderDetailDto>> GetSaleOrderDetailAsync(long id)
         {
             var result = await _saleOrderService.GetSaleOrderDetailAsync(id);

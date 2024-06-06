@@ -13,6 +13,7 @@ namespace Zcy.Dto.PurchaseSale
         /// <summary>
         /// 账号类型
         /// </summary>
+        [EnumDataType(typeof(AccountTypeEnum))]
         public AccountTypeEnum? AccountType { get; set; }
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace Zcy.Dto.PurchaseSale
         /// <summary>
         /// 运费价格
         /// </summary>
-        [Range(0.01, 9999999)]
+        [Range(0, 9999999)]
         public decimal FreightPrice { get; set; }
 
         /// <summary>

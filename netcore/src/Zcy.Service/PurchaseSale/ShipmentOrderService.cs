@@ -145,6 +145,7 @@ namespace Zcy.Service.PurchaseSale
             }
 
             orderEntity.OrderDetails = orderDetail;
+            orderEntity.TotalProductCount();
             await _shipmentOrderRepository.CreateAsync(orderEntity);
             #endregion
 

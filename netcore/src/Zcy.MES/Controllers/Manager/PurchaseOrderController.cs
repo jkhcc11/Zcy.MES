@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 采购订单 todo:待确认权限
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class PurchaseOrderController : BaseManagerController
     {
         private readonly IPurchaseOrderService _purchaseOrderService;

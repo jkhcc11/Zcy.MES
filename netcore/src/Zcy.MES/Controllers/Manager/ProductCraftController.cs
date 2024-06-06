@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 产品工艺
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.Boss + "," + AuthorizationConst.NormalRoleName.SuperAdmin)]
+    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class ProductCraftController : BaseManagerController
     {
         private readonly IProductCraftService _productCraftService;

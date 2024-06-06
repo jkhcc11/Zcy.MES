@@ -28,15 +28,5 @@ namespace Zcy.MES.Controllers.Normal
             return result;
         }
 
-        /// <summary>
-        /// 修改密码
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("modify-pwd")]
-        public async Task<KdyResult> ModifyUserPwdAsync(ModifyUserPwdInput input)
-        {
-            var result = await _userService.ModifyUserPwdAsync(input);
-            return result;
-        }
     }
 }

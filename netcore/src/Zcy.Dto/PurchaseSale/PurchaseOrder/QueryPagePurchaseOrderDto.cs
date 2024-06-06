@@ -29,9 +29,6 @@ namespace Zcy.Dto.PurchaseSale
         /// <summary>
         /// 订单价格
         /// </summary>
-        /// <remarks>
-        /// 可能包含商品价格以外的价格
-        /// </remarks>
         public decimal OrderPrice { get; set; }
 
         /// <summary>

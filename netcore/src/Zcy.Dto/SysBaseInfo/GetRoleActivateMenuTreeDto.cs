@@ -79,6 +79,11 @@ namespace Zcy.Dto.SysBaseInfo
         public bool Cacheable { get; set; }
 
         /// <summary>
+        /// 是否隐藏
+        /// </summary>
+        public bool Hidden { get; set; }
+
+        /// <summary>
         /// 本地文件路径 不包含views
         /// </summary>
         public string? LocalFilePath { get; set; }

@@ -72,6 +72,11 @@ namespace Zcy.Dto.SysBaseInfo
         public bool? IsCache { get; set; }
 
         /// <summary>
+        /// 是否隐藏
+        /// </summary>
+        public bool? IsHidden { get; set; }
+
+        /// <summary>
         /// 本地文件路径 不包含views
         /// </summary>
         /// <remarks>

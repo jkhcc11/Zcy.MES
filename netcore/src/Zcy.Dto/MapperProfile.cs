@@ -32,7 +32,8 @@ namespace Zcy.Dto
             CreateMap<SystemMenu, GetRoleActivateMenuDto>()
                 .ForMember(dest => dest.MenuId, target => target.MapFrom(source => source.Id));
             CreateMap<SystemMenu, GetRoleActivateMenuTreeDto>()
-                .ForMember(dest => dest.Cacheable, target => target.MapFrom(source => source.IsCache));
+                .ForMember(dest => dest.Cacheable, target => target.MapFrom(source => source.IsCache))
+                .ForMember(dest => dest.Hidden, target => target.MapFrom(source => source.IsHidden));
 
             CreateMap<SystemRole, QueryPageRoleDto>();
             CreateMap<SystemRole, GetAllRoleDto>()
@@ -78,21 +79,37 @@ namespace Zcy.Dto
 
 
             //订单
-            CreateMap<PurchaseOrder, GetPurchaseOrderDetailDto>();
+            CreateMap<PurchaseOrder, GetPurchaseOrderDetailDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
             CreateMap<PurchaseOrderDetail, GetPurchaseOrderDetailItemDto>();
-            CreateMap<PurchaseOrder, QueryPagePurchaseOrderDto>();
+            CreateMap<PurchaseOrder, QueryPagePurchaseOrderDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
 
-            CreateMap<SaleOrder, GetSaleOrderDetailDto>();
+            CreateMap<SaleOrder, GetSaleOrderDetailDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
             CreateMap<SaleOrderDetail, GetSaleOrderDetailItemDto>();
-            CreateMap<SaleOrder, QueryPageSaleOrderDto>();
+            CreateMap<SaleOrder, QueryPageSaleOrderDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
 
-            CreateMap<ShipmentOrder, GetShipmentOrderDetailDto>();
+            CreateMap<ShipmentOrder, GetShipmentOrderDetailDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
             CreateMap<ShipmentOrderDetail, GetShipmentOrderDetailItemDto>();
-            CreateMap<ShipmentOrder, QueryPageShipmentOrderDto>();
+            CreateMap<ShipmentOrder, QueryPageShipmentOrderDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
 
-            CreateMap<ReturnOrder, GetReturnOrderDetailDto>();
+            CreateMap<ReturnOrder, GetReturnOrderDetailDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
             CreateMap<ReturnOrderDetail, GetReturnOrderDetailItemDto>();
-            CreateMap<ReturnOrder, QueryPageReturnOrderDto>();
+            CreateMap<ReturnOrder, QueryPageReturnOrderDto>()
+                .ForMember(dest => dest.OrderDate,
+                    target => target.MapFrom(source => source.OrderDate.ToString(ZcyMesConst.DateFormat)));
 
             //CreateMap<ActivationCodeTypeV2, QueryPageCodeTypeDto>()
             //    .ForMember(dest => dest.CardTypeName, target => target.MapFrom(source => source.CodeName));
