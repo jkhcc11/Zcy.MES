@@ -265,6 +265,22 @@ namespace Zcy.MongoDB
             await Task.CompletedTask;
             var query = DbCollection.AsQueryable();
             query = query.Where(a => a.IsDelete == false);
+
+            if (LoginUserInfo is not { IsLogin: true })
+            {
+                return query;
+            }
+
+            //登录状态且非管理员时 添加过滤
+            var companyId = LoginUserInfo.CompanyId;
+            if (LoginUserInfo.IsSuperAdmin == false)
+            {
+                if (typeof(IBaseCompany).IsAssignableFrom(typeof(TEntity)))
+                {
+                    query = query.Where(e => ((IBaseCompany)e).CompanyId == companyId);
+                }
+            }
+
             return query;
         }
 

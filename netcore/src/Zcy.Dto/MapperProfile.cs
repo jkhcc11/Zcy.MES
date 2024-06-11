@@ -70,10 +70,18 @@ namespace Zcy.Dto
                 .ForMember(dest => dest.ProductProcessId, target => target.MapFrom(source => source.Id));
             CreateMap<ProductType, QueryPageProductTypeDto>();
             CreateMap<ProductType, QueryValidProductTypeDto>();
+            CreateMap<Product, GetProductDetailCascadeDto>();
+            CreateMap<ProductProcess, GetProductDetailCascadeItem>()
+                .ForMember(dest => dest.ProductProcessId, target => target.MapFrom(source => source.Id));
+            CreateMap<ProductCraft, ProductDetailCascadeCraftItem>()
+                .ForMember(dest => dest.CraftId, target => target.MapFrom(source => source.Id));
 
 
             //生产
             CreateMap<ReportWork, QueryPageReportWorkDto>()
+                .ForMember(dest => dest.ReportWorkDate,
+                    target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
+            CreateMap<ReportWork, QueryPageReportWorkForAdminDto>()
                 .ForMember(dest => dest.ReportWorkDate,
                     target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
 

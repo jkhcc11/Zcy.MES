@@ -41,6 +41,12 @@ namespace Zcy.IService.Products
         Task<KdyResult<GetProductDetailDto>> GetProductDetailAsync(long id);
 
         /// <summary>
+        /// 获取产品详情（级联方式）
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<GetProductDetailCascadeDto>> GetProductDetailCascadeAsync(long id);
+
+        /// <summary>
         /// 查询有效的产品
         /// </summary>
         /// <returns></returns>

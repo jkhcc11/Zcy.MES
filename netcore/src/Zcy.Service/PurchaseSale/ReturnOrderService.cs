@@ -23,13 +23,14 @@ namespace Zcy.Service.PurchaseSale
         private readonly IReturnOrderRepository _returnOrderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IBaseRepository<SupplierClient, long> _supplierClientRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
         private readonly IDistributedCache _distributedCache;
         private readonly ISystemCompanyService _systemCompanyService;
 
         public ReturnOrderService(IDistributedCache distributedCache, ISystemCompanyService systemCompanyService,
             ISystemUserRepository systemUserRepository, IProductRepository productRepository,
             IBaseRepository<SupplierClient, long> supplierClientRepository,
-            IReturnOrderRepository returnOrderRepository)
+            IReturnOrderRepository returnOrderRepository, IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _distributedCache = distributedCache;
             _systemCompanyService = systemCompanyService;
@@ -37,6 +38,7 @@ namespace Zcy.Service.PurchaseSale
             _productRepository = productRepository;
             _supplierClientRepository = supplierClientRepository;
             _returnOrderRepository = returnOrderRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -48,9 +50,15 @@ namespace Zcy.Service.PurchaseSale
             var query = await _returnOrderRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
 
-            return await BaseQueryPageEntityAsync<ReturnOrder, QueryPageReturnOrderDto>(
+            var result = await BaseQueryPageEntityAsync<ReturnOrder, QueryPageReturnOrderDto>(
                 _returnOrderRepository
                 , query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
+            return result;
         }
 
         /// <summary>

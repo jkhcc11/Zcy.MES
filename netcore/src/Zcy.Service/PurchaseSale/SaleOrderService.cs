@@ -23,13 +23,14 @@ namespace Zcy.Service.PurchaseSale
         private readonly ISaleOrderRepository _saleOrderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IBaseRepository<SupplierClient, long> _supplierClientRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
         private readonly IDistributedCache _distributedCache;
         private readonly ISystemCompanyService _systemCompanyService;
 
         public SaleOrderService(IDistributedCache distributedCache, ISystemCompanyService systemCompanyService,
             ISystemUserRepository systemUserRepository, IProductRepository productRepository,
             IBaseRepository<SupplierClient, long> supplierClientRepository,
-            ISaleOrderRepository saleOrderRepository)
+            ISaleOrderRepository saleOrderRepository, IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _distributedCache = distributedCache;
             _systemCompanyService = systemCompanyService;
@@ -37,6 +38,7 @@ namespace Zcy.Service.PurchaseSale
             _productRepository = productRepository;
             _supplierClientRepository = supplierClientRepository;
             _saleOrderRepository = saleOrderRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -48,9 +50,15 @@ namespace Zcy.Service.PurchaseSale
             var query = await _saleOrderRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
 
-            return await BaseQueryPageEntityAsync<SaleOrder, QueryPageSaleOrderDto>(
+            var result = await BaseQueryPageEntityAsync<SaleOrder, QueryPageSaleOrderDto>(
                 _saleOrderRepository
                 , query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
+            return result;
         }
 
         /// <summary>

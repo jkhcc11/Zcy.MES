@@ -10,7 +10,7 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 产品
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
+
     public class ProductController : BaseManagerController
     {
         private readonly IProductService _productService;
@@ -25,6 +25,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpPost("create-or-update")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> CreateAndUpdateProductAsync(CreateAndUpdateProductInput input)
         {
             var result = await _productService.CreateAndUpdateProductAsync(input);
@@ -48,6 +49,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(long id)
         {
             var result = await _productService.DeleteAsync(id);
@@ -59,6 +61,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("ban-or-enable/{id}")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> BanOrEnableAsync(long id)
         {
             var result = await _productService.BanOrEnableAsync(id);
@@ -70,6 +73,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-detail/{id}")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<GetProductDetailDto>> GetProductDetailAsync(long id)
         {
             var result = await _productService.GetProductDetailAsync(id);
@@ -85,6 +89,17 @@ namespace Zcy.MES.Controllers.Manager
             [FromQuery] QueryValidProductInput input)
         {
             var result = await _productService.QueryValidProductAsync(input);
+            return result;
+        }
+
+        /// <summary>
+        /// 获取产品详情（级联方式）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("get-detail-cascade/{id}")]
+        public async Task<KdyResult<GetProductDetailCascadeDto>> GetProductDetailCascadeAsync(long id)
+        {
+            var result = await _productService.GetProductDetailCascadeAsync(id);
             return result;
         }
     }

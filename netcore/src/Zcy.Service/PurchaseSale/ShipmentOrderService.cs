@@ -23,13 +23,14 @@ namespace Zcy.Service.PurchaseSale
         private readonly IShipmentOrderRepository _shipmentOrderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IBaseRepository<SupplierClient, long> _supplierClientRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
         private readonly IDistributedCache _distributedCache;
         private readonly ISystemCompanyService _systemCompanyService;
 
         public ShipmentOrderService(IDistributedCache distributedCache, ISystemCompanyService systemCompanyService,
             ISystemUserRepository systemUserRepository, IProductRepository productRepository,
-            IBaseRepository<SupplierClient, long> supplierClientRepository, 
-            IShipmentOrderRepository shipmentOrderRepository)
+            IBaseRepository<SupplierClient, long> supplierClientRepository,
+            IShipmentOrderRepository shipmentOrderRepository, IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _distributedCache = distributedCache;
             _systemCompanyService = systemCompanyService;
@@ -37,6 +38,7 @@ namespace Zcy.Service.PurchaseSale
             _productRepository = productRepository;
             _supplierClientRepository = supplierClientRepository;
             _shipmentOrderRepository = shipmentOrderRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -47,10 +49,15 @@ namespace Zcy.Service.PurchaseSale
         {
             var query = await _shipmentOrderRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
-
-            return await BaseQueryPageEntityAsync<ShipmentOrder, QueryPageShipmentOrderDto>(
+            var result = await BaseQueryPageEntityAsync<ShipmentOrder, QueryPageShipmentOrderDto>(
                 _shipmentOrderRepository
                 , query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
+            return result;
         }
 
         /// <summary>

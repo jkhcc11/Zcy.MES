@@ -34,11 +34,6 @@ namespace Zcy.Service.Products
         public async Task<KdyResult<QueryPageDto<QueryPageProductTypeDto>>> QueryPageProductTypeAsync(QueryPageProductTypeInput input)
         {
             var query = await _productTypeRepository.GetQueryableAsync();
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var result = await BaseQueryPageEntityAsync<ProductType, QueryPageProductTypeDto>(
                 _productTypeRepository, query, input);
@@ -115,11 +110,6 @@ namespace Zcy.Service.Products
         {
             var query = await _productTypeRepository.GetQueryableAsync();
             query = query.Where(a => a.TypeStatus == PublicStatusEnum.Normal);
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             var dbList = await _productTypeRepository.ToListAsync(query);
             var result = BaseMapper.Map<IReadOnlyList<ProductType>, List<QueryValidProductTypeDto>>(dbList);
             return KdyResult.Success(result);

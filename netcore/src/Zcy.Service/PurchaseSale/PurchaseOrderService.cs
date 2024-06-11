@@ -23,13 +23,16 @@ namespace Zcy.Service.PurchaseSale
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IBaseRepository<SupplierClient, long> _supplierClientRepository;
+        private readonly IBaseRepository<SystemCompany, long> _systemCompanyRepository;
         private readonly IDistributedCache _distributedCache;
         private readonly ISystemCompanyService _systemCompanyService;
+
 
         public PurchaseOrderService(IPurchaseOrderRepository purchaseOrderRepository,
             IDistributedCache distributedCache, ISystemCompanyService systemCompanyService,
             ISystemUserRepository systemUserRepository, IProductRepository productRepository,
-            IBaseRepository<SupplierClient, long> supplierClientRepository)
+            IBaseRepository<SupplierClient, long> supplierClientRepository,
+            IBaseRepository<SystemCompany, long> systemCompanyRepository)
         {
             _purchaseOrderRepository = purchaseOrderRepository;
             _distributedCache = distributedCache;
@@ -37,6 +40,7 @@ namespace Zcy.Service.PurchaseSale
             _systemUserRepository = systemUserRepository;
             _productRepository = productRepository;
             _supplierClientRepository = supplierClientRepository;
+            _systemCompanyRepository = systemCompanyRepository;
         }
 
         /// <summary>
@@ -48,9 +52,15 @@ namespace Zcy.Service.PurchaseSale
             var query = await _purchaseOrderRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
 
-            return await BaseQueryPageEntityAsync<PurchaseOrder, QueryPagePurchaseOrderDto>(
+            var result = await BaseQueryPageEntityAsync<PurchaseOrder, QueryPagePurchaseOrderDto>(
                 _purchaseOrderRepository
                 , query, input);
+            if (result.Data.Items.Any())
+            {
+                await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
+            }
+
+            return result;
         }
 
         /// <summary>

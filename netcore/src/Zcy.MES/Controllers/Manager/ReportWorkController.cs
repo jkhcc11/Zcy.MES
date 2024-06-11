@@ -31,10 +31,23 @@ namespace Zcy.MES.Controllers.Manager
         }
 
         /// <summary>
+        /// 分页查询报工(管理员)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("query-for-admin")]
+        public async Task<KdyResult<QueryPageDto<QueryPageReportWorkForAdminDto>>> QueryPageReportWorkForAdminAsync(
+            [FromQuery] QueryPageReportWorkInput input)
+        {
+            var result = await _reportWorkService.QueryPageReportWorkForAdminAsync(input);
+            return result;
+        }
+
+        /// <summary>
         /// 分页查询报工
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<QueryPageDto<QueryPageReportWorkDto>>> QueryPageProductCraftAsync(
             [FromQuery] QueryPageReportWorkInput input)
         {
@@ -47,7 +60,6 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(BatchOperationsInput input)
         {
             var result = await _reportWorkService.BatchDeleteAsync(input);

@@ -17,6 +17,12 @@ namespace Zcy.IService.Production
         Task<KdyResult<QueryPageDto<QueryPageReportWorkDto>>> QueryPageReportWorkAsync(QueryPageReportWorkInput input);
 
         /// <summary>
+        /// 分页查询报工(管理员)
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<QueryPageDto<QueryPageReportWorkForAdminDto>>> QueryPageReportWorkForAdminAsync(QueryPageReportWorkInput input);
+
+        /// <summary>
         /// 创建报工
         /// </summary>
         /// <returns></returns>

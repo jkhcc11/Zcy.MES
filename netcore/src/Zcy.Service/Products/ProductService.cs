@@ -38,12 +38,6 @@ namespace Zcy.Service.Products
         {
             var query = await _productRepository.GetQueryableAsync();
             var allProductTypeQuery = await _productTypeRepository.GetQueryableAsync();
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-                allProductTypeQuery = allProductTypeQuery.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var result = await BaseQueryPageEntityAsync<Product, QueryPageProductDto>(
                 _productRepository, query, input);
@@ -177,6 +171,39 @@ namespace Zcy.Service.Products
         }
 
         /// <summary>
+        /// 获取产品详情（级联方式）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<GetProductDetailCascadeDto>> GetProductDetailCascadeAsync(long id)
+        {
+            var entity = await _productRepository.FirstOrDefaultAsync(id);
+            if (entity == null)
+            {
+                return KdyResult.Error<GetProductDetailCascadeDto>(KdyResultCode.Error, "Id参数无效");
+            }
+
+            #region 加工产品
+            if (entity.ProductType == ProductTypeEnum.Processing &&
+                entity.ProductProcesses != null)
+            {
+                var craftIds = entity.ProductProcesses.Select(a => a.CraftId).ToArray();
+                var validCountQuery = await _productCraftRepository.GetQueryableAsync();
+                validCountQuery = validCountQuery.Where(a => craftIds.Contains(a.Id) &&
+                                                             a.CraftStatus == PublicStatusEnum.Normal);
+                var validCraft = await _productCraftRepository.ToListAsync(validCountQuery);
+                foreach (var item in entity.ProductProcesses)
+                {
+                    item.ProductCraft = validCraft.FirstOrDefault(a => a.Id == item.CraftId);
+                }
+            }
+            #endregion
+
+
+            var result = BaseMapper.Map<Product, GetProductDetailCascadeDto>(entity);
+            return KdyResult.Success(result);
+        }
+
+        /// <summary>
         /// 查询有效的产品
         /// </summary>
         /// <returns></returns>
@@ -184,11 +211,6 @@ namespace Zcy.Service.Products
         {
             var query = await _productRepository.GetQueryableAsync();
             query = query.Where(a => a.ProductStatus == PublicStatusEnum.Normal);
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var dbList = await _productRepository.ToListAsync(query);
             var result = BaseMapper.Map<IReadOnlyList<Product>, List<QueryValidProductDto>>(dbList);

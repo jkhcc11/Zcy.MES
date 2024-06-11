@@ -30,11 +30,6 @@ namespace Zcy.Service.Company
         {
             var query = await _supplierClientRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             var result = await BaseQueryPageEntityAsync<SupplierClient, QueryPageSupplierClientDto>(_supplierClientRepository,
                 query, input);
             if (result.Data.Items.Any())
@@ -82,11 +77,6 @@ namespace Zcy.Service.Company
             var query = await _supplierClientRepository.GetQueryableAsync();
             query = query.Where(a => a.ClientStatus == PublicStatusEnum.Normal &&
                                      a.ClientType == clientType);
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             var dbList = await _supplierClientRepository.ToListAsync(query);
             var result = BaseMapper.Map<IReadOnlyList<SupplierClient>, List<GetValidSupplierClientDto>>(dbList);
             return KdyResult.Success(result);

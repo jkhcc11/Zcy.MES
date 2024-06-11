@@ -40,11 +40,6 @@ namespace Zcy.Service.Production
         public async Task<KdyResult<QueryPageDto<QueryPageReportWorkDto>>> QueryPageReportWorkAsync(QueryPageReportWorkInput input)
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var startTime = DateTime.Today.AddDays(-30);
             var endTime = DateTime.Today;
@@ -69,18 +64,42 @@ namespace Zcy.Service.Production
 
             await SetEmployeeInfoAsync(result.Data.Items);
             await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
-            if (LoginUserInfo is { IsSuperAdmin: false, IsBoss: false })
+            return result;
+        }
+
+        /// <summary>
+        /// 分页查询报工(管理员)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<QueryPageDto<QueryPageReportWorkForAdminDto>>> QueryPageReportWorkForAdminAsync(
+            QueryPageReportWorkInput input)
+        {
+            var query = await _reportWorkRepository.GetQueryableAsync();
+            query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
+
+            query = query.CreateConditions(input);
+            var startTime = DateTime.Today.AddDays(-30);
+            var endTime = DateTime.Today;
+            if (input.StartTime.HasValue)
             {
-                //清空价格
-                foreach (var dtoItem in result.Data.Items)
-                {
-                    dtoItem.ReceivableSettlementPrice = default;
-                    dtoItem.ActualSettlementPrice = default;
-                    dtoItem.ProcessingPrice = default;
-                    dtoItem.UnitPrice = default;
-                }
+                startTime = input.StartTime.Value.Date;
             }
 
+            if (input.EndTime.HasValue)
+            {
+                endTime = input.EndTime.Value.Date;
+            }
+
+            query = query.Where(a => a.ReportWorkDate >= startTime &&
+                                     a.ReportWorkDate <= endTime);
+            var result = await BaseQueryPageEntityAsync<ReportWork, QueryPageReportWorkForAdminDto>(
+                _reportWorkRepository, query, input);
+            if (result.Data.Items.Any() == false)
+            {
+                return result;
+            }
+
+            await SetEmployeeInfoAsync(result.Data.Items);
             return result;
         }
 
@@ -180,11 +199,6 @@ namespace Zcy.Service.Production
         public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync(QueryPageReportWorkInput input)
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             //todo:量大可能有问题
             var dbList = await _reportWorkRepository.ToListAsync(query);
@@ -215,7 +229,7 @@ namespace Zcy.Service.Production
         /// 设置员工信息
         /// </summary>
         /// <returns></returns>
-        private async Task SetEmployeeInfoAsync(IReadOnlyList<QueryPageReportWorkDto> dtoItems)
+        private async Task SetEmployeeInfoAsync(IReadOnlyList<QueryPageReportWorkForAdminDto> dtoItems)
         {
             var employeeIds = dtoItems.Select(a => a.EmployeeId).ToArray();
             var companyId = LoginUserInfo.CompanyId;

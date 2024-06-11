@@ -44,16 +44,13 @@ namespace Zcy.Service.User
         /// <returns></returns>
         public async Task<KdyResult<QueryPageDto<QueryPageUserDto>>> QueryUserAsync(QueryPageUserInput input)
         {
+            var userId = LoginUserInfo.GetUserId();
             var query = await _userRepository.GetQueryableAsync();
+            query = query.Where(a => a.Id != userId);
             if (string.IsNullOrEmpty(input.KeyWord) == false)
             {
                 query = query.Where(a => a.UserName.Contains(input.KeyWord) ||
                                          a.UserNick.Contains(input.KeyWord));
-            }
-
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
             }
 
             var dbResult = await _userRepository.QueryPageListAsync(query, input.Page, input.PageSize);
@@ -223,12 +220,6 @@ namespace Zcy.Service.User
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
             }
 
-            if (LoginUserInfo.IsSuperAdmin == false &&
-                dbEntity.CompanyId != LoginUserInfo.CompanyId)
-            {
-                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
-            }
-
             dbEntity.ModifyNick(input.UserNick);
             dbEntity.UserPhone = input.UserPhone;
             dbEntity.UserNo = input.UserNo;
@@ -292,12 +283,6 @@ namespace Zcy.Service.User
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
             }
 
-            if (LoginUserInfo.IsSuperAdmin == false &&
-                dbEntity.CompanyId != LoginUserInfo.CompanyId)
-            {
-                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
-            }
-
             if (dbEntity.UserStatus == UserStatusEnum.Normal)
             {
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "失败，禁用后再操作");
@@ -322,12 +307,6 @@ namespace Zcy.Service.User
                 return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
             }
 
-            if (LoginUserInfo.IsSuperAdmin == false &&
-                dbEntity.CompanyId != LoginUserInfo.CompanyId)
-            {
-                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "无权限，非本公司");
-            }
-
             dbEntity.SetDefaultPwd();
             await _userRepository.UpdateAsync(dbEntity);
             return KdyResult.Success();
@@ -348,7 +327,7 @@ namespace Zcy.Service.User
             {
                 await _userRoleRepository.DeleteAsync(userRoles);
             }
-            
+
             //新增新的
             //todo:更换角色时 token问题
             var entities = input.RoleIds.Select(a => new SystemUserRole(input.UserId, a)).ToList();

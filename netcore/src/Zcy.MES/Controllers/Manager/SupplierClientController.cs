@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.Dto.Company;
@@ -48,6 +49,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(BatchOperationsInput input)
         {
             var result = await _supplierClientService.BatchDeleteAsync(input);

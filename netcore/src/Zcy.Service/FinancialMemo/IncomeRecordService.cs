@@ -130,12 +130,6 @@ namespace Zcy.Service.FinancialMemo
             }
 
             var query = await _incomeRecordRepository.GetQueryableAsync();
-
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             if (input.StartTime.HasValue)
             {

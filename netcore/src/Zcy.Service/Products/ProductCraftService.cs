@@ -31,11 +31,6 @@ namespace Zcy.Service.Products
         public async Task<KdyResult<QueryPageDto<QueryPageProductCraftDto>>> QueryPageProductCraftAsync(QueryPageProductCraftInput input)
         {
             var query = await _productCraftRepository.GetQueryableAsync();
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var result = await BaseQueryPageEntityAsync<ProductCraft, QueryPageProductCraftDto>(
                 _productCraftRepository, query, input);
@@ -113,11 +108,6 @@ namespace Zcy.Service.Products
         {
             var query = await _productCraftRepository.GetQueryableAsync();
             query = query.Where(a => a.CraftStatus == PublicStatusEnum.Normal);
-            if (LoginUserInfo.IsSuperAdmin == false)
-            {
-                query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-            }
-
             query = query.CreateConditions(input);
             var dbList = await _productCraftRepository.ToListAsync(query);
             var result = BaseMapper.Map<IReadOnlyList<ProductCraft>, List<QueryValidProductCraftDto>>(dbList);
