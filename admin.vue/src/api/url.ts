@@ -202,6 +202,7 @@ export const productCraftApi = {
 export const productApi = {
   query: '/mes-manager/Product/query',
   detail: '/mes-manager/Product/get-detail',
+  detailCascade: '/mes-manager/Product/get-detail-cascade',
   createOrUpdate: '/mes-manager/Product/create-or-update',
   delete: '/mes-manager/Product/delete',
   banOrEnable: '/mes-manager/Product/ban-or-enable',
@@ -211,6 +212,7 @@ export const productApi = {
 //报工
 export const reportWorkApi = {
   query: '/mes-manager/ReportWork/query',
+  queryForAdmin: '/mes-manager/ReportWork/query-for-admin',
   create: '/mes-manager/ReportWork/create',
   delete: '/mes-manager/ReportWork/delete',
   update: '/mes-manager/ReportWork/update',

@@ -107,7 +107,6 @@
 <script lang="ts">
   import { computed, defineComponent, ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import ImageBg1 from '@/assets/img_login_bg.png'
   import { post, Response } from '@/api/http'
   import { login } from '@/api/url'
   import { DeviceType, UserState } from '@/store/types'
@@ -124,8 +123,8 @@
     components: { PhoneIcon, PasswordIcon },
     setup() {
       const { version } = useAppInfo()
-      const username = ref('admin')
-      const password = ref('123456')
+      const username = ref(null)
+      const password = ref(null)
       const autoLogin = ref(true)
       const loading = ref(false)
       const router = useRouter()
@@ -184,7 +183,6 @@
         loading,
         onLogin,
         onForget,
-        ImageBg1,
         version,
       }
     },

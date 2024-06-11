@@ -208,9 +208,17 @@ export const EditRoleFormOptions = [
     label: '是否默认',
     key: 'isDefault',
     required: true,
-    value: ref(false),
+    value: ref(null),
     reset(formItem) {
       formItem.value.value = false
+    },
+    validator(value, message) {
+      if (value.value.value == null) {
+        message.error('请选择是否默认')
+        return false
+      }
+
+      return true
     },
     render: (formItem) => renderSwitch(formItem.value),
   },

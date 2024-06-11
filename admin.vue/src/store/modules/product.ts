@@ -37,7 +37,7 @@ const useProductCacheStore = defineStore('ProductCache', {
      */
     async getProductProcesses(productId: string) {
       const getResult = await get({
-        url: productApi.detail + '/' + productId,
+        url: productApi.detailCascade + '/' + productId,
       })
 
       return getResult.data.productProcesses.map((item: any) => {

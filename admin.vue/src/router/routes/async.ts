@@ -24,17 +24,6 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'work-place',
-        name: 'WorkPlace',
-        component: () => import('@/views/index/work-place.vue'),
-        meta: {
-          title: '工作台',
-          affix: true,
-          iconPrefix: 'iconfont',
-          icon: 'menu',
-        },
-      },
-      {
         path: 'work-place-vod',
         name: 'WorkPlaceVod',
         component: () => import('@/views/index/work-place-vod.vue'),

@@ -169,21 +169,29 @@ export const CreateUserFormOptions = [
     reset(formItem) {
       formItem.value.value = false
     },
+    validator(value, message) {
+      if (value.value.value == null) {
+        message.error('请选择登录功能')
+        return false
+      }
+
+      return true
+    },
     render: (formItem) => renderSwitch(formItem.value),
   },
-  {
-    label: '结算基数',
-    key: 'baseSettlement',
-    value: ref(null),
-    span: 1,
-    render: (formItem: any) =>
-      renderNumberInput(formItem.value, {
-        placeholder: '员工的薪资结算基数',
-        clearable: true,
-        max: 1,
-        precision: 2,
-      }),
-  },
+  // {
+  //   label: '结算基数',
+  //   key: 'baseSettlement',
+  //   value: ref(null),
+  //   span: 1,
+  //   render: (formItem: any) =>
+  //     renderNumberInput(formItem.value, {
+  //       placeholder: '员工的薪资结算基数',
+  //       clearable: true,
+  //       max: 1,
+  //       precision: 2,
+  //     }),
+  // },
 ] as Array<FormItem>
 
 //设置用户角色

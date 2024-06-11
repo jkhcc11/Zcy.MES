@@ -120,10 +120,10 @@
             return rowData.isEnableLogin ? '是' : '否'
           },
         },
-        {
-          title: '结算基数',
-          key: 'baseSettlement',
-        },
+        // {
+        //   title: '结算基数',
+        //   key: 'baseSettlement',
+        // },
 
         {
           title: '创建时间',
@@ -356,23 +356,28 @@
           await useCompanyCache.initCompanyData()
           await useRoleCache.init()
 
-          CreateUserFormOptions.push({
-            label: '所属公司',
-            key: 'companyId',
-            value: ref(null),
-            span: 3,
-            disabled: ref(false),
-            reset(formItem: any) {
-              formItem.value.value = null
-              formItem.disabled.value = false
-            },
-            render: (formItem: any) => {
-              return renderSelect(formItem.value, useCompanyCache.cachedItems, {
-                placeholder: '选择公司',
-                disabled: formItem.disabled.value,
-              })
-            },
-          } as FormItem)
+          const existingItemIndex = CreateUserFormOptions.findIndex(
+            (item) => item.key === 'companyId'
+          )
+          if (existingItemIndex == -1) {
+            CreateUserFormOptions.push({
+              label: '所属公司',
+              key: 'companyId',
+              value: ref(null),
+              span: 3,
+              disabled: ref(false),
+              reset(formItem: any) {
+                formItem.value.value = null
+                formItem.disabled.value = false
+              },
+              render: (formItem: any) => {
+                return renderSelect(formItem.value, useCompanyCache.cachedItems, {
+                  placeholder: '选择公司',
+                  disabled: formItem.disabled.value,
+                })
+              },
+            } as FormItem)
+          }
         }
       })
 
