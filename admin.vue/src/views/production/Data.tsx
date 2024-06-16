@@ -247,3 +247,13 @@ export const UpdateReportWorkFormOptions = [
       }),
   },
 ] as Array<FormItem>
+
+//批量创建报工Item
+export interface BatchCreateReportWorkItem {
+  productProcessId: string
+  productName: string
+  craftName: string
+  wordDuration: number
+  remark: string
+  billingType: number
+}

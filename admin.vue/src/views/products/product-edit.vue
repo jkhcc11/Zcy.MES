@@ -391,10 +391,9 @@
 
       //移除产品工序
       function onRemoveItem(rowData: any) {
+        const tempArray = productProcessesData.filter((item) => item.craftId !== rowData.craftId)
         productProcessesData.length = 0
-        productProcessesData.push(
-          ...productProcessesData.filter((item) => item.craftId !== rowData.craftId)
-        )
+        productProcessesData.push(...tempArray)
       }
 
       //加载详情

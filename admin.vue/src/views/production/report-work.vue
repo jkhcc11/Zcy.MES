@@ -117,14 +117,19 @@
         {
           title: '报工日期',
           key: 'reportWorkDate',
+          width: 110,
         },
         {
           title: '员工名',
-          key: 'employeeName',
+          key: 'employeeNickName',
         },
         {
-          title: '工序名称',
-          key: 'productProcessName',
+          title: '产品名',
+          key: 'productName',
+        },
+        {
+          title: '工艺名',
+          key: 'productCraftName',
         },
         {
           title: '计费类型',

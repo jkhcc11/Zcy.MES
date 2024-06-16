@@ -214,6 +214,7 @@ export const reportWorkApi = {
   query: '/mes-manager/ReportWork/query',
   queryForAdmin: '/mes-manager/ReportWork/query-for-admin',
   create: '/mes-manager/ReportWork/create',
+  batchCreate: '/mes-manager/ReportWork/batch-create',
   delete: '/mes-manager/ReportWork/delete',
   update: '/mes-manager/ReportWork/update',
   getTotals: '/mes-manager/ReportWork/get-totals',

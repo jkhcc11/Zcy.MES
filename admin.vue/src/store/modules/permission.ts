@@ -61,6 +61,11 @@ const usePermissionStore = defineStore('permission-route', {
             })
 
             return generatorRoutes(res.data)
+          } else {
+            //刷新失败 直接清空
+            userStore.logout().then(() => {
+              window.location.reload()
+            })
           }
           //console.log('refreshResult', refreshResult)
         }

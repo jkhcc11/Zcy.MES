@@ -14,6 +14,9 @@
     <template #tableToolbar>
       <n-space>
         <n-button type="info" size="small" @click="onBtnClick.create"> 创建 </n-button>
+        <n-gradient-text type="warning">
+          注：默认数据为近30天数据，更多数据请点击搜索
+        </n-gradient-text>
       </n-space>
     </template>
 

@@ -217,8 +217,11 @@
         {
           label: '运费价格',
           key: 'freightPrice',
-          value: ref(null),
+          value: ref(0),
           span: 1,
+          reset(formItem) {
+            formItem.value.value = 0
+          },
           render: (formItem: any) =>
             renderNumberInput(formItem.value, {
               placeholder: '运费价格',
@@ -233,10 +236,9 @@
 
       //移除产品
       function onRemoveItem(rowData: any) {
+        const tempArray = saleOrderDetailData.filter((item) => item.productId !== rowData.productId)
         saleOrderDetailData.length = 0
-        saleOrderDetailData.push(
-          ...saleOrderDetailData.filter((item) => item.productId !== rowData.productId)
-        )
+        saleOrderDetailData.push(...tempArray)
       }
 
       //加载详情

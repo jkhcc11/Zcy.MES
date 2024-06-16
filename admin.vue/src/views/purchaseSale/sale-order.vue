@@ -9,11 +9,26 @@
     :scrollX="1000"
     :submitLoading="submitLoading"
     :editDialogTilte="editTitle"
+    @load-data-success="onBtnClick.onLoadDataSuccess"
     editContentHeight="50vh"
   >
     <template #tableToolbar>
       <n-space>
         <n-button type="info" size="small" @click="onBtnClick.create"> 创建 </n-button>
+
+        <n-tag :bordered="false" type="success">
+          总订单价： {{ totalsRef.sumOrderPrice ?? '-' }}</n-tag
+        >
+        <n-tag :bordered="false" type="info">
+          总运费： {{ totalsRef.sumFreightPrice ?? '-' }}</n-tag
+        >
+        <n-tag :bordered="false" type="warning">
+          总商品价： {{ totalsRef.sumSalePrice ?? '-' }}</n-tag
+        >
+
+        <n-gradient-text type="warning">
+          注：默认数据为近30天数据，更多数据请点击搜索
+        </n-gradient-text>
       </n-space>
     </template>
 
@@ -80,6 +95,11 @@
             key: 'remark',
           },
         ],
+      })
+      const totalsRef = reactive({
+        sumFreightPrice: null,
+        sumSalePrice: null,
+        sumOrderPrice: null,
       })
 
       //提交
@@ -245,6 +265,20 @@
             },
           })
         },
+        //加载完成
+        onLoadDataSuccess: function () {
+          const params = commonQueryListRef.value?.getQueryParams()
+          get({
+            url: saleOrderApi.getTotals,
+            data: params,
+          })
+            .then((res) => {
+              totalsRef.sumFreightPrice = res.data.sumFreightPrice
+              totalsRef.sumSalePrice = res.data.sumSalePrice
+              totalsRef.sumOrderPrice = res.data.sumOrderPrice
+            })
+            .finally(() => {})
+        },
       }
 
       //刷新
@@ -266,6 +300,7 @@
         submitForm,
         detailData,
         editTitle,
+        totalsRef,
         onBtnClick,
       }
     },

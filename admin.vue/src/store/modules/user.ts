@@ -66,7 +66,7 @@ const useUserStore = defineStore('user-info', {
       this.userNick = newNickName
     },
     async onRefreshToken() {
-      return true
+      return false
       // const refreshResult = await post({
       //   url: refresh + '/' + this.refreshToken,
       // }).catch(() => {

@@ -10,11 +10,21 @@
     :submitLoading="submitLoading"
     :editDialogTilte="editTitle"
     :onDialogConfirm="onBtnClick.onSaveSubmit"
+    @load-data-success="onBtnClick.onLoadDataSuccess"
     editContentHeight="50vh"
   >
     <template #tableToolbar>
       <n-space>
         <n-button type="info" size="small" @click="onBtnClick.create"> 创建 </n-button>
+
+        <n-button type="warning" size="small" @click="onBtnClick.batchCreate"> 批量创建 </n-button>
+        <n-tag :bordered="false" type="warning">
+          计时总工时： {{ totalsRef.timingWordDuration ?? '-' }}</n-tag
+        >
+        <n-tag :bordered="false" type="error">
+          计件总数： {{ totalsRef.countingWordDuration ?? '-' }}</n-tag
+        >
+
         <n-gradient-text type="warning">
           注：默认数据为近30天数据，更多数据请点击搜索
         </n-gradient-text>
@@ -37,7 +47,7 @@
 </template>
 
 <script lang="ts">
-  import { post, sendDelete } from '@/api/http'
+  import { get, post, sendDelete } from '@/api/http'
   import { reportWorkApi } from '@/api/url'
   import { TableActionModel, useRenderAction, useTable } from '@/hooks/table'
   import { useMessage, useDialog } from 'naive-ui'
@@ -52,6 +62,7 @@
   import { BillingTypeEnum, ProductTypeEnum } from '@/store/types'
   import useProductCacheStore from '@/store/modules/product'
   import useCompanyCacheStore from '@/store/modules/company'
+  import { useRouter } from 'vue-router'
   export default defineComponent({
     name: 'ReportWorkAdmin',
     setup() {
@@ -60,9 +71,8 @@
       const message = useMessage()
       const commonQueryListRef = ref()
       const naiveDialog = useDialog()
+      const router = useRouter()
       const totalsRef = reactive({
-        totalActualSettlementPrice: null,
-        totalReceivableSettlementPrice: null,
         timingWordDuration: null,
         countingWordDuration: null,
       })
@@ -90,14 +100,19 @@
         {
           title: '报工日期',
           key: 'reportWorkDate',
+          width: 110,
         },
         {
           title: '员工名',
-          key: 'employeeName',
+          key: 'employeeNickName',
         },
         {
-          title: '工序名称',
-          key: 'productProcessName',
+          title: '产品名',
+          key: 'productName',
+        },
+        {
+          title: '工艺名',
+          key: 'productCraftName',
         },
         {
           title: '计费类型',
@@ -162,6 +177,9 @@
       ]
 
       const onBtnClick = {
+        batchCreate: function () {
+          router.push('/production/batch-create-report-work')
+        },
         //创建
         create: function () {
           optType.value = 'create'
@@ -212,6 +230,19 @@
                 submitLoading.value = false
               })
           }
+        },
+        //加载完成
+        onLoadDataSuccess: function () {
+          const params = commonQueryListRef.value?.getQueryParams()
+          get({
+            url: reportWorkApi.getTotals,
+            data: params,
+          })
+            .then((res) => {
+              totalsRef.timingWordDuration = res.data.timingWordDuration
+              totalsRef.countingWordDuration = res.data.countingWordDuration
+            })
+            .finally(() => {})
         },
       }
 

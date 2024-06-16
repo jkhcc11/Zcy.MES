@@ -224,10 +224,9 @@
 
       //移除产品
       function onRemoveItem(rowData: any) {
+        const tempArray = orderDetailData.filter((item) => item.productId !== rowData.productId)
         orderDetailData.length = 0
-        orderDetailData.push(
-          ...orderDetailData.filter((item) => item.productId !== rowData.productId)
-        )
+        orderDetailData.push(...tempArray)
       }
 
       //加载详情
