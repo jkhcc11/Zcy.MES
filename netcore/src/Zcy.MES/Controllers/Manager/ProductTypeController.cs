@@ -3,6 +3,7 @@ using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface;
 using Zcy.Dto.Products;
 using Zcy.IService.Products;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Zcy.MES.Controllers.Manager
 {
@@ -46,6 +47,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(BatchOperationsInput input)
         {
             var result = await _productTypeService.BatchDeleteAsync(input);

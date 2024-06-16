@@ -12,7 +12,8 @@ namespace Zcy.Dto.Production
         /// 关键字
         /// </summary>
         [ZcyQuery(nameof(ReportWork.Remark), ZcyOperator.Like)]
-        [ZcyQuery(nameof(ReportWork.ProductProcessName), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ReportWork.ProductName), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ReportWork.ProductCraftName), ZcyOperator.Like)]
         public string? KeyWord { get; set; }
 
         /// <summary>

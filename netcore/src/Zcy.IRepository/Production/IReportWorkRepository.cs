@@ -20,5 +20,16 @@ namespace Zcy.IRepository.Production
         /// <returns></returns>
         Task<bool> IsTodayExistReportWorkAsync(long companyId, DateTime reportWorkDate,
             long employeeId, long productProcessId);
+
+        /// <summary>
+        /// 员工当天是否存在报工
+        /// </summary>
+        /// <param name="companyId">公司Id</param>
+        /// <param name="reportWorkDate">报工日期</param>
+        /// <param name="employeeId">员工Id</param>
+        /// <param name="productProcessIds">产品工序列表</param>
+        /// <returns></returns>
+        Task<bool> IsTodayExistReportWorkAsync(long companyId, DateTime reportWorkDate,
+            long employeeId, long[] productProcessIds);
     }
 }

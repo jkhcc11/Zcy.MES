@@ -49,9 +49,7 @@ namespace Zcy.Service.PurchaseSale
         /// <returns></returns>
         public async Task<KdyResult<QueryPageDto<QueryPagePurchaseOrderDto>>> QueryPagePurchaseOrderAsync(QueryPagePurchaseOrderInput input)
         {
-            var query = await _purchaseOrderRepository.GetQueryableAsync();
-            query = query.CreateConditions(input);
-
+            var query = await BuildFilterAsync(input);
             var result = await BaseQueryPageEntityAsync<PurchaseOrder, QueryPagePurchaseOrderDto>(
                 _purchaseOrderRepository
                 , query, input);
@@ -141,7 +139,7 @@ namespace Zcy.Service.PurchaseSale
             var orderDetail = new List<PurchaseOrderDetail>();
             foreach (var inputItem in input.OrderDetails)
             {
-                var dbItem = new PurchaseOrderDetail(orderEntity.Id,
+                var dbItem = new PurchaseOrderDetail(orderEntity.Id, orderDate,
                     inputItem.ProductId, inputItem.Count, inputItem.UnitPrice)
                 {
                     Remark = inputItem.Remark,
@@ -209,6 +207,37 @@ namespace Zcy.Service.PurchaseSale
 
             var result = BaseMapper.Map<PurchaseOrder, GetPurchaseOrderDetailDto>(entity);
             return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 获取采购订单汇总
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<GetPurchaseOrderTotalsDto>> GetPurchaseOrderTotalsAsync(QueryPagePurchaseOrderInput input)
+        {
+            var query = await BuildFilterAsync(input);
+            var dayTotals = await _purchaseOrderRepository.PurchaseOrderTotalsAsync(query);
+            var result = new GetPurchaseOrderTotalsDto()
+            {
+                SumOrderPrice = dayTotals.Sum(b => b.OrderPrice)
+            };
+            return KdyResult.Success(result);
+        }
+
+
+        /// <summary>
+        /// 查询条件生成
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IQueryable<PurchaseOrder>> BuildFilterAsync(QueryPagePurchaseOrderInput input)
+        {
+            var query = await _purchaseOrderRepository.GetQueryableAsync();
+            var timeRange = input.GetTimeRange();
+            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
+                                     a.OrderDate <= timeRange.eTime);
+
+            query = query.CreateConditions(input);
+            return query;
         }
     }
 }

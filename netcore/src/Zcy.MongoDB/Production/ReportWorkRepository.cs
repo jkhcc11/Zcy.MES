@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using System.Linq;
 using Zcy.Entity.Production;
 using Zcy.Entity.Products;
 using Zcy.IRepository.Production;
@@ -32,6 +33,26 @@ namespace Zcy.MongoDB.Production
                          a.EmployeeId == employeeId &&
                          a.ProductProcessId == productProcessId &&
                          a.IsDelete == false)
+                .AnyAsync();
+        }
+
+        /// <summary>
+        /// 员工当天是否存在报工
+        /// </summary>
+        /// <param name="companyId">公司Id</param>
+        /// <param name="reportWorkDate">报工日期</param>
+        /// <param name="employeeId">员工Id</param>
+        /// <param name="productProcessIds">产品工序列表</param>
+        /// <returns></returns>
+        public async Task<bool> IsTodayExistReportWorkAsync(long companyId, DateTime reportWorkDate,
+            long employeeId, long[] productProcessIds)
+        {
+            return await DbCollection
+                .Find(a => a.CompanyId == companyId &&
+                           a.ReportWorkDate == reportWorkDate &&
+                           a.EmployeeId == employeeId &&
+                           productProcessIds.Contains(a.ProductProcessId) &&
+                           a.IsDelete == false)
                 .AnyAsync();
         }
     }

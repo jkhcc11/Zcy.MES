@@ -25,7 +25,6 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpPost("create-or-update")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> CreateAndUpdateProductAsync(CreateAndUpdateProductInput input)
         {
             var result = await _productService.CreateAndUpdateProductAsync(input);
@@ -61,7 +60,6 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("ban-or-enable/{id}")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> BanOrEnableAsync(long id)
         {
             var result = await _productService.BanOrEnableAsync(id);
@@ -73,7 +71,6 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-detail/{id}")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<GetProductDetailDto>> GetProductDetailAsync(long id)
         {
             var result = await _productService.GetProductDetailAsync(id);

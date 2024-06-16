@@ -4,11 +4,12 @@ using Zcy.BaseInterface;
 using Zcy.Dto.PurchaseSale;
 using Zcy.IService.PurchaseSale;
 using Microsoft.AspNetCore.Authorization;
+using Zcy.Service.PurchaseSale;
 
 namespace Zcy.MES.Controllers.Manager
 {
     /// <summary>
-    /// 采购订单 todo:待确认权限
+    /// 采购订单
     /// </summary>
     [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class PurchaseOrderController : BaseManagerController
@@ -62,6 +63,19 @@ namespace Zcy.MES.Controllers.Manager
         public async Task<KdyResult<GetPurchaseOrderDetailDto>> GetPurchaseOrderDetailAsync(long id)
         {
             var result = await _purchaseOrderService.GetPurchaseOrderDetailAsync(id);
+            return result;
+        }
+
+        /// <summary>
+        /// 获取采购订单统计
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("get-totals")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
+        public async Task<KdyResult<GetPurchaseOrderTotalsDto>> GetPurchaseOrderTotalsAsync(
+            [FromQuery] QueryPagePurchaseOrderInput input)
+        {
+            var result = await _purchaseOrderService.GetPurchaseOrderTotalsAsync(input);
             return result;
         }
     }

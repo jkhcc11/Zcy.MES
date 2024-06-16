@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
+using Zcy.Entity.Production;
 using Zcy.Entity.Products;
 using Zcy.Entity.PurchaseSale;
 using Zcy.IRepository.FinancialMemo;
@@ -99,6 +100,14 @@ namespace Zcy.MongoDB
             {
                 cm.AutoMap();
                 cm.UnmapMember(c => c.OrderDetails);
+            });
+
+
+            BsonClassMap.RegisterClassMap<ReportWork>(cm =>
+            {
+                cm.AutoMap();
+                //db存在entity不存在字段忽略
+                cm.SetIgnoreExtraElements(true);
             });
         }
     }

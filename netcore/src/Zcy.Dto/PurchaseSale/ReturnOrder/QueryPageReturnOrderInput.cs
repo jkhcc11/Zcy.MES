@@ -31,14 +31,12 @@ namespace Zcy.Dto.PurchaseSale
         /// <summary>
         /// 开始时间
         /// </summary>
-        [ZcyQuery(nameof(ReturnOrder.OrderDate), ZcyOperator.GtEqual)]
         [DataType(DataType.DateTime, ErrorMessage = "开始时间错误")]
         public override DateTime? StartTime { get; set; }
 
         /// <summary>
         /// 结束时间
         /// </summary>
-        [ZcyQuery(nameof(ReturnOrder.OrderDate), ZcyOperator.LessEqual)]
         [DataType(DataType.DateTime, ErrorMessage = "结束时间错误")]
         public override DateTime? EndTime { get; set; }
     }

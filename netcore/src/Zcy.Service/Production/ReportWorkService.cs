@@ -1,4 +1,5 @@
-﻿using Zcy.BaseInterface;
+﻿using Microsoft.Extensions.Logging;
+using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.Dto.Production;
@@ -62,7 +63,6 @@ namespace Zcy.Service.Production
                 return result;
             }
 
-            await SetEmployeeInfoAsync(result.Data.Items);
             await SetCompanyInfoAsync(result.Data.Items, _systemCompanyRepository);
             return result;
         }
@@ -75,8 +75,6 @@ namespace Zcy.Service.Production
             QueryPageReportWorkInput input)
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
-            query = query.Where(a => a.CompanyId == LoginUserInfo.CompanyId);
-
             query = query.CreateConditions(input);
             var startTime = DateTime.Today.AddDays(-30);
             var endTime = DateTime.Today;
@@ -99,7 +97,6 @@ namespace Zcy.Service.Production
                 return result;
             }
 
-            await SetEmployeeInfoAsync(result.Data.Items);
             return result;
         }
 
@@ -120,8 +117,8 @@ namespace Zcy.Service.Production
                 return KdyResult.Error(KdyResultCode.Error, "创建失败，员工当天已存在报工");
             }
 
-            if (await _systemUserRepository.AnyAsync(a => a.Id == input.EmployeeId &&
-                                                          a.CompanyId == companyId) == false)
+            var employeeEntity = await _systemUserRepository.FirstOrDefaultAsync(input.EmployeeId);
+            if (employeeEntity == null)
             {
                 return KdyResult.Error(KdyResultCode.Error, "创建失败，员工不存在");
             }
@@ -132,12 +129,14 @@ namespace Zcy.Service.Production
                 return KdyResult.Error(KdyResultCode.Error, "创建失败，无效产品工序");
             }
 
-            if (productProcess.ProductCraft == null)
+            if (productProcess.Product == null ||
+                productProcess.ProductCraft == null)
             {
                 return KdyResult.Error(KdyResultCode.Error, "创建失败，无效产品工序-无效工艺");
             }
 
-            var entity = new ReportWork(input.EmployeeId, reportWorkDate,
+            var entity = new ReportWork(input.EmployeeId,
+                employeeEntity.UserNick, reportWorkDate,
                 input.ProductProcessId, input.WordDuration)
             {
                 Remark = input.Remark
@@ -145,9 +144,78 @@ namespace Zcy.Service.Production
             entity.SetProductProcessInfo(productProcess.ProcessingPrice,
                 productProcess.ProductCraft.UnitPrice,
                 productProcess.ProductCraft.BillingType,
-                $"{productProcess.Product?.ProductName}/{productProcess.ProductCraft.CraftName}");
+                productProcess.Product.ProductName,
+                productProcess.ProductCraft.CraftName);
             entity.TotalReceivablePrice();
             await _reportWorkRepository.CreateAsync(entity);
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 批量创建报工
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> BatchCreateReportWorkAsync(BatchCreateReportWorkInput input)
+        {
+            if (input.ReportWorkItems.Any() == false)
+            {
+                return KdyResult.Error(KdyResultCode.ParError, "参数错误，报工列表不能为空");
+            }
+
+            var reportWorkDate = input.ReportWorkDate ?? DateTime.Today;
+            var companyId = LoginUserInfo.CompanyId;
+            var productProcessIds = input.ReportWorkItems.Select(a => a.ProductProcessId).ToArray();
+
+            if (await _reportWorkRepository.IsTodayExistReportWorkAsync(
+                    companyId,
+                    reportWorkDate,
+                    input.EmployeeId,
+                    productProcessIds))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，员工当天已存在报工,请检查是否添加重复");
+            }
+
+            var employeeEntity = await _systemUserRepository.FirstOrDefaultAsync(input.EmployeeId);
+            if (employeeEntity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，员工不存在");
+            }
+
+            var productProcess = await _productRepository.GetProductProcessesAsync(productProcessIds);
+            if (productProcess.Count != productProcessIds.Length)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，存在无效产品工序，请刷新页面后重试");
+            }
+
+            var entities = new List<ReportWork>();
+            foreach (var item in input.ReportWorkItems)
+            {
+                var entity = new ReportWork(input.EmployeeId,
+                    employeeEntity.UserNick, reportWorkDate,
+                    item.ProductProcessId, item.WordDuration)
+                {
+                    Remark = item.Remark
+                };
+
+                var currentDbProductProcess = productProcess.FirstOrDefault(a => a.Id == item.ProductProcessId);
+                if (currentDbProductProcess == null ||
+                    currentDbProductProcess.ProductCraft == null ||
+                    currentDbProductProcess.Product == null)
+                {
+                    BaseLogger.LogError("创建报工失败，产品工序Id:{productProcessId}，无效", item.ProductProcessId);
+                    return KdyResult.Error(KdyResultCode.Error, "创建失败，存在无效产品工序，请刷新页面后重试");
+                }
+
+                entity.SetProductProcessInfo(currentDbProductProcess.ProcessingPrice,
+                    currentDbProductProcess.ProductCraft.UnitPrice,
+                    currentDbProductProcess.ProductCraft.BillingType,
+                    currentDbProductProcess.Product.ProductName,
+                    currentDbProductProcess.ProductCraft.CraftName);
+                entity.TotalReceivablePrice();
+                entities.Add(entity);
+            }
+
+            await _reportWorkRepository.CreateAsync(entities);
             return KdyResult.Success();
         }
 
@@ -212,7 +280,7 @@ namespace Zcy.Service.Production
                     ReceivableSettlementPrice = a.Sum(b => b.ReceivableSettlementPrice),
                 }).ToList();
 
-            return KdyResult.Success(new GetReportWorkTotalsDto()
+            var result = new GetReportWorkTotalsDto()
             {
                 TotalActualSettlementPrice = groupTemp.Sum(a => a.ActualSettlementPrice),
                 TotalReceivableSettlementPrice = groupTemp.Sum(a => a.ReceivableSettlementPrice),
@@ -222,27 +290,15 @@ namespace Zcy.Service.Production
                 TimingWordDuration = groupTemp
                     .FirstOrDefault(a => a.BillingType == BillingTypeEnum.Timing)
                     ?.WordDuration,
-            });
-        }
-
-        /// <summary>
-        /// 设置员工信息
-        /// </summary>
-        /// <returns></returns>
-        private async Task SetEmployeeInfoAsync(IReadOnlyList<QueryPageReportWorkForAdminDto> dtoItems)
-        {
-            var employeeIds = dtoItems.Select(a => a.EmployeeId).ToArray();
-            var companyId = LoginUserInfo.CompanyId;
-            var dbUserForCompanyQuery = await _systemUserRepository.GetQueryableAsync();
-            dbUserForCompanyQuery = dbUserForCompanyQuery
-                .Where(a => a.CompanyId == companyId &&
-                            employeeIds.Contains(a.Id));
-            var dbUserForCompany = await _systemUserRepository.ToListAsync(dbUserForCompanyQuery);
-            foreach (var item in dtoItems)
+            };
+            if (LoginUserInfo.IsNotBossAndRoot)
             {
-                item.EmployeeName = dbUserForCompany.FirstOrDefault(a => a.Id == item.EmployeeId)?.UserNick;
+                //普通管理
+                result.TotalActualSettlementPrice = default;
+                result.TotalReceivableSettlementPrice = default;
             }
 
+            return KdyResult.Success(result);
         }
     }
 }

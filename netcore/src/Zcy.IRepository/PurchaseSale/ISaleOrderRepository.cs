@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Zcy.BaseInterface.Entities;
 using Zcy.Entity.PurchaseSale;
+using Zcy.Entity.PurchaseSale.TotalsModels;
 
 namespace Zcy.IRepository.PurchaseSale
 {
@@ -14,5 +17,11 @@ namespace Zcy.IRepository.PurchaseSale
         /// </summary>
         /// <returns></returns>
         Task<SaleOrder?> FirstOrDefaultAsync(string orderNo);
+
+        /// <summary>
+        /// 销售订单统计(按天)
+        /// </summary>
+        /// <returns></returns>
+        Task<List<SaleOrderTotalsTemp>> SaleOrderTotalsAsync(IQueryable<SaleOrder> queryable);
     }
 }

@@ -18,7 +18,7 @@ namespace Zcy.Dto.Production
         /// </summary>
         public long EmployeeId { get; set; }
 
-        public string? EmployeeName { get; set; }
+        public string? EmployeeNickName { get; set; }
 
         /// <summary>
         /// 产品工序Id
@@ -55,12 +55,14 @@ namespace Zcy.Dto.Production
         public BillingTypeEnum BillingType { get; set; }
 
         /// <summary>
-        /// 产品工序名称  冗余
+        /// 产品名 冗余
         /// </summary>
-        /// <remarks>
-        /// 产品名/工序名
-        /// </remarks>
-        public string? ProductProcessName { get; set; }
+        public string? ProductName { get; set; }
+
+        /// <summary>
+        /// 产品工艺名称  冗余
+        /// </summary>
+        public string? ProductCraftName { get; set; }
         #endregion
 
     }

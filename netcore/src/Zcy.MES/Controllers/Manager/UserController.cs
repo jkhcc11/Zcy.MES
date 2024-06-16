@@ -71,6 +71,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpPost("reset-pwd/{userId}")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> ResetUserPwdAsync(long userId)
         {
             var result = await _userService.ResetUserPwdAsync(userId);

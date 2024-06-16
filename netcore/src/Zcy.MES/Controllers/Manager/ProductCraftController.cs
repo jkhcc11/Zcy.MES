@@ -10,7 +10,6 @@ namespace Zcy.MES.Controllers.Manager
     /// <summary>
     /// 产品工艺
     /// </summary>
-    [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
     public class ProductCraftController : BaseManagerController
     {
         private readonly IProductCraftService _productCraftService;
@@ -48,6 +47,7 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult> DeleteAsync(BatchOperationsInput input)
         {
             var result = await _productCraftService.BatchDeleteAsync(input);

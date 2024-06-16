@@ -1,4 +1,5 @@
-﻿using Zcy.BaseInterface.Entities;
+﻿using System;
+using Zcy.BaseInterface.Entities;
 
 namespace Zcy.Entity.PurchaseSale
 {
@@ -11,10 +12,12 @@ namespace Zcy.Entity.PurchaseSale
         /// 基础订单详情
         /// </summary>
         /// <param name="orderId">订单Id</param>
+        /// <param name="orderDate">订单日期</param>
         /// <param name="productId">产品Id</param>
         /// <param name="count">数量</param>
-        protected BaseOrderDetail(long orderId, long productId, int count)
+        protected BaseOrderDetail(long orderId, DateTime orderDate, long productId, int count)
         {
+            OrderDate = orderDate;
             OrderId = orderId;
             ProductId = productId;
             Count = count;
@@ -24,6 +27,11 @@ namespace Zcy.Entity.PurchaseSale
         /// 订单Id
         /// </summary>
         public virtual long OrderId { get; protected set; }
+
+        /// <summary>
+        /// 订单日期(冗余)
+        /// </summary>
+        public virtual DateTime OrderDate { get; protected set; }
 
         /// <summary>
         /// 产品Id

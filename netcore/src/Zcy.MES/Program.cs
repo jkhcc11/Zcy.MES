@@ -79,9 +79,10 @@ namespace Zcy.MES
                     });
                 }
 
+                //todo:这个跨域必须在授权之前 否则授权失败跨域会出错
+                app.UseCors(defaultPolicy);
                 app.UseAuthentication();
                 app.UseAuthorization();
-                app.UseCors(defaultPolicy);
                 app.UseKdyLog();
                 app.MapControllers();
 

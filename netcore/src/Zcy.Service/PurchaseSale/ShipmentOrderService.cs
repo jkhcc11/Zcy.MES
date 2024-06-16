@@ -48,6 +48,10 @@ namespace Zcy.Service.PurchaseSale
         public async Task<KdyResult<QueryPageDto<QueryPageShipmentOrderDto>>> QueryPageShipmentOrderAsync(QueryPageShipmentOrderInput input)
         {
             var query = await _shipmentOrderRepository.GetQueryableAsync();
+            var timeRange = input.GetTimeRange();
+            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
+                                     a.OrderDate <= timeRange.eTime);
+
             query = query.CreateConditions(input);
             var result = await BaseQueryPageEntityAsync<ShipmentOrder, QueryPageShipmentOrderDto>(
                 _shipmentOrderRepository
@@ -139,7 +143,7 @@ namespace Zcy.Service.PurchaseSale
             var orderDetail = new List<ShipmentOrderDetail>();
             foreach (var inputItem in input.OrderDetails)
             {
-                var dbItem = new ShipmentOrderDetail(orderEntity.Id,
+                var dbItem = new ShipmentOrderDetail(orderEntity.Id, orderDate,
                     inputItem.ProductId, inputItem.Count)
                 {
                     Remark = inputItem.Remark,

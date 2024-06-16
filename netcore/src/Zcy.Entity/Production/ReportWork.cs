@@ -13,10 +13,11 @@ namespace Zcy.Entity.Production
         /// 报工
         /// </summary>
         /// <param name="employeeId">员工Id</param>
+        /// <param name="employeeNickName">员工用户昵称</param>
         /// <param name="reportWorkDate">报工日期</param>
         /// <param name="productProcessId">工序Id</param>
         /// <param name="wordDuration">工作时长</param>
-        public ReportWork(long employeeId,
+        public ReportWork(long employeeId, string employeeNickName,
             DateTime reportWorkDate,
             long productProcessId, decimal wordDuration)
         {
@@ -24,6 +25,7 @@ namespace Zcy.Entity.Production
             ProductProcessId = productProcessId;
             WordDuration = wordDuration;
             ReportWorkDate = reportWorkDate;
+            EmployeeNickName = employeeNickName;
         }
 
         /// <summary>
@@ -35,6 +37,11 @@ namespace Zcy.Entity.Production
         /// 员工用户Id
         /// </summary>
         public long EmployeeId { get; protected set; }
+
+        /// <summary>
+        /// 员工用户昵称
+        /// </summary>
+        public string EmployeeNickName { get; protected set; }
 
         /// <summary>
         /// 产品工序Id
@@ -92,12 +99,15 @@ namespace Zcy.Entity.Production
         public BillingTypeEnum BillingType { get; set; }
 
         /// <summary>
-        /// 产品工序名称  冗余
+        /// 产品名 冗余
         /// </summary>
-        /// <remarks>
-        /// 产品名/工序名
-        /// </remarks>
-        public string ProductProcessName { get; set; }
+        public string? ProductName { get; set; }
+
+        /// <summary>
+        /// 产品工艺名称  冗余
+        /// </summary>
+        public string? ProductCraftName { get; set; }
+
         #endregion
 
         /// <summary>
@@ -121,14 +131,16 @@ namespace Zcy.Entity.Production
         /// <param name="processingPrice">加工价</param>
         /// <param name="craftPrice">工艺价格</param>
         /// <param name="billingType">工艺计费类型</param>
-        /// <param name="productProcessName">产品工序名称</param>
+        /// <param name="productName">产品名</param>
+        /// <param name="productCraftName">产品工艺名</param>
         public void SetProductProcessInfo(decimal processingPrice, decimal craftPrice,
-            BillingTypeEnum billingType,string productProcessName)
+            BillingTypeEnum billingType, string productName, string productCraftName)
         {
             ProcessingPrice = processingPrice;
             UnitPrice = craftPrice;
             BillingType = billingType;
-            ProductProcessName = productProcessName;
+            ProductName = productName;
+            ProductCraftName = productCraftName;
         }
 
         /// <summary>

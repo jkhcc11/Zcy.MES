@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
@@ -19,6 +20,7 @@ namespace Zcy.Service
         protected readonly ILoginUserInfo LoginUserInfo;
         protected readonly IMapper BaseMapper;
         protected readonly IdGenerateExtension IdGenerateExtension;
+        protected readonly ILogger BaseLogger;
 
         protected ZcyBaseService()
         {
@@ -32,6 +34,9 @@ namespace Zcy.Service
                            throw new ArgumentException("ZcyBaseService Configuration is null");
             IdGenerateExtension = serviceProvider.GetService<IdGenerateExtension>() ??
                                   throw new ArgumentException("ZcyBaseService IdGenerateExtension is null");
+            var logFactory = serviceProvider.GetService<ILoggerFactory>() ??
+                            throw new ArgumentException("ZcyBaseService ILoggerFactory is null");
+            BaseLogger = logFactory.CreateLogger(GetType());
         }
 
         /// <summary>

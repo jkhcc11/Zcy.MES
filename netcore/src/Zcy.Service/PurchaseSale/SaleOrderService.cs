@@ -47,9 +47,7 @@ namespace Zcy.Service.PurchaseSale
         /// <returns></returns>
         public async Task<KdyResult<QueryPageDto<QueryPageSaleOrderDto>>> QueryPageSaleOrderAsync(QueryPageSaleOrderInput input)
         {
-            var query = await _saleOrderRepository.GetQueryableAsync();
-            query = query.CreateConditions(input);
-
+            var query = await BuildFilterAsync(input);
             var result = await BaseQueryPageEntityAsync<SaleOrder, QueryPageSaleOrderDto>(
                 _saleOrderRepository
                 , query, input);
@@ -146,7 +144,7 @@ namespace Zcy.Service.PurchaseSale
             var orderDetail = new List<SaleOrderDetail>();
             foreach (var inputItem in input.OrderDetails)
             {
-                var dbItem = new SaleOrderDetail(orderEntity.Id,
+                var dbItem = new SaleOrderDetail(orderEntity.Id, orderDate,
                     inputItem.ProductId, inputItem.Count, inputItem.UnitPrice)
                 {
                     Remark = inputItem.Remark,
@@ -215,6 +213,38 @@ namespace Zcy.Service.PurchaseSale
 
             var result = BaseMapper.Map<SaleOrder, GetSaleOrderDetailDto>(entity);
             return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 获取销售订单汇总
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<GetSaleOrderTotalsDto>> GetSaleOrderTotalsAsync(QueryPageSaleOrderInput input)
+        {
+            var query = await BuildFilterAsync(input);
+            var dayTotals = await _saleOrderRepository.SaleOrderTotalsAsync(query);
+            var result = new GetSaleOrderTotalsDto()
+            {
+                SumSalePrice = dayTotals.Sum(b => b.SumSalePrice),
+                SumFreightPrice = dayTotals.Sum(b => b.FreightPrice),
+                SumOrderPrice = dayTotals.Sum(b => b.OrderPrice)
+            };
+            return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 查询条件生成
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IQueryable<SaleOrder>> BuildFilterAsync(QueryPageSaleOrderInput input)
+        {
+            var query = await _saleOrderRepository.GetQueryableAsync();
+            var timeRange = input.GetTimeRange();
+            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
+                                     a.OrderDate <= timeRange.eTime);
+
+            query = query.CreateConditions(input);
+            return query;
         }
     }
 }

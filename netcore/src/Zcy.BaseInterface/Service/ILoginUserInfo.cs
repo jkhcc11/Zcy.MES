@@ -66,5 +66,10 @@ namespace Zcy.BaseInterface.Service
         /// 是否Boss
         /// </summary>
         bool IsBoss { get; set; }
+
+        /// <summary>
+        /// 是否非超管或Boss
+        /// </summary>
+        bool IsNotBossAndRoot { get; set; }
     }
 }

@@ -29,6 +29,12 @@ namespace Zcy.IService.Production
         Task<KdyResult> CreateReportWorkAsync(CreateReportWorkInput input);
 
         /// <summary>
+        /// 批量创建报工
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> BatchCreateReportWorkAsync(BatchCreateReportWorkInput input);
+
+        /// <summary>
         /// 批量删除
         /// </summary>
         /// <returns></returns>

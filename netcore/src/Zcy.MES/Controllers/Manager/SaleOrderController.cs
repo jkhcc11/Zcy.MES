@@ -67,5 +67,19 @@ namespace Zcy.MES.Controllers.Manager
             var result = await _saleOrderService.GetSaleOrderDetailAsync(id);
             return result;
         }
+
+        /// <summary>
+        /// 获取销售订单统计
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("get-totals")]
+        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
+        public async Task<KdyResult<GetSaleOrderTotalsDto>> GetSaleOrderTotalsAsync(
+            [FromQuery] QueryPageSaleOrderInput input)
+        {
+            var result = await _saleOrderService.GetSaleOrderTotalsAsync(input);
+            return result;
+        }
+
     }
 }

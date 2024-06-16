@@ -8,9 +8,6 @@
         /// <summary>
         /// 供应商|客户Id
         /// </summary>
-        /// <remarks>
-        /// todo:对于散户订单 不友好，根据情况设置是否可选
-        /// </remarks>
         public long SupplierClientId { get; set; }
 
         /// <summary>

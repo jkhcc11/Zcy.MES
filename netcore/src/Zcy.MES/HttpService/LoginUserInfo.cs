@@ -75,6 +75,11 @@ namespace Zcy.MES.HttpService
         public bool IsBoss { get; set; }
 
         /// <summary>
+        /// 是否非超管或Boss
+        /// </summary>
+        public bool IsNotBossAndRoot { get; set; }
+
+        /// <summary>
         /// 从当前请求初始化登录信息
         /// </summary>
         internal void InitUserInfo(HttpContext httpContext)
@@ -114,6 +119,9 @@ namespace Zcy.MES.HttpService
                 Type: JwtClaimTypes.Role,
                 Value: AuthorizationConst.NormalRoleName.Boss
             });
+
+            IsNotBossAndRoot = IsSuperAdmin == false &&
+                               IsBoss == false;
             //httpContext.Request.Headers.TryGetValue("Authorization", out var loginToken);
             //LoginToken = loginToken + "";
         }

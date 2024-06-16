@@ -31,6 +31,17 @@ namespace Zcy.MES.Controllers.Manager
         }
 
         /// <summary>
+        /// 批量创建报工
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("batch-create")]
+        public async Task<KdyResult> BatchCreateReportWorkAsync(BatchCreateReportWorkInput input)
+        {
+            var result = await _reportWorkService.BatchCreateReportWorkAsync(input);
+            return result;
+        }
+
+        /// <summary>
         /// 分页查询报工(管理员)
         /// </summary>
         /// <returns></returns>
@@ -83,7 +94,6 @@ namespace Zcy.MES.Controllers.Manager
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-totals")]
-        [Authorize(Roles = AuthorizationConst.NormalRoleName.BossAndRoot)]
         public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync([FromQuery] QueryPageReportWorkInput input)
         {
             var result = await _reportWorkService.GetReportWorkTotalsAsync(input);

@@ -48,6 +48,10 @@ namespace Zcy.Service.PurchaseSale
         public async Task<KdyResult<QueryPageDto<QueryPageReturnOrderDto>>> QueryPageReturnOrderAsync(QueryPageReturnOrderInput input)
         {
             var query = await _returnOrderRepository.GetQueryableAsync();
+            var timeRange = input.GetTimeRange();
+            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
+                                     a.OrderDate <= timeRange.eTime);
+
             query = query.CreateConditions(input);
 
             var result = await BaseQueryPageEntityAsync<ReturnOrder, QueryPageReturnOrderDto>(
@@ -140,7 +144,7 @@ namespace Zcy.Service.PurchaseSale
             var orderDetail = new List<ReturnOrderDetail>();
             foreach (var inputItem in input.OrderDetails)
             {
-                var dbItem = new ReturnOrderDetail(orderEntity.Id,
+                var dbItem = new ReturnOrderDetail(orderEntity.Id, orderDate,
                     inputItem.ProductId, inputItem.Count)
                 {
                     Remark = inputItem.Remark,

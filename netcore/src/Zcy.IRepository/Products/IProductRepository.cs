@@ -27,6 +27,16 @@ namespace Zcy.IRepository.Products
         Task<ProductProcess?> GetProductProcessesAsync(long productProcessesId);
 
         /// <summary>
+        /// 根据工序Ids获取产品工序
+        /// </summary>
+        /// <param name="productProcessesIds">工序Ids</param>
+        /// <remarks>
+        ///  会获取有效的产品工艺和产品
+        /// </remarks>
+        /// <returns></returns>
+        Task<List<ProductProcess>> GetProductProcessesAsync(long[] productProcessesIds);
+
+        /// <summary>
         /// 获取产品列表
         /// </summary>
         /// <param name="productIds">产品Id集合</param>

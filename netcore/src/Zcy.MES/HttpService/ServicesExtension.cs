@@ -10,6 +10,7 @@ using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using Snowflake.Core;
 using Zcy.BaseInterface;
+using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.BaseInterface.Service;
 using Zcy.Dto;

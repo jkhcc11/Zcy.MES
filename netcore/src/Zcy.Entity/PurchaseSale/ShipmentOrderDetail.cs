@@ -11,10 +11,12 @@ namespace Zcy.Entity.PurchaseSale
         /// 出货订单详情
         /// </summary>
         /// <param name="orderId">订单Id</param>
+        /// <param name="orderDate">订单日期</param>
         /// <param name="productId">产品Id</param>
         /// <param name="count">数量</param>
-        public ShipmentOrderDetail(long orderId, long productId, int count)
-            : base(orderId, productId, count)
+        public ShipmentOrderDetail(long orderId, DateTime orderDate,
+            long productId, int count)
+            : base(orderId, orderDate, productId, count)
         {
 
         }

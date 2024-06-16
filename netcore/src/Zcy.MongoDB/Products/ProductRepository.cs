@@ -182,7 +182,8 @@ namespace Zcy.MongoDB.Products
         public async Task<ProductProcess?> GetProductProcessesAsync(long productProcessesId)
         {
             var productProcesses = await _productProcessCollection
-                .Find(a => a.Id == productProcessesId)
+                .Find(a => a.Id == productProcessesId &&
+                           a.IsDelete == false)
                 .FirstOrDefaultAsync();
             if (productProcesses == null)
             {
@@ -207,6 +208,54 @@ namespace Zcy.MongoDB.Products
         }
 
         /// <summary>
+        /// 根据工序Ids获取产品工序
+        /// </summary>
+        /// <param name="productProcessesIds">工序Ids</param>
+        /// <remarks>
+        ///  会获取有效的产品工艺和产品
+        /// </remarks>
+        /// <returns></returns>
+        public async Task<List<ProductProcess>> GetProductProcessesAsync(long[] productProcessesIds)
+        {
+            var productProcesses = await _productProcessCollection
+                .Find(a => productProcessesIds.Contains(a.Id) &&
+                           a.IsDelete == false)
+                .ToListAsync();
+            if (productProcesses == null ||
+                productProcesses.Any() == false)
+            {
+                return new List<ProductProcess>();
+            }
+
+            var companyId = productProcesses.First().CompanyId;
+            //产品列表
+            var productIds = productProcesses.Select(a => a.ProductId).ToArray();
+            var products = await DbCollection
+                .Find(a => productIds.Contains(a.Id) &&
+                           a.CompanyId == companyId &&
+                           a.ProductStatus == PublicStatusEnum.Normal &&
+                           a.IsDelete == false)
+                .ToListAsync();
+
+            //工艺列表
+            var productCraftIds = productProcesses.Select(a => a.CraftId).ToArray();
+            var productCrafts = await _productCraftCollection
+                .Find(a => productCraftIds.Contains(a.Id) &&
+                           a.CompanyId == companyId &&
+                           a.CraftStatus == PublicStatusEnum.Normal &&
+                           a.IsDelete == false)
+                .ToListAsync();
+
+            foreach (var item in productProcesses)
+            {
+                item.Product = products.FirstOrDefault(a => a.Id == item.ProductId);
+                item.ProductCraft = productCrafts.FirstOrDefault(a => a.Id == item.CraftId);
+            }
+
+            return productProcesses;
+        }
+
+        /// <summary>
         /// 获取有效产品列表
         /// </summary>
         /// <param name="productIds">产品Id集合</param>
@@ -214,7 +263,7 @@ namespace Zcy.MongoDB.Products
         {
             var query = await GetQueryableAsync();
             query = query.Where(a => productIds.Contains(a.Id) &&
-                                     a.ProductStatus==PublicStatusEnum.Normal);
+                                     a.ProductStatus == PublicStatusEnum.Normal);
             return await (ToMongoQueryable(query)).ToListAsync();
         }
 
