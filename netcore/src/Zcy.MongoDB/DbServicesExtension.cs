@@ -52,7 +52,9 @@ namespace Zcy.MongoDB
             services.AddTransient<IReportWorkRepository, ReportWorkRepository>();
 
             services.AddTransient<IPurchaseOrderRepository, PurchaseOrderRepository>();
-            services.AddTransient<ISaleOrderRepository, SaleOrderRepository>(); 
+            services.AddTransient<IPurchaseOrderDetailRepository, PurchaseOrderDetailRepository>();
+            services.AddTransient<ISaleOrderRepository, SaleOrderRepository>();
+            services.AddTransient<ISaleOrderDetailRepository, SaleOrderDetailRepository>();
             services.AddTransient<IShipmentOrderRepository, ShipmentOrderRepository>();
             services.AddTransient<IReturnOrderRepository, ReturnOrderRepository>();
             //services.AddTransient<IActivationCodeRepository, ActivationCodeRepository>();
