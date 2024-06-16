@@ -268,3 +268,8 @@ export const PurchaseOrderApi = {
   detail: '/mes-manager/PurchaseOrder/get-detail',
   getTotals: '/mes-manager/PurchaseOrder/get-totals',
 }
+
+//数据报表
+export const DataReportApi = {
+  queryProductSale: '/mes-manager/DataReport/query-product-sale',
+}
