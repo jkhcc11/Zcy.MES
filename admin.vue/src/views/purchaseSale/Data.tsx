@@ -98,19 +98,15 @@ export const ProductFilterTableColumns = [
     fixed: 'left',
   },
   {
-    title: '创建时间',
-    key: 'createdTime',
-    width: 80,
-    ellipsis: {
-      tooltip: true,
-    },
-  },
-  {
-    title: '修改时间',
-    key: 'modifyTime',
-    width: 80,
-    ellipsis: {
-      tooltip: true,
+    title: '单位/规格',
+    key: 'unitSpec',
+    render: (rowData: any) => {
+      if (rowData.isLoose) {
+        //散件
+        return rowData.unit
+      }
+
+      return `${rowData.specCount}${rowData.unit}/${rowData.spec}`
     },
   },
 ]
@@ -337,7 +333,10 @@ export const SearchPurchaseOrderOptions = [
 export interface CreateSaleOrderDetailInput {
   productId: string
   productName: string
+  isLoose: boolean
   unit: string
+  spec: string
+  specCount: number
   count: number
   unitPrice: number
   remark: string

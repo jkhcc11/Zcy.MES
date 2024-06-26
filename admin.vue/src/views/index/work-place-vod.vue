@@ -7,12 +7,12 @@
             <div class="text-lg">ZCYMES Admin</div>
 
             <div class="text-sm text-gray-500"
-              >全新版本,有问题及时反馈 <br />
+              >Beta版本,有问题及时反馈 <br />
               <a
-                href="https://docs.qq.com/doc/DQXJzdlJPYW5MRUFT"
+                href="https://docs.qq.com/doc/DQU9BbG11d2N3ZEND"
                 style="color: blue; font-size: larger; font-weight: bold"
                 target="_blank"
-                >教程</a
+                >ZCYMES教程</a
               ></div
             >
           </div>

@@ -207,6 +207,7 @@ export const productApi = {
   delete: '/mes-manager/Product/delete',
   banOrEnable: '/mes-manager/Product/ban-or-enable',
   getOpen: '/mes-manager/Product/query-valid',
+  copy: '/mes-manager/Product/copy',
 }
 
 //报工
@@ -218,6 +219,9 @@ export const reportWorkApi = {
   delete: '/mes-manager/ReportWork/delete',
   update: '/mes-manager/ReportWork/update',
   getTotals: '/mes-manager/ReportWork/get-totals',
+
+  exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work',
+  exportProductReportWork: '/mes-manager/ReportWork/export-product-report-work',
 }
 
 //用户
@@ -231,6 +235,7 @@ export const userApi = {
   setUserRole: '/mes-manager/User/set-user-role',
   resetPwd: '/mes-manager/User/reset-pwd',
   modifyPwd: '/mes-login/User/modify-pwd',
+  depart: '/mes-manager/User/depart',
 }
 
 //销售订单

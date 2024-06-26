@@ -185,6 +185,12 @@
               }
 
               tempArray.push({
+                label: '离职',
+                type: 'warning',
+                onClick: onBtnClick.depart.bind(null, rowData),
+              } as TableActionModel)
+
+              tempArray.push({
                 label: '重置密码',
                 type: 'warning',
                 onClick: onBtnClick.reset.bind(null, rowData),
@@ -321,6 +327,24 @@
             onPositiveClick: () => {
               post({
                 url: userApi.resetPwd + '/' + rowData.id,
+              })
+                .then((res) => {
+                  doRefresh()
+                  message.success(res.msg)
+                })
+                .catch(console.log)
+            },
+          })
+        },
+        //离职
+        depart: function (rowData: any) {
+          naiveDialog.warning({
+            title: '提示',
+            content: `是否设置【${rowData.userNick}】此用户为离职状态？`,
+            positiveText: '确定',
+            onPositiveClick: () => {
+              post({
+                url: userApi.depart + '/' + rowData.id,
               })
                 .then((res) => {
                   doRefresh()

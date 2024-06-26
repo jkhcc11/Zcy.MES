@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-  import { get, post, sendDelete } from '@/api/http'
+  import { downloadFile, get, post, sendDelete } from '@/api/http'
   import { usePagination, useRowKey, useTable, useTableColumn, useTableHeight } from '@/hooks/table'
   import useUserStore from '@/store/modules/user'
   import { DataFormType, FormItem, ModalDialogType, TablePropsType } from '@/types/components'
@@ -381,41 +381,42 @@
         }
       }
 
-      // //下载文件
-      // function ondownloadFile(url: string, data: any) {
-      //   tableLoading.value = true
-      //   if (!data && formParams.value) {
-      //     data = formParams.value
-      //   }
-      //   downloadFile({
-      //     url,
-      //     data: data,
-      //   })
-      //     .then((response) => {
-      //       //不要启用mock
-      //       const { headers, data } = response
-      //       const resData = new Blob([data])
-      //       var headerName = headers['content-disposition']
-      //       var keyFlag = "UTF-8''",
-      //         keyIndex = headerName.indexOf(keyFlag),
-      //         newName = decodeURIComponent(headerName).substring(20)
-      //       if (keyIndex !== -1) {
-      //         newName = headerName.substring(keyIndex + keyFlag.length)
-      //       }
+      //下载文件
+      function onDownloadFile(url: string, data: any) {
+        tableLoading.value = true
+        if (!data && formParams.value) {
+          data = formParams.value
+        }
 
-      //       var fileName = decodeURIComponent(newName)
+        downloadFile({
+          url,
+          data: data,
+        })
+          .then((response) => {
+            //不要启用mock
+            const { headers, data } = response
+            const resData = new Blob([data])
+            var headerName = headers['content-disposition']
+            var keyFlag = "UTF-8''",
+              keyIndex = headerName.indexOf(keyFlag),
+              newName = decodeURIComponent(headerName).substring(20)
+            if (keyIndex !== -1) {
+              newName = headerName.substring(keyIndex + keyFlag.length)
+            }
 
-      //       const link = document.createElement('a')
-      //       link.href = window.URL.createObjectURL(resData)
-      //       link.setAttribute('download', fileName) // 设置下载的文件名
-      //       //document.body.appendChild(link)
-      //       link.click()
-      //       URL.revokeObjectURL(resData)
-      //     })
-      //     .finally(() => {
-      //       tableLoading.value = false
-      //     })
-      // }
+            var fileName = decodeURIComponent(newName)
+
+            const link = document.createElement('a')
+            link.href = window.URL.createObjectURL(resData)
+            link.setAttribute('download', fileName) // 设置下载的文件名
+            //document.body.appendChild(link)
+            link.click()
+            URL.revokeObjectURL(resData)
+          })
+          .finally(() => {
+            tableLoading.value = false
+          })
+      }
 
       /**
        * 获取查询参数
@@ -449,6 +450,7 @@
         showDialog, //给父组件使用
         closeDialog,
         doRefresh,
+        onDownloadFile,
         getCheckedRow,
         sendBatchByIds,
         getQueryParams,

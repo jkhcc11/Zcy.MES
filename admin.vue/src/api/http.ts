@@ -154,6 +154,21 @@ export function sendHttpWithCors(
   }
 }
 
+/**
+ * 下载blob格式文件 仅get
+ * @param param0
+ * @returns
+ */
+export function downloadFile({ url, data, headers, afterRequest }: HttpOption) {
+  const params = Object.assign(typeof data === 'function' ? data() : data || {}, {})
+  return request
+    .get(url, { params, headers: headers, responseType: 'blob' })
+    .then(afterRequest)
+    .catch((res) => {
+      window.$message.error('下载文件异常,请联系管理员')
+    })
+}
+
 function install(app: App): void {
   app.config.globalProperties.$http = http
 
@@ -170,4 +185,5 @@ export default {
   post,
   sendDelete,
   sendHttpWithCors,
+  downloadFile,
 }

@@ -16,6 +16,12 @@
     <template #tableToolbar>
       <n-space>
         <n-button type="info" size="small" @click="onBtnClick.create"> 创建 </n-button>
+
+        <n-button-group size="small">
+          <DownloadButton @export="onBtnClick.export"> 员工汇总 </DownloadButton>
+          <DownloadButton @export="onBtnClick.exportProduct"> 产品汇总 </DownloadButton>
+        </n-button-group>
+
         <n-tag :bordered="false" type="success">
           实结算价格： {{ totalsRef.totalActualSettlementPrice ?? '-' }}</n-tag
         >
@@ -304,6 +310,14 @@
               totalsRef.countingWordDuration = res.data.countingWordDuration
             })
             .finally(() => {})
+        },
+        //导出
+        export: function () {
+          commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportDayReportWork)
+        },
+        //导出产品
+        exportProduct: function () {
+          commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportProductReportWork)
         },
       }
 

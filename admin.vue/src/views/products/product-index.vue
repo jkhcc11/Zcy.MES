@@ -115,7 +115,7 @@
           fixed: 'left',
         },
         {
-          title: '工艺名',
+          title: '产品名',
           key: 'productName',
           fixed: 'left',
         },
@@ -200,9 +200,15 @@
           title: '操作',
           key: 'actions',
           fixed: 'right',
-          width: 120,
+          width: 125,
           render: (rowData: any) => {
             var tempArry: TableActionModel[] = []
+
+            tempArry.push({
+              label: '复制',
+              type: 'info',
+              onClick: onBtnClick.copy.bind(null, rowData),
+            } as TableActionModel)
 
             if (rowData.productStatus == PublicStatusEnum.正常) {
               if (rowData.productType == ProductTypeEnum.加工产品) {
@@ -327,6 +333,25 @@
             .finally(() => {
               doRefresh()
             })
+        },
+        //复制
+        copy: function (rowData: any) {
+          naiveDialog.warning({
+            title: '提示',
+            content: `是否确认复制【${rowData.productName}】这个产品？`,
+            positiveText: '确认',
+            onPositiveClick: () => {
+              post({
+                url: productApi.copy + '/' + rowData.id,
+                data: {},
+              })
+                .then((res) => {
+                  doRefresh()
+                  message.success(res.msg)
+                })
+                .catch(console.log)
+            },
+          })
         },
       }
 

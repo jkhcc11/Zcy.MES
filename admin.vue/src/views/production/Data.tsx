@@ -27,7 +27,7 @@ export const SearchReportWorkOptions = [
     value: ref(null),
     render: (formItem) =>
       renderInput(formItem.value, {
-        placeholder: '关键字',
+        placeholder: '产品名、工艺名 等关键字',
         clearable: true,
       }),
   },

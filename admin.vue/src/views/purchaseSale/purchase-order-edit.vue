@@ -57,8 +57,8 @@
 
 <script lang="ts">
   import { PurchaseOrderApi, productApi } from '@/api/url'
-  import { NButton, NInput, NInputNumber, useMessage } from 'naive-ui'
-  import { defineComponent, h, onMounted, reactive, ref, watch } from 'vue'
+  import { useMessage } from 'naive-ui'
+  import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
   import { RouteRecordRaw, useRouter } from 'vue-router'
   import { post } from '@/api/http'
   import useVisitedRouteStore from '@/store/modules/visited-routes'
@@ -73,7 +73,7 @@
   import useClientCacheStore from '@/store/modules/client-cache'
   import useCompanyCacheStore from '@/store/modules/company'
   import { getListByEnum } from '@/utils'
-  import { BaseCreateOrderFormOptions } from './BaseData'
+  import { BaseCreateOrderFormOptions, SeleProductEditTableColumns } from './BaseData'
   export default defineComponent({
     name: 'PurchaseOrderEdit',
     setup() {
@@ -94,84 +94,7 @@
         title: null,
         orderPrice: null,
         freightPrice: null,
-        detailTableColumns: [
-          {
-            title: '产品名',
-            key: 'productName',
-          },
-          {
-            title: '单位',
-            key: 'unit',
-          },
-          {
-            title: '数量',
-            key: 'count',
-            render(row: any, index: number) {
-              return h(NInputNumber, {
-                value: row.count,
-                min: 1,
-                max: 9999,
-                precision: 0,
-                placeholder: '数量',
-                onUpdateValue(newVal: any) {
-                  orderDetailData[index].count = newVal
-                },
-              })
-            },
-          },
-          {
-            title: '单价（元）',
-            key: 'unitPrice',
-            render(row: any, index: number) {
-              return h(NInputNumber, {
-                value: row.unitPrice,
-                min: 0.01,
-                max: 9999,
-                precision: 2,
-                placeholder: '产品单价',
-                onUpdateValue(newVal: any) {
-                  orderDetailData[index].unitPrice = newVal
-                },
-              })
-            },
-          },
-          {
-            title: '总价（单价*数量）',
-            key: 'sumPrice',
-            render: (rowData: any) => {
-              rowData.sumPrice = (rowData.unitPrice * rowData.count).toFixed(2)
-              return rowData.sumPrice
-            },
-          },
-          {
-            title: '产品备注',
-            key: 'remark',
-            render(row: any, index: number) {
-              return h(NInput, {
-                value: row.remark,
-                placeholder: '产品备注',
-                onUpdateValue(newVal: any) {
-                  orderDetailData[index].remark = newVal
-                },
-              })
-            },
-          },
-          {
-            title: '操作',
-            key: 'actions',
-            render(rowData: any) {
-              return h(
-                NButton,
-                {
-                  type: 'error',
-                  size: 'small',
-                  onClick: () => onRemoveItem(rowData),
-                },
-                { default: () => '移除' }
-              )
-            },
-          },
-        ],
+        detailTableColumns: SeleProductEditTableColumns(onRemoveItem),
         tableColumns: ProductFilterTableColumns,
       })
 
@@ -283,6 +206,9 @@
             productId: item.id,
             productName: item.productName,
             unit: item.unit,
+            spec: item.spec,
+            specCount: item.specCount,
+            isLoose: item.isLoose,
             remark: '',
             unitPrice: 0.01,
             count: 1,

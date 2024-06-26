@@ -17,7 +17,10 @@
         <n-tag :bordered="false" type="success">
           总销售价： {{ totalsRef.sumSalePrice ?? '-' }}</n-tag
         >
-        <n-tag :bordered="false" type="warning">
+        <n-tag
+          :bordered="false"
+          :type="(totalsRef.sumProfitPrice ?? 0) <= 0 ? 'warning' : 'success'"
+        >
           总盈亏： {{ totalsRef.sumProfitPrice ?? '-' }}</n-tag
         >
 
@@ -140,7 +143,7 @@
           }, 0)
 
           totalsRef.sumProfitPrice = data.reduce((total: any, item: any) => {
-            return total + (item.sumProfitPrice || 0)
+            return total + (item.profitPrice || 0)
           }, 0)
         },
       }

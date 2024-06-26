@@ -15,7 +15,7 @@ function vawBoot() {
   useGlobalComponents(app)
   useRouterGuard()
   setupNaiveDiscreteApi()
-  useMock()
+  //useMock()
   app.mount('#app')
 }
 

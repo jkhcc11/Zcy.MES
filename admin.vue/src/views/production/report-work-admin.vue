@@ -18,6 +18,11 @@
         <n-button type="info" size="small" @click="onBtnClick.create"> 创建 </n-button>
 
         <n-button type="warning" size="small" @click="onBtnClick.batchCreate"> 批量创建 </n-button>
+
+        <n-button-group size="small">
+          <DownloadButton @export="onBtnClick.export"> 员工汇总 </DownloadButton>
+          <DownloadButton @export="onBtnClick.exportProduct"> 产品汇总 </DownloadButton>
+        </n-button-group>
         <n-tag :bordered="false" type="warning">
           计时总工时： {{ totalsRef.timingWordDuration ?? '-' }}</n-tag
         >
@@ -243,6 +248,14 @@
               totalsRef.countingWordDuration = res.data.countingWordDuration
             })
             .finally(() => {})
+        },
+        //导出
+        export: function () {
+          commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportDayReportWork)
+        },
+        //导出产品
+        exportProduct: function () {
+          commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportProductReportWork)
         },
       }
 

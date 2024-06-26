@@ -51,6 +51,7 @@
   import { useRouter } from 'vue-router'
   import useCompanyCacheStore from '@/store/modules/company'
   import useClientCacheStore from '@/store/modules/client-cache'
+  import { OrderDetailTableColumns } from './BaseData'
   export default defineComponent({
     name: 'PurchaseOrderIndex',
     setup() {
@@ -63,32 +64,7 @@
 
       const detailData = reactive<any>({
         orderDetailData: [],
-        orderDetailTableColumns: [
-          {
-            title: '产品名',
-            key: 'productName',
-          },
-          {
-            title: '数量',
-            key: 'count',
-          },
-          {
-            title: '单位',
-            key: 'unit',
-          },
-          {
-            title: '单价（元）',
-            key: 'unitPrice',
-          },
-          {
-            title: '总价（单价*数量）',
-            key: 'sumPrice',
-          },
-          {
-            title: '产品备注',
-            key: 'remark',
-          },
-        ],
+        orderDetailTableColumns: OrderDetailTableColumns,
       })
       const totalsRef = reactive({
         sumOrderPrice: null,

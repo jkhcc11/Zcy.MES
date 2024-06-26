@@ -114,19 +114,55 @@
             key: 'craftName',
           },
           {
+            title: '计费类型',
+            key: 'billingType',
+            render: (rowData: any) =>
+              renderTagByEnum(
+                rowData.billingType,
+                BillingTypeEnum,
+                {
+                  1: 'info',
+                  2: 'warning',
+                },
+                {
+                  size: 'small',
+                }
+              ),
+          },
+          {
             title: '工作时长',
             key: 'wordDuration',
             render(row: any, index: number) {
-              return h(NInputNumber, {
-                value: row.wordDuration,
-                min: 0.1,
-                max: 9999,
-                precision: 1,
-                placeholder: '工作时长',
-                onUpdateValue(newVal: any) {
-                  productProcessesData[index].wordDuration = newVal
+              let numberMax = 99999
+              let precision = 0
+              if (row.billingType == BillingTypeEnum.计时) {
+                numberMax = 24
+                precision = 1
+              }
+
+              return h(
+                NInputNumber,
+                {
+                  value: row.wordDuration,
+                  min: 0.1,
+                  max: numberMax,
+                  precision: precision,
+                  placeholder: '工作时长',
+                  onUpdateValue(newVal: any) {
+                    productProcessesData[index].wordDuration = newVal
+                  },
                 },
-              })
+                {
+                  suffix: () => {
+                    let unit = '个'
+                    if (row.billingType == BillingTypeEnum.计时) {
+                      unit = '小时'
+                    }
+
+                    return `${unit}`
+                  },
+                }
+              )
             },
           },
           {
