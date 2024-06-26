@@ -100,5 +100,16 @@ namespace Zcy.MES.Controllers.Manager
             var result = await _userService.DeleteUserAsync(userId);
             return result;
         }
+
+        /// <summary>
+        /// 用户离职
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("depart/{userId}")]
+        public async Task<KdyResult> DepartUserAsync(long userId)
+        {
+            var result = await _userService.DepartUserAsync(userId);
+            return result;
+        }
     }
 }

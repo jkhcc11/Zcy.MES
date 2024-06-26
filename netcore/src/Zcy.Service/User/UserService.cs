@@ -380,5 +380,22 @@ namespace Zcy.Service.User
             var result = BaseMapper.Map<List<SystemUser>, List<GetCurrentCompanyValidEmployeeDto>>(allEmployee);
             return KdyResult.Success(result);
         }
+
+        /// <summary>
+        /// 用户离职
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> DepartUserAsync(long userId)
+        {
+            var dbEntity = await _userRepository.FirstOrDefaultAsync(userId);
+            if (dbEntity == null)
+            {
+                return KdyResult.Error<UserLoginDto>(KdyResultCode.Error, "非法访问，用户Id不存在");
+            }
+
+            dbEntity.SetDepart();
+            await _userRepository.UpdateAsync(dbEntity);
+            return KdyResult.Success();
+        }
     }
 }

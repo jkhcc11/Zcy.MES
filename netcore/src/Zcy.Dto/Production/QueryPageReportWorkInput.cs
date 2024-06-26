@@ -1,4 +1,6 @@
-﻿using Zcy.BaseInterface;
+﻿using System.ComponentModel.DataAnnotations;
+using Zcy.BaseInterface;
+using Zcy.BaseInterface.BaseModel;
 using Zcy.Entity.Production;
 
 namespace Zcy.Dto.Production
@@ -6,7 +8,7 @@ namespace Zcy.Dto.Production
     /// <summary>
     /// 分页查询报工
     /// </summary>
-    public class QueryPageReportWorkInput : QueryPageInput
+    public class QueryPageReportWorkInput : QueryPageInput, IBaseTimeRangeInput
     {
         /// <summary>
         /// 关键字
@@ -31,11 +33,13 @@ namespace Zcy.Dto.Production
         /// <summary>
         /// 开始时间
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime? StartTime { get; set; }
 
         /// <summary>
-        /// 结束时间
+        /// 结算时间
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime? EndTime { get; set; }
     }
 }

@@ -13,10 +13,13 @@ namespace Zcy.MES.Controllers.Manager
     public class ReportWorkController : BaseManagerController
     {
         private readonly IReportWorkService _reportWorkService;
+        private readonly IReportWorkImportAndExportAppService _reportWorkImportAndExportAppService;
 
-        public ReportWorkController(IReportWorkService reportWorkService)
+        public ReportWorkController(IReportWorkService reportWorkService,
+            IReportWorkImportAndExportAppService reportWorkImportAndExportAppService)
         {
             _reportWorkService = reportWorkService;
+            _reportWorkImportAndExportAppService = reportWorkImportAndExportAppService;
         }
 
         /// <summary>
@@ -98,6 +101,32 @@ namespace Zcy.MES.Controllers.Manager
         {
             var result = await _reportWorkService.GetReportWorkTotalsAsync(input);
             return result;
+        }
+
+        /// <summary>
+        /// 导出员工报工
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export-day-report-work")]
+        public async Task<IActionResult> ExportDayReportWorkAsync([FromQuery] QueryPageReportWorkInput input)
+        {
+            var fileBytes = await _reportWorkImportAndExportAppService.ExportDayReportWorkAsync(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 员工汇总.xlsx";
+            return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
+        }
+
+        /// <summary>
+        /// 导出产品报工
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export-product-report-work")]
+        public async Task<IActionResult> ExportProductReportWorkAsync([FromQuery] QueryPageReportWorkInput input)
+        {
+            var fileBytes = await _reportWorkImportAndExportAppService.ExportProductReportWorkAsync(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 产品汇总.xlsx";
+            return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
         }
     }
 }

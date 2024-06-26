@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Zcy.Entity\Zcy.Entity.csproj" />
+    <ProjectReference Include="..\Zcy.ExcelNopi\Zcy.ExcelNpoi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -99,5 +99,16 @@ namespace Zcy.MES.Controllers.Manager
             var result = await _productService.GetProductDetailCascadeAsync(id);
             return result;
         }
+
+        /// <summary>
+        /// 复制产品
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("copy/{id}")]
+        public async Task<KdyResult> CopyAsync(long id)
+        {
+            var result = await _productService.CopyAsync(id);
+            return result;
+        }
     }
 }

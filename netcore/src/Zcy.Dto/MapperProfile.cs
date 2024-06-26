@@ -3,6 +3,7 @@ using Zcy.BaseInterface;
 using Zcy.Dto.Company;
 using Zcy.Dto.FinancialMemo;
 using Zcy.Dto.Production;
+using Zcy.Dto.Production.Exports;
 using Zcy.Dto.Products;
 using Zcy.Dto.PurchaseSale;
 using Zcy.Dto.SysBaseInfo;
@@ -82,6 +83,12 @@ namespace Zcy.Dto
                 .ForMember(dest => dest.ReportWorkDate,
                     target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
             CreateMap<ReportWork, QueryPageReportWorkForAdminDto>()
+                .ForMember(dest => dest.ReportWorkDate,
+                    target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
+            CreateMap<ReportWork, ExportDayReportWorkDto>()
+                .ForMember(dest => dest.ReportWorkDate,
+                    target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
+            CreateMap<ReportWork, ExportReportWorkWithProductDto>()
                 .ForMember(dest => dest.ReportWorkDate,
                     target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
 

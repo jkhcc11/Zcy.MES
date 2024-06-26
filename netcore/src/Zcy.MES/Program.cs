@@ -60,7 +60,8 @@ namespace Zcy.MES
                     {
                         corsBuilder.WithOrigins(corsHost.Split(","))
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .WithExposedHeaders("Content-Disposition"); //下载文件时 需要通过这个来获取名称
                     });
                 });
 

@@ -78,6 +78,12 @@ namespace Zcy.IService.User
         /// </summary>
         /// <returns></returns>
         Task<KdyResult<List<GetCurrentCompanyValidEmployeeDto>>> GetCurrentCompanyValidEmployeeAsync();
+
+        /// <summary>
+        /// 用户离职
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> DepartUserAsync(long userId);
         ///// <summary>
         ///// 批量导入用户
         ///// </summary>

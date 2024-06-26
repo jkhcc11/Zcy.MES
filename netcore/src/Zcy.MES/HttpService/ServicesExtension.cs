@@ -14,6 +14,7 @@ using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
 using Zcy.BaseInterface.Service;
 using Zcy.Dto;
+using Zcy.ExcelNpoi;
 using Zcy.IService.SysBaseInfo;
 using Zcy.IService.User;
 using Zcy.MongoDB;
@@ -136,6 +137,7 @@ namespace Zcy.MES.HttpService
 
             services.AddAllService();
 
+            services.AddZcyExcelService();
             //services.AddTransient<IWebConfigService, WebConfigService>();
             //services.AddTransient<IWebConfigAdminService, WebConfigAdminService>();
             //services.AddTransient<IActivationCodeAdminService, ActivationCodeAdminService>();

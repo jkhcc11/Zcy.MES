@@ -239,7 +239,7 @@ namespace Zcy.Service.PurchaseSale
         private async Task<IQueryable<SaleOrder>> BuildFilterAsync(QueryPageSaleOrderInput input)
         {
             var query = await _saleOrderRepository.GetQueryableAsync();
-            var timeRange = input.GetTimeRange();
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             query = query.Where(a => a.OrderDate >= timeRange.sTime &&
                                      a.OrderDate <= timeRange.eTime);
 

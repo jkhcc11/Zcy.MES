@@ -48,7 +48,7 @@ namespace Zcy.Service.PurchaseSale
         public async Task<KdyResult<QueryPageDto<QueryPageReturnOrderDto>>> QueryPageReturnOrderAsync(QueryPageReturnOrderInput input)
         {
             var query = await _returnOrderRepository.GetQueryableAsync();
-            var timeRange = input.GetTimeRange();
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             query = query.Where(a => a.OrderDate >= timeRange.sTime &&
                                      a.OrderDate <= timeRange.eTime);
 

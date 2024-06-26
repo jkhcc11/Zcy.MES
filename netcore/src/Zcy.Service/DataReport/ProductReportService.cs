@@ -30,7 +30,7 @@ namespace Zcy.Service.DataReport
         {
             //todo：目前是实时查的，后面需要直接出报表
             var saleOrderQuery = await _saleOrderDetailRepository.GetQueryableAsync();
-            var timeRange = input.GetTimeRange();
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             saleOrderQuery = saleOrderQuery
                 .Where(a => a.OrderDate >= timeRange.sTime &&
                             a.OrderDate <= timeRange.eTime);
@@ -68,7 +68,7 @@ namespace Zcy.Service.DataReport
                     a.Key.ProductId,
                     a.Key.ProductName,
                     SaleCount = a.Sum(b => b.Count),
-                    AvgSaleUnitPrice = a.Average(b => b.UnitPrice),
+                    AvgSaleUnitPrice = Math.Round(a.Average(b => b.UnitPrice), 2),
                     SumSalePrice = a.Sum(b => b.SumPrice)
                 })
                 .ToList();
@@ -84,7 +84,7 @@ namespace Zcy.Service.DataReport
                     a.Key.ProductId,
                     a.Key.ProductName,
                     PurchaseCount = a.Sum(b => b.Count),
-                    AvgPurchaseUnitPrice = a.Average(b => b.UnitPrice),
+                    AvgPurchaseUnitPrice = Math.Round(a.Average(b => b.UnitPrice), 2),
                     SumPurchasePrice = a.Sum(b => b.SumPrice)
                 })
                 .ToList();

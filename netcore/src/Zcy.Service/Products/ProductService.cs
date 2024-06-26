@@ -165,7 +165,6 @@ namespace Zcy.Service.Products
             }
             #endregion
 
-
             var result = BaseMapper.Map<Product, GetProductDetailDto>(entity);
             return KdyResult.Success(result);
         }
@@ -215,6 +214,57 @@ namespace Zcy.Service.Products
             var dbList = await _productRepository.ToListAsync(query);
             var result = BaseMapper.Map<IReadOnlyList<Product>, List<QueryValidProductDto>>(dbList);
             return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 复制
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> CopyAsync(long productId)
+        {
+            var entity = await _productRepository.FirstOrDefaultAsync(productId);
+            if (entity == null)
+            {
+                return KdyResult.Error<GetProductDetailDto>(KdyResultCode.Error, "Id参数无效");
+            }
+
+            var newEntity = new Product(IdGenerateExtension.GenerateId(),
+                entity.ProductTypeId, $"{entity.ProductName} 复制",
+                entity.ProductType,
+                entity.IsLoose,
+                entity.Unit)
+            {
+                ProductRemark = entity.ProductRemark,
+                CompanyId = LoginUserInfo.CompanyId
+            };
+
+            if (entity.IsLoose)
+            {
+                entity.Spec = null;
+                entity.SpecCount = 0;
+            }
+            else
+            {
+                entity.Spec = entity.Spec;
+                entity.SpecCount = entity.SpecCount;
+            }
+
+            if (entity.ProductProcesses != null &&
+                entity.ProductProcesses.Any())
+            {
+                newEntity.ProductProcesses = entity.ProductProcesses
+                    .Select(a => new ProductProcess(IdGenerateExtension.GenerateId(),
+                        newEntity.Id,
+                        a.CraftId)
+                    {
+                        ProcessingPrice = a.ProcessingPrice,
+                        OrderBy = a.OrderBy
+                    })
+                    .ToList();
+            }
+
+            await _productRepository.CreateAsync(newEntity);
+            return KdyResult.Success();
         }
 
         #region 私有

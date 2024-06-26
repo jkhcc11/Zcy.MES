@@ -51,5 +51,11 @@ namespace Zcy.IService.Products
         /// </summary>
         /// <returns></returns>
         Task<KdyResult<List<QueryValidProductDto>>> QueryValidProductAsync(QueryValidProductInput input);
+
+        /// <summary>
+        /// 复制
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> CopyAsync(long productId);
     }
 }

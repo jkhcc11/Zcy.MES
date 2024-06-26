@@ -42,20 +42,9 @@ namespace Zcy.Service.Production
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
-            var startTime = DateTime.Today.AddDays(-30);
-            var endTime = DateTime.Today;
-            if (input.StartTime.HasValue)
-            {
-                startTime = input.StartTime.Value.Date;
-            }
-
-            if (input.EndTime.HasValue)
-            {
-                endTime = input.EndTime.Value.Date;
-            }
-
-            query = query.Where(a => a.ReportWorkDate >= startTime &&
-                                     a.ReportWorkDate <= endTime);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime);
             var result = await BaseQueryPageEntityAsync<ReportWork, QueryPageReportWorkDto>(
                 _reportWorkRepository, query, input);
             if (result.Data.Items.Any() == false)
@@ -76,20 +65,10 @@ namespace Zcy.Service.Production
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
-            var startTime = DateTime.Today.AddDays(-30);
-            var endTime = DateTime.Today;
-            if (input.StartTime.HasValue)
-            {
-                startTime = input.StartTime.Value.Date;
-            }
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
 
-            if (input.EndTime.HasValue)
-            {
-                endTime = input.EndTime.Value.Date;
-            }
-
-            query = query.Where(a => a.ReportWorkDate >= startTime &&
-                                     a.ReportWorkDate <= endTime);
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime);
             var result = await BaseQueryPageEntityAsync<ReportWork, QueryPageReportWorkForAdminDto>(
                 _reportWorkRepository, query, input);
             if (result.Data.Items.Any() == false)

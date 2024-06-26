@@ -112,33 +112,17 @@ namespace Zcy.Service.FinancialMemo
 
         private async Task<IQueryable<IncomeRecord>> BuildFilterAsync(QueryPageIncomeRecordInput input)
         {
-            DateTime startTime = DateTime.Now.AddDays(-30),
-                endTime = DateTime.Now.AddDays(1);
-            if (input.StartTime is { })
-            {
-                startTime = input.StartTime.Value;
-            }
-
-            if (input.EndTime is { })
-            {
-                endTime = input.EndTime.Value;
-            }
-
-            if ((endTime - startTime).TotalDays > 366)
-            {
-                throw new ZcyCustomException("时间范围错误，最大一年范围");
-            }
-
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             var query = await _incomeRecordRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
             if (input.StartTime.HasValue)
             {
-                query = query.Where(a => a.RecordDate >= startTime);
+                query = query.Where(a => a.RecordDate >= timeRange.sTime);
             }
 
             if (input.EndTime.HasValue)
             {
-                query = query.Where(a => a.RecordDate <= endTime);
+                query = query.Where(a => a.RecordDate <= timeRange.eTime);
             }
 
             return query;

@@ -11,5 +11,10 @@
         /// 时间格式
         /// </summary>
         public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+        /// <summary>
+        /// Xlsx ContextType
+        /// </summary>
+        public const string DownXlsxContextType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     }
 }

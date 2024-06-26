@@ -1,4 +1,6 @@
-﻿using Zcy.BaseInterface;
+﻿using System.ComponentModel.DataAnnotations;
+using Zcy.BaseInterface;
+using Zcy.BaseInterface.BaseModel;
 using Zcy.Entity.FinancialMemo;
 
 namespace Zcy.Dto.FinancialMemo
@@ -6,7 +8,7 @@ namespace Zcy.Dto.FinancialMemo
     /// <summary>
     /// 查询收款记录
     /// </summary>
-    public class QueryPageProceedsRecordInput : QueryPageInput
+    public class QueryPageProceedsRecordInput : QueryPageInput, IBaseTimeRangeInput
     {
         /// <summary>
         /// 客户Id
@@ -24,11 +26,13 @@ namespace Zcy.Dto.FinancialMemo
         /// <summary>
         /// 开始时间
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime? StartTime { get; set; }
 
         /// <summary>
-        /// 结束时间
+        /// 结算时间
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime? EndTime { get; set; }
     }
 }

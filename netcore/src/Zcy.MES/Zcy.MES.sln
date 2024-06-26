@@ -11,21 +11,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.DB", "2.DB", "{91F87263-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Service", "3.Service", "{9122BA22-A4FE-499A-900F-8F339A31337C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.Entity", "..\Zcy.Entity\Zcy.Entity.csproj", "{18D405B2-0C66-424D-83B1-794369F20294}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.Entity", "..\Zcy.Entity\Zcy.Entity.csproj", "{18D405B2-0C66-424D-83B1-794369F20294}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.IRepository", "..\Zcy.IRepository\Zcy.IRepository.csproj", "{F1A99F47-7BA3-41BC-AE6A-8C6FE6DF52C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.IRepository", "..\Zcy.IRepository\Zcy.IRepository.csproj", "{F1A99F47-7BA3-41BC-AE6A-8C6FE6DF52C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.MongoDB", "..\Zcy.MongoDB\Zcy.MongoDB.csproj", "{77A1121E-B69D-439E-9E78-516A2C473E8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.MongoDB", "..\Zcy.MongoDB\Zcy.MongoDB.csproj", "{77A1121E-B69D-439E-9E78-516A2C473E8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.BaseInterface", "..\Zcy.BaseInterface\Zcy.BaseInterface.csproj", "{EB0A9A0F-E12B-475E-B433-A5A3642B66D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.BaseInterface", "..\Zcy.BaseInterface\Zcy.BaseInterface.csproj", "{EB0A9A0F-E12B-475E-B433-A5A3642B66D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.IService", "..\Zcy.IService\Zcy.IService.csproj", "{AC147F53-6A9B-4F76-9312-5FEAD2D9A6E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.IService", "..\Zcy.IService\Zcy.IService.csproj", "{AC147F53-6A9B-4F76-9312-5FEAD2D9A6E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.Utility", "..\Zcy.Utility\Zcy.Utility.csproj", "{C7158225-0C26-43C8-B9B1-71A01F101C2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.Utility", "..\Zcy.Utility\Zcy.Utility.csproj", "{C7158225-0C26-43C8-B9B1-71A01F101C2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.Service", "..\Zcy.Service\Zcy.Service.csproj", "{DB8B4082-1CB1-4AF2-8673-94815D3FE389}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.Service", "..\Zcy.Service\Zcy.Service.csproj", "{DB8B4082-1CB1-4AF2-8673-94815D3FE389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.Dto", "..\Zcy.Dto\Zcy.Dto.csproj", "{31DA1916-D2D6-4A28-8CCF-EBEB4DB75773}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zcy.Dto", "..\Zcy.Dto\Zcy.Dto.csproj", "{31DA1916-D2D6-4A28-8CCF-EBEB4DB75773}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zcy.ExcelNpoi", "..\Zcy.ExcelNopi\Zcy.ExcelNpoi.csproj", "{351DD4A3-3C2F-47CB-9603-0656C766AFC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{31DA1916-D2D6-4A28-8CCF-EBEB4DB75773}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DA1916-D2D6-4A28-8CCF-EBEB4DB75773}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DA1916-D2D6-4A28-8CCF-EBEB4DB75773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{351DD4A3-3C2F-47CB-9603-0656C766AFC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{351DD4A3-3C2F-47CB-9603-0656C766AFC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{351DD4A3-3C2F-47CB-9603-0656C766AFC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{351DD4A3-3C2F-47CB-9603-0656C766AFC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{AC147F53-6A9B-4F76-9312-5FEAD2D9A6E5} = {9122BA22-A4FE-499A-900F-8F339A31337C}
 		{C7158225-0C26-43C8-B9B1-71A01F101C2C} = {B87A59E1-DE6B-421B-97EC-97CF2E9F72D8}
 		{DB8B4082-1CB1-4AF2-8673-94815D3FE389} = {9122BA22-A4FE-499A-900F-8F339A31337C}
+		{351DD4A3-3C2F-47CB-9603-0656C766AFC5} = {B87A59E1-DE6B-421B-97EC-97CF2E9F72D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F409186-5D92-42BE-902E-47E4E4C08F3F}
