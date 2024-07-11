@@ -47,6 +47,11 @@ export interface UserState {
   isSuperAdmin: boolean
 }
 
+export enum BooleanEnum {
+  是 = 'true',
+  否 = 'false',
+}
+
 //2024------------------mes
 //状态
 export enum PublicStatusEnum {
