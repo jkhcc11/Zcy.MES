@@ -1,5 +1,7 @@
 ﻿
 
+using Org.BouncyCastle.Bcpg.OpenPgp;
+
 namespace Zcy.Dto.User
 {
     /// <summary>
@@ -44,5 +46,23 @@ namespace Zcy.Dto.User
         /// 禁用状态时，清空登录信息 退出
         /// </remarks>
         public bool IsBan { get; set; }
+
+        public void SetAdmin()
+        {
+            IsShowBaseData = true;
+            AdminReport = true;
+            MeReport= true;
+        }
+
+        public void SetBoss()
+        {
+            IsShowBaseData = true;
+            IsPurchaseSaleShow = true;
+            IsFinancialMemoShow = true;
+
+            AdminReport = true;
+            MeReport = true;
+            BossReport = true;
+        }
     }
 }

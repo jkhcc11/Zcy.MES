@@ -77,18 +77,12 @@ namespace Zcy.MES.Controllers.Login
             if (_loginUserInfo.IsNotBossAndRoot)
             {
                 //管理
-                resultDto.IsShowBaseData = true;
-                resultDto.AdminReport = true;
+                resultDto.SetAdmin();
                 return KdyResult.Success(resultDto);
             }
 
             //超管或boss
-            resultDto.IsShowBaseData = true;
-            resultDto.IsPurchaseSaleShow = true;
-            resultDto.IsFinancialMemoShow = true;
-            resultDto.MeReport = true;
-            resultDto.AdminReport = true;
-            resultDto.BossReport = true;
+            resultDto.SetBoss();
             return KdyResult.Success(resultDto);
         }
     }
