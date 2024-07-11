@@ -35,7 +35,7 @@ namespace Zcy.Dto.Production
         public long ProductProcessId { get; set; }
 
         /// <summary>
-        /// 工作时长
+        /// 工作量
         /// </summary>
         /// <remarks>
         ///  数量或时长

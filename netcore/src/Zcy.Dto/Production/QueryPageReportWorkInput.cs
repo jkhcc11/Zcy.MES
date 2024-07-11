@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
+using Zcy.Entity.Company;
 using Zcy.Entity.Production;
 
 namespace Zcy.Dto.Production
@@ -29,6 +30,13 @@ namespace Zcy.Dto.Production
         /// </summary>
         [ZcyQuery(nameof(ReportWork.ProductProcessId), ZcyOperator.Equal)]
         public long? ProductProcessId { get; set; }
+
+        /// <summary>
+        /// 报工状态
+        /// </summary>
+        [ZcyQuery(nameof(ReportWork.ReportWorkStatus), ZcyOperator.Equal)]
+        [EnumDataType(typeof(PublicStatusEnum))]
+        public PublicStatusEnum? ReportWorkStatus { get; set; }
 
         /// <summary>
         /// 开始时间

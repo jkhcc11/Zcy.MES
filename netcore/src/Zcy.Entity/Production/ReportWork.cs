@@ -1,5 +1,6 @@
 ﻿using System;
 using Zcy.BaseInterface.Entities;
+using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 
 namespace Zcy.Entity.Production
@@ -16,16 +17,23 @@ namespace Zcy.Entity.Production
         /// <param name="employeeNickName">员工用户昵称</param>
         /// <param name="reportWorkDate">报工日期</param>
         /// <param name="productProcessId">工序Id</param>
-        /// <param name="wordDuration">工作时长</param>
+        /// <param name="wordDuration">工作量</param>
+        /// <param name="reportWorkStatus">
+        /// 报工状态 <br/>
+        ///  管理员：默认正常 <br/>
+        ///  员工提交：待审批
+        /// </param>
         public ReportWork(long employeeId, string employeeNickName,
             DateTime reportWorkDate,
-            long productProcessId, decimal wordDuration)
+            long productProcessId, decimal wordDuration,
+            PublicStatusEnum reportWorkStatus)
         {
             EmployeeId = employeeId;
             ProductProcessId = productProcessId;
             WordDuration = wordDuration;
             ReportWorkDate = reportWorkDate;
             EmployeeNickName = employeeNickName;
+            ReportWorkStatus = reportWorkStatus;
         }
 
         /// <summary>
@@ -49,7 +57,7 @@ namespace Zcy.Entity.Production
         public long ProductProcessId { get; protected set; }
 
         /// <summary>
-        /// 工作时长
+        /// 工作量
         /// </summary>
         /// <remarks>
         ///  数量或时长
@@ -75,6 +83,11 @@ namespace Zcy.Entity.Production
         /// 公司Id
         /// </summary>
         public long CompanyId { get; set; }
+
+        /// <summary>
+        /// 报工状态
+        /// </summary>
+        public PublicStatusEnum ReportWorkStatus { get; protected set; }
 
         #region 冗余
         /// <summary>
@@ -149,6 +162,30 @@ namespace Zcy.Entity.Production
         public void SetActualSettlementPrice(decimal actualSettlementPrice)
         {
             ActualSettlementPrice = actualSettlementPrice;
+        }
+
+        /// <summary>
+        /// 通过
+        /// </summary>
+        public void Approved()
+        {
+            ReportWorkStatus = PublicStatusEnum.Normal;
+        }
+
+        /// <summary>
+        /// 驳回
+        /// </summary>
+        public void Reject()
+        {
+            ReportWorkStatus = PublicStatusEnum.Reject;
+        }
+
+        /// <summary>
+        /// 禁用
+        /// </summary>
+        public void Ban()
+        {
+            ReportWorkStatus = PublicStatusEnum.Ban;
         }
     }
 }

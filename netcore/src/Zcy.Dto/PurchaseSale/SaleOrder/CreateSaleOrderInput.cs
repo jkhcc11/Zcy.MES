@@ -17,7 +17,7 @@ namespace Zcy.Dto.PurchaseSale
         public AccountTypeEnum? AccountType { get; set; }
 
         /// <summary>
-        /// 客户Id todo:对于散户订单 不友好，根据情况设置是否可选
+        /// 客户Id
         /// </summary>
         [Range(9999999, long.MaxValue, ErrorMessage = "供应商参数错误")]
         public long SupplierId { get; set; }

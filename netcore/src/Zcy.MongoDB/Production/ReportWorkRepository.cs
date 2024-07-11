@@ -1,7 +1,6 @@
 ﻿using MongoDB.Driver;
-using System.Linq;
+using Zcy.Entity.Company;
 using Zcy.Entity.Production;
-using Zcy.Entity.Products;
 using Zcy.IRepository.Production;
 
 namespace Zcy.MongoDB.Production
@@ -32,7 +31,8 @@ namespace Zcy.MongoDB.Production
                          a.ReportWorkDate == reportWorkDate &&
                          a.EmployeeId == employeeId &&
                          a.ProductProcessId == productProcessId &&
-                         a.IsDelete == false)
+                         a.IsDelete == false &&
+                         (int)a.ReportWorkStatus <= PublicStatusEnum.Pending.GetHashCode())
                 .AnyAsync();
         }
 
@@ -52,7 +52,24 @@ namespace Zcy.MongoDB.Production
                            a.ReportWorkDate == reportWorkDate &&
                            a.EmployeeId == employeeId &&
                            productProcessIds.Contains(a.ProductProcessId) &&
-                           a.IsDelete == false)
+                           a.IsDelete == false &&
+                           (int)a.ReportWorkStatus <= PublicStatusEnum.Pending.GetHashCode())
+                .AnyAsync();
+        }
+
+        /// <summary>
+        /// 是否存在有效报工
+        /// </summary>
+        /// <param name="companyId">公司Id</param>
+        /// <param name="reportIds">报工记录</param>
+        /// <returns></returns>
+        public async Task<bool> IsExistValidReportWorkAsync(long companyId, long[] reportIds)
+        {
+            return await DbCollection
+                .Find(a => a.CompanyId == companyId &&
+                           reportIds.Contains(a.Id) &&
+                           a.IsDelete == false &&
+                           (int)a.ReportWorkStatus <= PublicStatusEnum.Pending.GetHashCode())
                 .AnyAsync();
         }
     }

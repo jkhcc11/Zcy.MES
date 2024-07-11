@@ -57,5 +57,17 @@ namespace Zcy.IService.Products
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> CopyAsync(long productId);
+
+        /// <summary>
+        /// 普通用户-查询有效的产品
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<List<QueryValidProductWithNormalDto>>> QueryValidProductWithNormalAsync(QueryValidProductInput input);
+
+        /// <summary>
+        /// 普通用户-获取产品工序
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<List<GetProductProcessWithNormalDto>>> GetProductProcessWithNormalAsync(long productId);
     }
 }

@@ -93,13 +93,46 @@ namespace Zcy.MES.Controllers.Manager
         }
 
         /// <summary>
-        /// 更新报工
+        /// 获取报工汇总
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-totals")]
         public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync([FromQuery] QueryPageReportWorkInput input)
         {
             var result = await _reportWorkService.GetReportWorkTotalsAsync(input);
+            return result;
+        }
+
+        /// <summary>
+        /// 通过
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("approved/{reportWorkId}")]
+        public async Task<KdyResult> ApprovedReportWorkAsync(long reportWorkId)
+        {
+            var result = await _reportWorkService.ApprovedReportWorkAsync(reportWorkId);
+            return result;
+        }
+
+        /// <summary>
+        /// 驳回
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("reject/{reportWorkId}")]
+        public async Task<KdyResult> RejectReportWorkAsync(long reportWorkId)
+        {
+            var result = await _reportWorkService.RejectReportWorkAsync(reportWorkId);
+            return result;
+        }
+
+        /// <summary>
+        /// 禁用
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("ban/{reportWorkId}")]
+        public async Task<KdyResult> BanReportWorkAsync(long reportWorkId)
+        {
+            var result = await _reportWorkService.BanReportWorkAsync(reportWorkId);
             return result;
         }
 

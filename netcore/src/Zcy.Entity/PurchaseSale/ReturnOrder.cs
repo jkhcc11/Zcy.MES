@@ -49,18 +49,20 @@ namespace Zcy.Entity.PurchaseSale
         public string? ShipmentUser { get; set; }
 
         /// <summary>
-        /// 订单产品数量
-        /// </summary>
-        public int OrderProductCount { get; protected set; }
-
-        /// <summary>
         /// 订单详情
         /// </summary>
         public virtual ICollection<ReturnOrderDetail>? OrderDetails { get; set; }
 
         public void TotalsOrderProductCount()
         {
-            OrderProductCount = OrderDetails?.Sum(a => a.Count) ?? 0;
+            if (OrderDetails == null)
+            {
+                throw new ArgumentException("ReturnOrder OrderDetails is null");
+            }
+
+            OrderProductCount = OrderDetails.Sum(a => a.Count);
+            OrderSummary = string.Join("\r\n", OrderDetails
+                .Select(a => $"{a.ProductName}x{a.Count}"));
         }
     }
 }

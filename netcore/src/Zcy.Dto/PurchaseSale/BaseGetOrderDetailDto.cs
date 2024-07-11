@@ -6,7 +6,7 @@ namespace Zcy.Dto.PurchaseSale
     /// <summary>
     /// 获取订单详情 基类
     /// </summary>
-    public abstract class BaseGetOrderDetailDto : BaseEntityDto<long>, IBaseCompanyDto
+    public abstract class BaseGetOrderDetailDto : BaseFullAuditEntityDto<long>, IBaseCompanyDto
     {
         /// <summary>
         /// 订单号

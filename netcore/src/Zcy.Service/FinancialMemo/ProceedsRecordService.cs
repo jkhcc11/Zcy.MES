@@ -114,15 +114,8 @@ namespace Zcy.Service.FinancialMemo
             var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             var query = await _proceedsRecordRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
-            if (input.StartTime.HasValue)
-            {
-                query = query.Where(a => a.RecordDate >= timeRange.sTime);
-            }
-
-            if (input.EndTime.HasValue)
-            {
-                query = query.Where(a => a.RecordDate <= timeRange.eTime);
-            }
+            query = query.Where(a => a.RecordDate >= timeRange.sTime &&
+                                     a.RecordDate <= timeRange.eTime);
 
             return query;
         }

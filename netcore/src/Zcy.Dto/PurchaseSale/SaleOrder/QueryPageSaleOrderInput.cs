@@ -33,6 +33,7 @@ namespace Zcy.Dto.PurchaseSale
         [ZcyQuery(nameof(SaleOrder.OrderNo), ZcyOperator.Like)]
         [ZcyQuery(nameof(SaleOrder.OrderRemark), ZcyOperator.Like)]
         [ZcyQuery(nameof(SaleOrder.ManagerUser), ZcyOperator.Like)]
+        [ZcyQuery(nameof(SaleOrder.OrderSummary), ZcyOperator.Like)]
         public override string? KeyWord { get; set; }
 
         /// <summary>

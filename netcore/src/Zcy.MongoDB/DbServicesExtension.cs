@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Zcy.BaseInterface.Entities;
+using Zcy.Entity.Company;
 using Zcy.Entity.Production;
 using Zcy.Entity.Products;
 using Zcy.Entity.PurchaseSale;
@@ -110,6 +111,8 @@ namespace Zcy.MongoDB
                 cm.AutoMap();
                 //db存在entity不存在字段忽略
                 cm.SetIgnoreExtraElements(true);
+                // 设置默认值
+                cm.GetMemberMap(c => c.ReportWorkStatus).SetDefaultValue(PublicStatusEnum.Normal);
             });
         }
     }

@@ -267,6 +267,56 @@ namespace Zcy.Service.Products
             return KdyResult.Success();
         }
 
+        /// <summary>
+        /// 普通用户-查询有效的产品
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<List<QueryValidProductWithNormalDto>>> QueryValidProductWithNormalAsync(QueryValidProductInput input)
+        {
+            var query = await _productRepository.GetQueryableAsync();
+            query = query.Where(a => a.ProductStatus == PublicStatusEnum.Normal);
+            query = query.CreateConditions(input);
+            var dbList = await _productRepository.ToListAsync(query);
+            var result = BaseMapper.Map<IReadOnlyList<Product>, List<QueryValidProductWithNormalDto>>(dbList);
+            return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 普通用户-获取产品工序
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<List<GetProductProcessWithNormalDto>>> GetProductProcessWithNormalAsync(long productId)
+        {
+            var entity = await _productRepository.FirstOrDefaultAsync(productId);
+            if (entity == null)
+            {
+                return KdyResult.Error<List<GetProductProcessWithNormalDto>>(KdyResultCode.Error, "Id参数无效");
+            }
+
+            if (entity.ProductType != ProductTypeEnum.Processing)
+            {
+                return KdyResult.Error<List<GetProductProcessWithNormalDto>>(KdyResultCode.Error, "非加工产品，获取失败");
+            }
+
+            if (entity.ProductProcesses == null)
+            {
+                return KdyResult.Error<List<GetProductProcessWithNormalDto>>(KdyResultCode.Error, "加工产品，参数异常");
+            }
+
+            var craftIds = entity.ProductProcesses.Select(a => a.CraftId).ToArray();
+            var validCountQuery = await _productCraftRepository.GetQueryableAsync();
+            validCountQuery = validCountQuery.Where(a => craftIds.Contains(a.Id) &&
+                                                         a.CraftStatus == PublicStatusEnum.Normal);
+            var validCraft = await _productCraftRepository.ToListAsync(validCountQuery);
+            foreach (var item in entity.ProductProcesses)
+            {
+                item.ProductCraft = validCraft.FirstOrDefault(a => a.Id == item.CraftId);
+            }
+
+            var result = BaseMapper.Map<ICollection<ProductProcess>, List<GetProductProcessWithNormalDto>>(entity.ProductProcesses);
+            return KdyResult.Success(result);
+        }
+
         #region 私有
         private async Task<KdyResult> CreateProductAsync(CreateAndUpdateProductInput input)
         {

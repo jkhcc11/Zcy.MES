@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using IdentityModel;
+using MathNet.Numerics.Statistics.Mcmc;
 using Microsoft.IdentityModel.Tokens;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
@@ -396,6 +397,15 @@ namespace Zcy.Service.User
             dbEntity.SetDepart();
             await _userRepository.UpdateAsync(dbEntity);
             return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 是否正常状态
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsNormalAsync(long userId)
+        {
+            return await _userRepository.IsNormalAsync(userId);
         }
     }
 }

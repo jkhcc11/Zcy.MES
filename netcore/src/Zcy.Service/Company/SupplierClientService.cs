@@ -112,6 +112,19 @@ namespace Zcy.Service.Company
             return KdyResult.Success();
         }
 
+
+        /// <summary>
+        /// 启用
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> OpenClientAsync(long id)
+        {
+            var entity = await _supplierClientRepository.GetEntityByIdAsync(id);
+            entity.Open();
+            await _supplierClientRepository.UpdateAsync(entity);
+            return KdyResult.Success();
+        }
+
         #region 私有
         /// <summary>
         /// 创建客户信息

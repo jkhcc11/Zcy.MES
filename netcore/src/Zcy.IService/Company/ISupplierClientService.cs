@@ -43,5 +43,11 @@ namespace Zcy.IService.Company
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> BanClientAsync(long id);
+
+        /// <summary>
+        /// 启用
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> OpenClientAsync(long id);
     }
 }

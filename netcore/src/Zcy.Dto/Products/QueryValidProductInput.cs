@@ -19,5 +19,12 @@ namespace Zcy.Dto.Products
         /// </summary>
         [ZcyQuery(nameof(Product.ProductType), ZcyOperator.Equal)]
         public ProductTypeEnum? ProductType { get; set; }
+
+        /// <summary>
+        /// 关键字
+        /// </summary>
+        [ZcyQuery(nameof(Product.ProductName), ZcyOperator.Like)]
+        [ZcyQuery(nameof(Product.ProductRemark), ZcyOperator.Like)]
+        public string? KeyWord { get; set; }
     }
 }

@@ -16,7 +16,7 @@
         public decimal TotalActualSettlementPrice { get; set; }
 
         /// <summary>
-        /// 计时总工时
+        /// 计时总工作量
         /// </summary>
         public decimal? TimingWordDuration { get; set; }
 

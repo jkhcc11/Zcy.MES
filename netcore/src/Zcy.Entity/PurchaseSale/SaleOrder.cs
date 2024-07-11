@@ -98,8 +98,12 @@ namespace Zcy.Entity.PurchaseSale
                 throw new ArgumentException("SaleOrder OrderDetails is null");
             }
 
+            OrderProductCount = OrderDetails.Sum(a => a.Count);
             SumSalePrice = OrderDetails.Sum(a => a.SumPrice);
             OrderPrice = FreightPrice + SumSalePrice;
+
+            OrderSummary = string.Join("\r\n", OrderDetails
+                .Select(a => $"{a.ProductName}x{a.Count}"));
         }
     }
 }

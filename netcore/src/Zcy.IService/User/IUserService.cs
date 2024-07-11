@@ -84,6 +84,12 @@ namespace Zcy.IService.User
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> DepartUserAsync(long userId);
+
+        /// <summary>
+        /// 是否正常状态
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> IsNormalAsync(long userId);
         ///// <summary>
         ///// 批量导入用户
         ///// </summary>

@@ -20,12 +20,12 @@ namespace Zcy.Dto.Production.Exports
         public string BillingTypeStr { get; set; }
 
         /// <summary>
-        /// 工作时长
+        /// 工作量
         /// </summary>
         /// <remarks>
         ///  数量或时长
         /// </remarks>
-        [Column("工作时长")]
+        [Column("工作量")]
         public decimal WordDuration { get; set; }
     }
 }

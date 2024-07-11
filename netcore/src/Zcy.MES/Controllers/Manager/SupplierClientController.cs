@@ -68,6 +68,17 @@ namespace Zcy.MES.Controllers.Manager
         }
 
         /// <summary>
+        /// 启用
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("open/{keyId}")]
+        public async Task<KdyResult> OpenClientAsync(long keyId)
+        {
+            var result = await _supplierClientService.OpenClientAsync(keyId);
+            return result;
+        }
+
+        /// <summary>
         /// 获取已启用的客户信息
         /// </summary>
         /// <returns></returns>

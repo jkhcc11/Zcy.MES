@@ -22,7 +22,7 @@ namespace Zcy.Dto.Production.Exports
         public string? ProductCraftName { get; set; }
 
         /// <summary>
-        /// 工作时长
+        /// 工作量
         /// </summary>
         /// <remarks>
         ///  数量或时长

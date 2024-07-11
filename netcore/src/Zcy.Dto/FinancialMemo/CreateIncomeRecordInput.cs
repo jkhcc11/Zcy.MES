@@ -45,6 +45,7 @@ namespace Zcy.Dto.FinancialMemo
         /// <remarks>
         /// 默认当天
         /// </remarks>
+        [DataType(DataType.Date, ErrorMessage = "日期格式错误")]
         public DateTime? RecordDate { get; set; }
 
         /// <summary>

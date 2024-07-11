@@ -26,6 +26,7 @@ namespace Zcy.Dto.PurchaseSale
         [ZcyQuery(nameof(ReturnOrder.OrderRemark), ZcyOperator.Like)]
         [ZcyQuery(nameof(ReturnOrder.ManagerUser), ZcyOperator.Like)]
         [ZcyQuery(nameof(ReturnOrder.ShipmentUser), ZcyOperator.Like)]
+        [ZcyQuery(nameof(ReturnOrder.OrderSummary), ZcyOperator.Like)]
         public override string? KeyWord { get; set; }
 
         /// <summary>

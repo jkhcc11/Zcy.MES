@@ -1,4 +1,5 @@
 ﻿using Zcy.BaseInterface.BaseModel;
+using Zcy.Entity.Company;
 using Zcy.Entity.Products;
 
 namespace Zcy.Dto.Production
@@ -26,7 +27,7 @@ namespace Zcy.Dto.Production
         public long ProductProcessId { get; set; }
 
         /// <summary>
-        /// 工作时长
+        /// 工作量
         /// </summary>
         /// <remarks>
         ///  数量或时长
@@ -47,6 +48,11 @@ namespace Zcy.Dto.Production
         /// 公司名
         /// </summary>
         public string? CompanyName { get; set; }
+
+        /// <summary>
+        /// 报工状态
+        /// </summary>
+        public PublicStatusEnum ReportWorkStatus { get; set; }
 
         #region 冗余
         /// <summary>

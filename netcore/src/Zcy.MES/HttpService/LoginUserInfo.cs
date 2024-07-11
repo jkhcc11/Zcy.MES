@@ -80,6 +80,11 @@ namespace Zcy.MES.HttpService
         public bool IsNotBossAndRoot { get; set; }
 
         /// <summary>
+        /// 是否普通用户
+        /// </summary>
+        public bool IsNormal { get; set; }
+
+        /// <summary>
         /// 从当前请求初始化登录信息
         /// </summary>
         internal void InitUserInfo(HttpContext httpContext)
@@ -118,6 +123,11 @@ namespace Zcy.MES.HttpService
             {
                 Type: JwtClaimTypes.Role,
                 Value: AuthorizationConst.NormalRoleName.Boss
+            });
+            IsNormal = user.HasClaim(a => a is
+            {
+                Type: JwtClaimTypes.Role,
+                Value: AuthorizationConst.NormalRoleName.Normal
             });
 
             IsNotBossAndRoot = IsSuperAdmin == false &&

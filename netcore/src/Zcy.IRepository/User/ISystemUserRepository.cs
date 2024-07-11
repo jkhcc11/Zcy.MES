@@ -39,5 +39,11 @@ namespace Zcy.IRepository.User
         /// <param name="loginUserId">登录用户ID</param>
         /// <returns></returns>
         Task<List<SystemUser>> GetCurrentCompanyValidEmployeeAsync(long companyId, long loginUserId);
+
+        /// <summary>
+        /// 是否正常状态
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> IsNormalAsync(long userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using System.ComponentModel.Design;
 using Zcy.Entity.SysBaseInfo;
 using Zcy.Entity.User;
 using Zcy.IRepository.User;
@@ -112,6 +113,19 @@ namespace Zcy.MongoDB.User
                                                                  a.UserStatus == UserStatusEnum.Normal))
                 .ToListAsync();
             return dbList;
+        }
+
+        /// <summary>
+        /// 是否正常状态
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsNormalAsync(long userId)
+        {
+            var query = await GetQueryableAsync();
+            var any = await ToMongoQueryable(query.Where(a => a.Id == userId &&
+                                                                 a.UserStatus == UserStatusEnum.Normal))
+                .AnyAsync();
+            return any;
         }
     }
 }

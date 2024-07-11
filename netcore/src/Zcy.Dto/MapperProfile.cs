@@ -76,6 +76,16 @@ namespace Zcy.Dto
                 .ForMember(dest => dest.ProductProcessId, target => target.MapFrom(source => source.Id));
             CreateMap<ProductCraft, ProductDetailCascadeCraftItem>()
                 .ForMember(dest => dest.CraftId, target => target.MapFrom(source => source.Id));
+            CreateMap<Product, QueryValidProductWithNormalDto>()
+                .ForMember(dest => dest.ProductId, target => target.MapFrom(source => source.Id));
+            CreateMap<ProductProcess, GetProductProcessWithNormalDto>()
+                .ForMember(dest => dest.ProductProcessId, target => target.MapFrom(source => source.Id))
+                .ForMember(dest => dest.CraftName,
+                    target => target.MapFrom(source => source.ProductCraft == null ? "" : source.ProductCraft.CraftName))
+                .ForMember(dest => dest.BillingType,
+                    target => target.MapFrom(source => source.ProductCraft == null ? default : source.ProductCraft.BillingType))
+                .ForMember(dest => dest.OrderBy,
+                    target => target.MapFrom(source => source.OrderBy));
 
 
             //生产

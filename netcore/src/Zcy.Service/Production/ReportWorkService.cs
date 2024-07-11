@@ -80,6 +80,32 @@ namespace Zcy.Service.Production
         }
 
         /// <summary>
+        /// 分页查询报工(普通用户)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<QueryPageDto<QueryPageReportWorkForAdminDto>>> QueryPageReportWorkForNormalAsync(
+            QueryPageReportWorkInput input)
+        {
+            var userId = LoginUserInfo.GetUserId();
+            var query = await _reportWorkRepository.GetQueryableAsync();
+            query = query.CreateConditions(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime &&
+                                     (a.CreatedUserId == userId ||
+                                      a.EmployeeId == userId));
+            var result = await BaseQueryPageEntityAsync<ReportWork, QueryPageReportWorkForAdminDto>(
+                _reportWorkRepository, query, input);
+            if (result.Data.Items.Any() == false)
+            {
+                return result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 创建报工
         /// </summary>
         /// <returns></returns>
@@ -116,7 +142,62 @@ namespace Zcy.Service.Production
 
             var entity = new ReportWork(input.EmployeeId,
                 employeeEntity.UserNick, reportWorkDate,
-                input.ProductProcessId, input.WordDuration)
+                input.ProductProcessId, input.WordDuration,
+                PublicStatusEnum.Normal)
+            {
+                Remark = input.Remark
+            };
+            entity.SetProductProcessInfo(productProcess.ProcessingPrice,
+                productProcess.ProductCraft.UnitPrice,
+                productProcess.ProductCraft.BillingType,
+                productProcess.Product.ProductName,
+                productProcess.ProductCraft.CraftName);
+            entity.TotalReceivablePrice();
+            await _reportWorkRepository.CreateAsync(entity);
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 员工创建报工
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> CreateReportWorkWithNormalAsync(CreateReportWorkWithNormalInput input)
+        {
+            var reportWorkDate = DateTime.Today;
+            var companyId = LoginUserInfo.CompanyId;
+            var employeeId = LoginUserInfo.GetUserId();
+            var userNick = LoginUserInfo.UserNick;
+
+            if (await _reportWorkRepository.IsTodayExistReportWorkAsync(
+                    companyId,
+                    reportWorkDate,
+                    employeeId,
+                    input.ProductProcessId))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，员工当天已存在报工");
+            }
+
+            var productProcess = await _productRepository.GetProductProcessesAsync(input.ProductProcessId);
+            if (productProcess == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，无效产品工序");
+            }
+
+            if (productProcess.Product == null ||
+                productProcess.ProductCraft == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，无效产品工序-无效工艺");
+            }
+
+            if (string.IsNullOrEmpty(userNick))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "创建失败，昵称无效，请联系管理员");
+            }
+
+            var entity = new ReportWork(employeeId,
+                userNick, reportWorkDate,
+                input.ProductProcessId, input.WordDuration,
+                PublicStatusEnum.Pending)
             {
                 Remark = input.Remark
             };
@@ -171,7 +252,8 @@ namespace Zcy.Service.Production
             {
                 var entity = new ReportWork(input.EmployeeId,
                     employeeEntity.UserNick, reportWorkDate,
-                    item.ProductProcessId, item.WordDuration)
+                    item.ProductProcessId, item.WordDuration,
+                    PublicStatusEnum.Normal)
                 {
                     Remark = item.Remark
                 };
@@ -204,6 +286,13 @@ namespace Zcy.Service.Production
         /// <returns></returns>
         public async Task<KdyResult> BatchDeleteAsync(BatchOperationsInput input)
         {
+            var companyId = LoginUserInfo.CompanyId;
+            var reportIds = input.Ids.ToArray();
+            if (await _reportWorkRepository.IsExistValidReportWorkAsync(companyId, reportIds))
+            {
+                return KdyResult.Error(KdyResultCode.Error, "操作失败，存在有效记录，请禁用");
+            }
+
             return await BaseBatchDeleteAsync(_reportWorkRepository, input);
         }
 
@@ -242,11 +331,25 @@ namespace Zcy.Service.Production
         /// <summary>
         /// 获取报工汇总
         /// </summary>
+        /// <param name="input">query</param>
+        /// <param name="isNormal">是否普通用户</param>
         /// <returns></returns>
-        public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync(QueryPageReportWorkInput input)
+        public async Task<KdyResult<GetReportWorkTotalsDto>> GetReportWorkTotalsAsync(QueryPageReportWorkInput input,
+            bool isNormal = false)
         {
             var query = await _reportWorkRepository.GetQueryableAsync();
             query = query.CreateConditions(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime);
+            if (isNormal)
+            {
+                //普通用户
+                var userId = LoginUserInfo.GetUserId();
+                query = query.Where(a => a.CreatedUserId == userId ||
+                                         a.EmployeeId == userId);
+            }
+
             //todo:量大可能有问题
             var dbList = await _reportWorkRepository.ToListAsync(query);
             var groupTemp = dbList
@@ -278,6 +381,57 @@ namespace Zcy.Service.Production
             }
 
             return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 通过员工报工
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> ApprovedReportWorkAsync(long reportWorkId)
+        {
+            var entity = await _reportWorkRepository.FirstOrDefaultAsync(reportWorkId);
+            if (entity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "失败，无效报工记录");
+            }
+
+            entity.Approved();
+            await _reportWorkRepository.UpdateAsync(entity);
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 驳回员工报工
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> RejectReportWorkAsync(long reportWorkId)
+        {
+            var entity = await _reportWorkRepository.FirstOrDefaultAsync(reportWorkId);
+            if (entity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "失败，无效报工记录");
+            }
+
+            entity.Reject();
+            await _reportWorkRepository.UpdateAsync(entity);
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 禁用员工报工
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> BanReportWorkAsync(long reportWorkId)
+        {
+            var entity = await _reportWorkRepository.FirstOrDefaultAsync(reportWorkId);
+            if (entity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "失败，无效报工记录");
+            }
+
+            entity.Ban();
+            await _reportWorkRepository.UpdateAsync(entity);
+            return KdyResult.Success();
         }
     }
 }
