@@ -65,7 +65,7 @@ onShow(() => {
 
 // 加载时
 onMounted(() => {
-  useSupplierClient.init(ClientTypeEnum.客户)
+  useSupplierClient.init(ClientTypeEnum.供应商)
 })
 
 // 点击删除按钮
@@ -97,7 +97,7 @@ const onCreateOrder = async () => {
   try {
     // 表单校验
     if (!orderForm.supplierId) {
-      uni.showToast({ icon: 'error', title: '请选择客户' })
+      uni.showToast({ icon: 'error', title: '请选择供应商' })
       return
     }
 
@@ -209,7 +209,7 @@ watch(useUserInfo, () => {
       <view class="form-content">
         <!-- 表单内容 -->
         <view name="supplierId" class="form-item">
-          <text class="label">客户</text>
+          <text class="label">供应商</text>
           <picker
             class="picker"
             mode="selector"
@@ -219,7 +219,7 @@ watch(useUserInfo, () => {
             data-type="supplierId"
           >
             <view v-if="pickerRef.supplierIdShow">{{ pickerRef.supplierIdShow }}</view>
-            <view v-else class="placeholder">请选择客户</view>
+            <view v-else class="placeholder">请选择供应商</view>
           </picker>
         </view>
         <view name="accountType" class="form-item">

@@ -147,6 +147,16 @@ const filterMenuList = ref([
     prop: 'keyWord',
     placeholder: '关键字',
   },
+  {
+    title: '客户类型',
+    type: 'cell',
+    prop: 'clientType',
+    showAll: true,
+    showIcon: true,
+    // value: '2', // 默认内容2
+    field: { label: 'text', value: 'value', suffix: 'suffix' },
+    options: ClientTypeEnumList,
+  },
 ])
 
 //筛选确认

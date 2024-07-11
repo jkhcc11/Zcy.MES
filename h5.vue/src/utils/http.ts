@@ -14,8 +14,7 @@ import { useUserInfoStore } from '@/stores'
 
 //全局Api地址
 //debug
-const baseURL = 'https://api.zcymes.com'
-//const baseURL = 'http://192.168.31.251:5092'
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 // 添加拦截器
 const httpInterceptor = {

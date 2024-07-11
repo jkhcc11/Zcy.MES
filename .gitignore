@@ -8,3 +8,4 @@
 **/Logs
 /netcore/src/Zcy.MES/Properties/PublishProfiles
 /netcore/src/Zcy.MES/Zcy.MES.csproj.user
+.env.*

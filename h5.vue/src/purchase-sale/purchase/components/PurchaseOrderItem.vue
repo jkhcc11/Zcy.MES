@@ -229,7 +229,7 @@ onMounted(() => {
 
         <!-- 订单操作按钮 -->
         <view class="action">
-          <view class="action-left"> 客户名：{{ order.supplierClientName }} </view>
+          <view class="action-left"> 供应商：{{ order.supplierClientName }} </view>
           <view class="action-right">
             <view class="button primary" @tap="onDetail(order.id)">详情</view>
           </view>
