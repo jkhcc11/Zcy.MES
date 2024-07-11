@@ -1,13 +1,24 @@
 import { renderInput, renderMoneyInput, renderSelect } from '@/hooks/form'
 import useCompanyCacheStore from '@/store/modules/company'
 import useProductCacheStore from '@/store/modules/product'
-import { baseRemarkLength } from '@/store/types'
+import { baseRemarkLength, PublicStatusEnum } from '@/store/types'
 import { FormItem } from '@/types/components'
+import { getListByEnum } from '@/utils'
 import { CascaderOption, NCascader, NDatePicker } from 'naive-ui'
 import { h, ref } from 'vue'
 
 //报工搜索
 export const SearchReportWorkOptions = [
+  {
+    label: '状态',
+    key: 'reportWorkStatus',
+    value: ref(null),
+    render: (formItem) =>
+      renderSelect(formItem.value, getListByEnum(PublicStatusEnum), {
+        placeholder: '状态',
+        clearable: true,
+      }),
+  },
   {
     label: '员工',
     key: 'employeeId',
@@ -184,7 +195,7 @@ export const CreateReportWorkFormOptions = [
     },
   },
   {
-    label: '工作时长',
+    label: '工作量',
     key: 'wordDuration',
     value: ref(1.0),
     required: true,
@@ -194,7 +205,7 @@ export const CreateReportWorkFormOptions = [
     },
     render: (formItem) => {
       return renderMoneyInput(formItem.value, {
-        placeholder: '工作时长',
+        placeholder: '工作量 H/个',
       })
     },
   },

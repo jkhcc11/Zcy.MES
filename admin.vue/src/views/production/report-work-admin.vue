@@ -55,7 +55,7 @@
   import { get, post, sendDelete } from '@/api/http'
   import { reportWorkApi } from '@/api/url'
   import { TableActionModel, useRenderAction, useTable } from '@/hooks/table'
-  import { useMessage, useDialog } from 'naive-ui'
+  import { useMessage, useDialog, NTag } from 'naive-ui'
   import { defineComponent, h, onMounted, reactive, ref } from 'vue'
   import { DataFormType } from '@/types/components'
   import {
@@ -64,7 +64,7 @@
     UpdateReportWorkFormOptions,
   } from './Data'
   import { renderTagByEnum } from '@/hooks/form'
-  import { BillingTypeEnum, ProductTypeEnum } from '@/store/types'
+  import { BillingTypeEnum, ProductTypeEnum, PublicStatusEnum } from '@/store/types'
   import useProductCacheStore from '@/store/modules/product'
   import useCompanyCacheStore from '@/store/modules/company'
   import { useRouter } from 'vue-router'
@@ -137,7 +137,7 @@
         },
 
         {
-          title: '工作时长',
+          title: '工作量',
           key: 'wordDuration',
         },
         {
@@ -145,6 +145,41 @@
           key: 'remark',
           width: 50,
           ellipsis: true,
+        },
+        {
+          title: '状态',
+          key: 'reportWorkStatus',
+          render: (rowData: any) =>
+            renderTagByEnum(
+              rowData.reportWorkStatus,
+              PublicStatusEnum,
+              {
+                1: 'success',
+                2: 'warning',
+                5: 'error',
+                6: 'default',
+              },
+              {
+                size: 'small',
+              }
+            ),
+        },
+        {
+          title: '自助报工',
+          key: 'isSelf',
+          render: (rowData: any) => {
+            const isSelf = rowData.createdUserId == rowData.employeeId
+            return h(
+              NTag,
+              {
+                type: isSelf ? 'warning' : 'success',
+                size: 'small',
+              },
+              {
+                default: () => (isSelf ? '是' : '否'),
+              }
+            )
+          },
         },
         {
           title: '创建时间',
@@ -168,14 +203,35 @@
           fixed: 'right',
           width: 180,
           render: (rowData: any) => {
-            const normalAction = useRenderAction([
-              {
+            const tempArray: TableActionModel[] = []
+            if (rowData.reportWorkStatus >= 5) {
+              //禁用|驳回可删除
+              tempArray.push({
                 label: '删除',
                 type: 'error',
                 onClick: onBtnClick.delete.bind(null, rowData),
-              },
-            ] as TableActionModel[])
+              } as TableActionModel)
+            } else if (rowData.reportWorkStatus == PublicStatusEnum.待处理) {
+              tempArray.push({
+                label: '通过',
+                type: 'success',
+                onClick: onBtnClick.approved.bind(null, rowData),
+              } as TableActionModel)
 
+              tempArray.push({
+                label: '驳回',
+                type: 'warning',
+                onClick: onBtnClick.reject.bind(null, rowData),
+              } as TableActionModel)
+            } else {
+              tempArray.push({
+                label: '废弃',
+                type: 'error',
+                onClick: onBtnClick.ban.bind(null, rowData),
+              } as TableActionModel)
+            }
+
+            const normalAction = useRenderAction(tempArray)
             return normalAction
           },
         },
@@ -192,11 +248,69 @@
           submitForm.value?.reset()
           commonQueryListRef.value?.showDialog()
         },
-        //删除
-        delete: function (rowData: any) {
+        //驳回
+        reject: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
           naiveDialog.warning({
             title: '提示',
-            content: '是否要删除此数据？',
+            content: `是否要【驳回】${tipMsg}报工数据？`,
+            positiveText: '确定',
+            onPositiveClick: () => {
+              post({
+                url: reportWorkApi.reject + '/' + rowData.id,
+              })
+                .then((res) => {
+                  doRefresh()
+                  message.success(res.msg)
+                })
+                .catch(console.log)
+            },
+          })
+        },
+        //通过
+        approved: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
+          naiveDialog.warning({
+            title: '提示',
+            content: `是否要【通过】${tipMsg}报工数据？`,
+            positiveText: '确定',
+            onPositiveClick: () => {
+              post({
+                url: reportWorkApi.approved + '/' + rowData.id,
+              })
+                .then((res) => {
+                  doRefresh()
+                  message.success(res.msg)
+                })
+                .catch(console.log)
+            },
+          })
+        },
+        //废弃
+        ban: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
+          naiveDialog.warning({
+            title: '提示',
+            content: `是否要【废弃】${tipMsg}报工数据？`,
+            positiveText: '确认',
+            onPositiveClick: () => {
+              sendDelete({
+                url: reportWorkApi.ban + '/' + rowData.id,
+              })
+                .then((res) => {
+                  doRefresh()
+                  message.success(res.msg)
+                })
+                .catch(console.log)
+            },
+          })
+        },
+        //删除
+        delete: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
+          naiveDialog.warning({
+            title: '提示',
+            content: `是否要【删除】${tipMsg}报工数据？`,
             positiveText: '删除',
             onPositiveClick: () => {
               sendDelete({

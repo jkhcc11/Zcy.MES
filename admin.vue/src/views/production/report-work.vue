@@ -82,7 +82,7 @@
     UpdateReportWorkFormOptions,
   } from './Data'
   import { renderTagByEnum } from '@/hooks/form'
-  import { BillingTypeEnum, ProductTypeEnum } from '@/store/types'
+  import { BillingTypeEnum, ProductTypeEnum, PublicStatusEnum } from '@/store/types'
   import useProductCacheStore from '@/store/modules/product'
   import useCompanyCacheStore from '@/store/modules/company'
   export default defineComponent({
@@ -155,7 +155,7 @@
         },
 
         {
-          title: '工作时长',
+          title: '工作量',
           key: 'wordDuration',
         },
 
@@ -182,12 +182,46 @@
             )
           },
         },
-
+        {
+          title: '状态',
+          key: 'reportWorkStatus',
+          render: (rowData: any) =>
+            renderTagByEnum(
+              rowData.reportWorkStatus,
+              PublicStatusEnum,
+              {
+                1: 'success',
+                2: 'warning',
+                5: 'error',
+                6: 'default',
+              },
+              {
+                size: 'small',
+              }
+            ),
+        },
         {
           title: '备注',
           key: 'remark',
           width: 50,
           ellipsis: true,
+        },
+        {
+          title: '自助报工',
+          key: 'isSelf',
+          render: (rowData: any) => {
+            const isSelf = rowData.createdUserId == rowData.employeeId
+            return h(
+              NTag,
+              {
+                type: isSelf ? 'warning' : 'success',
+                size: 'small',
+              },
+              {
+                default: () => (isSelf ? '是' : '否'),
+              }
+            )
+          },
         },
         {
           title: '创建时间',
@@ -211,19 +245,23 @@
           fixed: 'right',
           width: 180,
           render: (rowData: any) => {
-            const normalAction = useRenderAction([
-              {
-                label: '调整价格',
-                type: 'warning',
-                onClick: onBtnClick.update.bind(null, rowData),
-              },
-              {
+            const tempArray: TableActionModel[] = []
+            if (rowData.reportWorkStatus >= 5) {
+              //禁用|驳回可删除
+              tempArray.push({
                 label: '删除',
                 type: 'error',
                 onClick: onBtnClick.delete.bind(null, rowData),
-              },
-            ] as TableActionModel[])
+              } as TableActionModel)
+            } else if (rowData.reportWorkStatus == PublicStatusEnum.正常) {
+              tempArray.push({
+                label: '调整价格',
+                type: 'warning',
+                onClick: onBtnClick.update.bind(null, rowData),
+              } as TableActionModel)
+            }
 
+            const normalAction = useRenderAction(tempArray)
             return normalAction
           },
         },
@@ -239,8 +277,9 @@
         },
         //调整
         update: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
           optType.value = 'update'
-          editTitle.value = `【${rowData.employeeName}】调整价格`
+          editTitle.value = `【${tipMsg}】调整价格`
           UpdateReportWorkFormOptions.forEach((it: any) => {
             it.value.value = rowData[it.key] || null
           })
@@ -248,9 +287,10 @@
         },
         //删除
         delete: function (rowData: any) {
+          const tipMsg = `${rowData.employeeNickName}->${rowData.reportWorkDate}->${rowData.productCraftName}`
           naiveDialog.warning({
             title: '提示',
-            content: '是否要删除此数据？',
+            content: `是否要【废弃】${tipMsg}报工数据？`,
             positiveText: '删除',
             onPositiveClick: () => {
               sendDelete({

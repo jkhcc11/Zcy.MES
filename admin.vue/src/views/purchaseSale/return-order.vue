@@ -90,7 +90,9 @@
           fixed: 'left',
           renderExpand: (rowData: any) => {
             return h('div', {
-              innerHTML: `<strong>备注：</strong>${rowData.orderRemark ?? ''} <br/>`,
+              innerHTML: `<strong>备注：</strong>${
+                rowData.orderRemark ?? ''
+              } <br/> <strong>摘要 ：</strong>${rowData.orderSummary ?? ''}`,
             })
           },
         },
@@ -123,11 +125,22 @@
           key: 'managerUser',
         },
         {
+          title: '数量',
+          key: 'orderProductCount',
+        },
+        {
+          title: '摘要',
+          key: 'orderSummary',
+          width: 50,
+          ellipsis: true,
+        },
+        {
           title: '备注',
           key: 'orderRemark',
           width: 50,
           ellipsis: true,
         },
+
         {
           title: '创建时间',
           key: 'createdTime',

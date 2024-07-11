@@ -84,7 +84,9 @@
           fixed: 'left',
           renderExpand: (rowData: any) => {
             return h('div', {
-              innerHTML: `<strong>备注：</strong>${rowData.orderRemark ?? ''} <br/>`,
+              innerHTML: `<strong>备注：</strong>${
+                rowData.orderRemark ?? ''
+              } <br/> <strong>摘要 ：</strong>${rowData.orderSummary ?? ''}`,
             })
           },
         },
@@ -134,6 +136,16 @@
         {
           title: '经办人',
           key: 'managerUser',
+        },
+        {
+          title: '数量',
+          key: 'orderProductCount',
+        },
+        {
+          title: '摘要',
+          key: 'orderSummary',
+          width: 50,
+          ellipsis: true,
         },
         {
           title: '备注',

@@ -130,14 +130,14 @@ export const CreateIncomeRecordFormOptions = [
     },
   },
   {
-    label: '付款人',
+    label: '经办人',
     key: 'managerUser',
     value: ref(null),
     required: true,
     span: 2, //grid-item 生效
     render: (formItem: any) =>
       renderInput(formItem.value, {
-        placeholder: '付款人 例如：xx 付款',
+        placeholder: '经办人',
       }),
   },
   {

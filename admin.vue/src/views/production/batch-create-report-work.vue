@@ -24,7 +24,7 @@
         选择工艺
       </n-button>
 
-      <n-gradient-text type="warning"> 注：工作时长为0，需要移除后提交 </n-gradient-text>
+      <n-gradient-text type="warning"> 注：工作量为0，需要移除后提交 </n-gradient-text>
       <n-data-table
         :columns="editData.reportWorkItemsTableColumns"
         :data="productProcessesData"
@@ -130,7 +130,7 @@
               ),
           },
           {
-            title: '工作时长',
+            title: '工作量',
             key: 'wordDuration',
             render(row: any, index: number) {
               let numberMax = 99999
@@ -147,7 +147,7 @@
                   min: 0.1,
                   max: numberMax,
                   precision: precision,
-                  placeholder: '工作时长',
+                  placeholder: '工作量',
                   onUpdateValue(newVal: any) {
                     productProcessesData[index].wordDuration = newVal
                   },
