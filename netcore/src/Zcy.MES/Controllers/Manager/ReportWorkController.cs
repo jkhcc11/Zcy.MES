@@ -161,5 +161,18 @@ namespace Zcy.MES.Controllers.Manager
             var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 产品汇总.xlsx";
             return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
         }
+
+        /// <summary>
+        /// 导出员工报工-横板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export-day-report-work-horizontal")]
+        public async Task<IActionResult> ExportDayReportWorkWithHorizontalAsync([FromQuery] QueryPageReportWorkInput input)
+        {
+            var fileBytes = await _reportWorkImportAndExportAppService.ExportDayReportWorkWithHorizontalAsync(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 员工汇总.xlsx";
+            return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
+        }
     }
 }

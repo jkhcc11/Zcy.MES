@@ -31,7 +31,7 @@ namespace Zcy.Dto.Production.Exports
         /// <remarks>
         ///  数量或时长
         /// </remarks>
-        [Column("数量/时长")]
+        [Column("工作量")]
         public decimal WordDuration { get; set; }
     }
 }

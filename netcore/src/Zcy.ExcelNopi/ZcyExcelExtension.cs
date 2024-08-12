@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ganss.Excel;
+using NPOI.POIFS.Crypt.Dsig;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Zcy.Utility;
 
 namespace Zcy.ExcelNpoi
@@ -334,13 +337,75 @@ namespace Zcy.ExcelNpoi
         }
 
         /// <summary>
+        /// Excel导出自定义表头和多Sheet
+        /// </summary>
+        /// <returns></returns>
+        public async Task<MemoryStream?> ExportXlsxWithMultipleHeadersAndSheetsWriteAsync(List<DynamicHeadersAndSheetsModel> rowData)
+        {
+            var memoryStream = new MemoryStream();
+            IWorkbook workBook = new XSSFWorkbook(); // 默认为 .xlsx 格式
+            // 遍历每个数据集，创建对应的工作表
+            foreach (var sheetData in rowData)
+            {
+                var sheetName = sheetData.SheetsName;
+                var rows = sheetData.SheetsData;
+
+                // 创建新的工作表
+                var sheet = workBook.CreateSheet(sheetName);
+
+                // 动态获取表头
+                var headers = new HashSet<string>();
+                foreach (var row in rows)
+                {
+                    foreach (var key in row.Keys)
+                    {
+                        headers.Add(key);
+                    }
+                }
+
+                // 写入表头
+                var headerRow = sheet.CreateRow(0);
+                var headerIndex = 0;
+                foreach (var header in headers)
+                {
+                    headerRow.CreateCell(headerIndex++).SetCellValue(header);
+                }
+
+                // 写入数据
+                var rowIndex = 1; // 从第二行开始写数据
+                foreach (var row in rows)
+                {
+                    var dataRow = sheet.CreateRow(rowIndex++);
+                    var colIndex = 0;
+                    foreach (var header in headers)
+                    {
+                        if (row.TryGetValue(header, out var value))
+                        {
+                            dataRow.CreateCell(colIndex++).SetCellValue(value?.ToString());
+                        }
+                        else
+                        {
+                            dataRow.CreateCell(colIndex++).SetCellValue(string.Empty); // 如果没有该列值，写入空
+                        }
+                    }
+                }
+            }
+
+            // 将工作簿写入到内存流
+            workBook.Write(memoryStream, true);
+            memoryStream.Position = 0; // 重置流的位置
+            await Task.CompletedTask;
+            return memoryStream;
+        }
+
+        /// <summary>
         /// 获取Excel单元格值(原始类型)
         /// </summary>
         /// <param name="dynamicDataList">Excel弱类型数据</param>
         /// <param name="rowNumber">Excel行号</param>
         /// <param name="column">Excel列名</param>
         /// <returns></returns>
-        private object? GetCellValue(List<dynamic> dynamicDataList, 
+        private object? GetCellValue(List<dynamic> dynamicDataList,
             int rowNumber, string column)
         {
             if (rowNumber > dynamicDataList.Count)
@@ -393,7 +458,7 @@ namespace Zcy.ExcelNpoi
         /// 获取具有单选或者复选的行数据
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string, string>? GetCheckAndRadioRow(IDictionary<string, object>? currentRow, 
+        private Dictionary<string, string>? GetCheckAndRadioRow(IDictionary<string, object>? currentRow,
             IDictionary<string, object>? nextRow)
         {
             if (currentRow == null || nextRow == null)
@@ -434,7 +499,7 @@ namespace Zcy.ExcelNpoi
         /// <param name="result">返回结果</param>
         /// <param name="currentItem">当前行数据</param>
         /// <param name="nextRowData">下一行数据</param>
-        private void FlagsEnumHandler<TData>(ZcyPropertyInfo currentPropertyInfo, 
+        private void FlagsEnumHandler<TData>(ZcyPropertyInfo currentPropertyInfo,
             TData result, dynamic currentItem, dynamic nextRowData)
         {
             //多选处理   当前行是枚举描述 第二行是“真值”对应的字段
@@ -551,7 +616,7 @@ namespace Zcy.ExcelNpoi
 
             //3、特殊字段处理
             foreach (var itemMap in resultColumnMap
-                         .Where(a => a.WeGymColumn.SpecialRowNumber > 0 && 
+                         .Where(a => a.WeGymColumn.SpecialRowNumber > 0 &&
                                      string.IsNullOrEmpty(a.WeGymColumn.SpecialColumn) == false))
             {
                 var cellValue = GetCellValue(xlsxToList, itemMap.WeGymColumn.SpecialRowNumber,

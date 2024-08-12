@@ -19,5 +19,11 @@ namespace Zcy.IService.Production
         /// </summary>
         /// <returns></returns>
         Task<byte[]> ExportProductReportWorkAsync(QueryPageReportWorkInput input);
+
+        /// <summary>
+        /// 导出员工报工（横向）
+        /// </summary>
+        /// <returns></returns>
+        Task<byte[]> ExportDayReportWorkWithHorizontalAsync(QueryPageReportWorkInput input);
     }
 }

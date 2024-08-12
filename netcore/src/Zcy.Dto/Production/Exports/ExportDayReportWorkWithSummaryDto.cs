@@ -13,6 +13,12 @@ namespace Zcy.Dto.Production.Exports
         [Column("员工名")]
         public string EmployeeNickName { get; set; }
 
+        [Column("产品名")]
+        public string? ProductName { get; set; }
+
+        [Column("工艺名")]
+        public string? ProductCraftName { get; set; }
+
         /// <summary>
         /// 计费类型
         /// </summary>

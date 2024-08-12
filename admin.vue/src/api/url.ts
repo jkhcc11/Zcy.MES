@@ -223,7 +223,8 @@ export const reportWorkApi = {
   reject: '/mes-manager/ReportWork/reject',
   ban: '/mes-manager/ReportWork/ban',
 
-  exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work',
+  exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work-horizontal',
+  // exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work',
   exportProductReportWork: '/mes-manager/ReportWork/export-product-report-work',
 }
 

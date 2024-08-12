@@ -53,16 +53,21 @@ namespace Zcy.Service.Production
                 .GroupBy(a => new
                 {
                     a.EmployeeNickName,
-                    a.BillingType
+                    a.BillingType,
+                    a.ProductName,
+                    a.ProductCraftName,
                 })
                 .Select(a => new ExportDayReportWorkWithSummaryDto()
                 {
                     EmployeeNickName = a.Key.EmployeeNickName,
+                    ProductName = a.Key.ProductName,
+                    ProductCraftName = a.Key.ProductCraftName,
                     BillingTypeStr = a.Key.BillingType.GetDisplayName(),
                     WordDuration = a.Sum(b => b.WordDuration)
                 })
                 .OrderBy(a => a.EmployeeNickName)
-                .ThenBy(a => a.BillingTypeStr)
+                .ThenBy(a => a.ProductName)
+                .ThenBy(a => a.ProductCraftName)
                 .ToList();
 
             //其他表数据
@@ -199,6 +204,122 @@ namespace Zcy.Service.Production
 
             return await ms.GetAllBytesAsync();
             #endregion
+        }
+
+        /// <summary>
+        /// 导出员工报工（横向）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<byte[]> ExportDayReportWorkWithHorizontalAsync(QueryPageReportWorkInput input)
+        {
+            #region db查询
+            var query = await _reportWorkRepository.GetQueryableAsync();
+            query = query.CreateConditions(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime);
+            var dbReportWork = await _reportWorkRepository.ToListAsync(query);
+            #endregion
+
+            #region 组合数据
+            //第一个表格 汇总表格
+            //后面按名称每个Sheet就是一个员工
+            var dayReportWorkDto = BaseMapper
+                .Map<IReadOnlyList<ReportWork>, List<ExportDayReportWorkDto>>(dbReportWork);
+
+            //其他表数据
+            var employeeNickNames = dayReportWorkDto
+                .Where(a => string.IsNullOrEmpty(a.EmployeeNickName) == false)
+                .Select(a => a.EmployeeNickName)
+                .Distinct()
+                .OrderBy(a => a)
+                .ToList();
+            var dayReportWorkResult = new List<DynamicHeadersAndSheetsModel>();
+            foreach (var nickName in employeeNickNames)
+            {
+                //当前员工数据
+                var currentReportWork = dayReportWorkDto
+                    .Where(a => a.EmployeeNickName == nickName)
+                    .ToList();
+                //行日期分组
+                var rowsDate = currentReportWork
+                    .GroupBy(a => new
+                    {
+                        a.ReportWorkDate,
+                    })
+                    .Select(a => a.Key)
+                    .ToList();
+                //表头
+                var headerTitle = currentReportWork
+                    .GroupBy(a => new
+                    {
+                        a.ProductName,
+                        a.ProductCraftName
+                    })
+                    .Select(a => new
+                    {
+                        a.Key.ProductName,
+                        a.Key.ProductCraftName,
+                        SumWordDuration = a.Sum(b => b.WordDuration)
+                    })
+                    .ToList();
+
+                //工作表数据
+                var sheetRowData = new List<Dictionary<string, object>>();
+                foreach (var dateItem in rowsDate)
+                {
+                    //当天日期数据
+                    var currentDateData = new Dictionary<string, object>
+                    {
+                        { "日期\\产品工序", dateItem.ReportWorkDate }
+                    };
+                    foreach (var headerItem in headerTitle
+                                 .OrderBy(a => a.ProductName).ThenBy(a => a.ProductCraftName))
+                    {
+                        var currentDateProductCraft = currentReportWork
+                            .FirstOrDefault(a => a.ReportWorkDate == dateItem.ReportWorkDate &&
+                                        a.ProductName == headerItem.ProductName &&
+                                        a.ProductCraftName == headerItem.ProductCraftName);
+                        if (currentDateProductCraft == null)
+                        {
+                            //当前无数据
+                            continue;
+                        }
+
+                        currentDateData.Add(
+                            $"{headerItem.ProductName}-{headerItem.ProductCraftName}",
+                            currentDateProductCraft.WordDuration);
+                    }
+
+                    sheetRowData.Add(currentDateData);
+                }
+
+                var sumRow = new Dictionary<string, object>()
+                {
+                    { "日期\\产品工序", "合计" },
+                };
+                foreach (var temp in headerTitle
+                             .OrderBy(a => a.ProductName).ThenBy(a => a.ProductCraftName))
+                {
+                    sumRow.Add(
+                        $"{temp.ProductName}-{temp.ProductCraftName}",
+                        temp.SumWordDuration);
+                }
+
+                sheetRowData.Add(sumRow);
+
+                var dayReportWorkResultItem = new DynamicHeadersAndSheetsModel(nickName, sheetRowData);
+                dayReportWorkResult.Add(dayReportWorkResultItem);
+            }
+            #endregion
+
+            // 写入 Excel 文件到 MemoryStream
+            var stream = await _zcyExcelExtension.ExportXlsxWithMultipleHeadersAndSheetsWriteAsync(dayReportWorkResult);
+            using (stream)
+            {
+                return await stream.GetAllBytesAsync();
+            }
         }
     }
 }
