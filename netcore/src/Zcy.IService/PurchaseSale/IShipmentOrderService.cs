@@ -39,5 +39,11 @@ namespace Zcy.IService.PurchaseSale
         /// </summary>
         /// <returns></returns>
         Task<KdyResult<GetShipmentOrderDetailDto>> GetShipmentOrderDetailAsync(string orderNo);
+
+        /// <summary>
+        /// 获取出货订单汇总
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<GetShipmentOrderTotalsDto>> GetShipmentOrderTotalsAsync(QueryPageShipmentOrderInput input);
     }
 }

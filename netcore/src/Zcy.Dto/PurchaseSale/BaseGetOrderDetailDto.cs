@@ -45,6 +45,11 @@ namespace Zcy.Dto.PurchaseSale
         /// 公司名
         /// </summary>
         public string? CompanyName { get; set; }
+
+        /// <summary>
+        /// 订单产品总个数
+        /// </summary>
+        public virtual int OrderProductCount { get; set; }
     }
 
     /// <summary>

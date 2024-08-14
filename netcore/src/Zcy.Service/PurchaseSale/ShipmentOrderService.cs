@@ -47,12 +47,7 @@ namespace Zcy.Service.PurchaseSale
         /// <returns></returns>
         public async Task<KdyResult<QueryPageDto<QueryPageShipmentOrderDto>>> QueryPageShipmentOrderAsync(QueryPageShipmentOrderInput input)
         {
-            var query = await _shipmentOrderRepository.GetQueryableAsync();
-            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
-            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
-                                     a.OrderDate <= timeRange.eTime);
-
-            query = query.CreateConditions(input);
+            var query = await BuildFilterAsync(input);
             var result = await BaseQueryPageEntityAsync<ShipmentOrder, QueryPageShipmentOrderDto>(
                 _shipmentOrderRepository
                 , query, input);
@@ -209,6 +204,36 @@ namespace Zcy.Service.PurchaseSale
 
             var result = BaseMapper.Map<ShipmentOrder, GetShipmentOrderDetailDto>(entity);
             return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 获取出货订单汇总
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<GetShipmentOrderTotalsDto>> GetShipmentOrderTotalsAsync(QueryPageShipmentOrderInput input)
+        {
+            var query = await BuildFilterAsync(input);
+            var dayTotals = await _shipmentOrderRepository.PurchaseOrderTotalsAsync(query);
+            var result = new GetShipmentOrderTotalsDto()
+            {
+                SumProductCount = dayTotals.Sum(b => b.SumProductCount)
+            };
+            return KdyResult.Success(result);
+        }
+
+        /// <summary>
+        /// 查询条件生成
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IQueryable<ShipmentOrder>> BuildFilterAsync(QueryPageShipmentOrderInput input)
+        {
+            var query = await _shipmentOrderRepository.GetQueryableAsync();
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            query = query.Where(a => a.OrderDate >= timeRange.sTime &&
+                                     a.OrderDate <= timeRange.eTime);
+
+            query = query.CreateConditions(input);
+            return query;
         }
     }
 }

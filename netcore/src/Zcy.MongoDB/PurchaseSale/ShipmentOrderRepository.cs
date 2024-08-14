@@ -1,5 +1,7 @@
-﻿using MongoDB.Driver;
+﻿using System.Linq.Dynamic.Core;
+using MongoDB.Driver;
 using Zcy.Entity.PurchaseSale;
+using Zcy.Entity.PurchaseSale.TotalsModels;
 using Zcy.IRepository.PurchaseSale;
 
 namespace Zcy.MongoDB.PurchaseSale
@@ -126,6 +128,24 @@ namespace Zcy.MongoDB.PurchaseSale
                            a.IsDelete == false)
                 .ToListAsync();
             return entity;
+        }
+
+        /// <summary>
+        /// 采购订单统计(按天)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<ShipmentOrderTotalsTemp>> PurchaseOrderTotalsAsync(IQueryable<ShipmentOrder> queryable)
+        {
+            var tempList = await ToMongoQueryable(queryable)
+                .GroupBy(a => a.OrderDate)
+                .Select(a => new ShipmentOrderTotalsTemp()
+                {
+                    TotalsDate = a.Key,
+                    SumProductCount = a.Sum(b => b.OrderProductCount)
+                })
+                .ToDynamicListAsync<ShipmentOrderTotalsTemp>();
+
+            return tempList;
         }
 
         /// <summary>
