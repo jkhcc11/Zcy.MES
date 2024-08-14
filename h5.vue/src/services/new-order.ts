@@ -103,3 +103,52 @@ export const createPurchaseOrderApi = (input: any) => {
     data: input,
   })
 }
+
+/**
+ * 查询出货订单列表
+ * @param input 分页查询
+ */
+export const queryPageShipmentOrderApi = (input: any) => {
+  return http<PageResult<any>>({
+    method: 'GET',
+    url: `/api/mes-manager/ShipmentOrder/query`,
+    data: input,
+  })
+}
+
+/**
+ * 获取出货订单统计
+ * @param input 分页查询
+ */
+export const getShipmentOrderTotalsApi = (input: any) => {
+  return http<any>({
+    method: 'GET',
+    url: `/api/mes-manager/ShipmentOrder/get-totals`,
+    data: input,
+  })
+}
+
+/**
+ * 获取出货订单详情
+ * @param id 订单Id
+ * @returns
+ */
+export const getShipmentOrderDetailApi = (id: string) => {
+  return http<any>({
+    method: 'GET',
+    url: `/api/mes-manager/ShipmentOrder/get-detail/${id}`,
+  })
+}
+
+/**
+ * 创建出货订单
+ * @param input input
+ * @returns
+ */
+export const createShipmentOrderApi = (input: any) => {
+  return http<string>({
+    method: 'PUT',
+    url: `/api/mes-manager/ShipmentOrder/create`,
+    data: input,
+  })
+}

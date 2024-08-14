@@ -104,13 +104,12 @@ const onSubmit = async () => {
           <text>其他登录方式</text>
         </view>
         <view class="options">
-           通用模拟登录 
+           通用模拟登录
           <button @tap="onGetphonenumberSimple">
             <text class="icon icon-phone">模拟快捷登录</text>
           </button>
         </view>
-      </view> -->
-      <view class="tips">登录/注册即视为你同意《服务条款》和《ZcyMes隐私协议》</view>
+      </view>      <view class="tips">登录/注册即视为你同意《服务条款》和《ZcyMes隐私协议》</view> -->
     </view>
   </view>
 </template>

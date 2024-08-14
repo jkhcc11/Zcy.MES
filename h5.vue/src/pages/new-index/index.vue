@@ -148,6 +148,31 @@ watch(useUserInfo, async () => {
               </navigator>
             </view>
           </uni-grid-item>
+
+          <uni-grid-item>
+            <view class="grid-item-box">
+              <navigator url="/purchase-sale/shipment/edit" hover-class="navigator-hover">
+                <image
+                  model="scaleToFill"
+                  src="/static/icons/create-order.png"
+                  class="image"
+                ></image>
+                <view>
+                  <text class="text">新增出货</text>
+                </view>
+              </navigator>
+            </view>
+          </uni-grid-item>
+          <uni-grid-item>
+            <view class="grid-item-box">
+              <navigator url="/purchase-sale/shipment/index" hover-class="navigator-hover">
+                <image model="scaleToFill" src="/static/icons/sale-order.png" class="image"></image>
+                <view>
+                  <text class="text">出货订单</text>
+                </view>
+              </navigator>
+            </view>
+          </uni-grid-item>
         </uni-grid>
       </uni-card>
 

@@ -2,10 +2,20 @@ import type { AccountTypeEnum, OrderState } from '@/services/constants'
 import type { AddressItem } from './address'
 import type { PageParams } from '@/types/global'
 
-/** 订单列表参数 */
+/** 销售订单查询Input */
 export type QueryPageSaleOrderInput = PageParams & {
   //账号类型
   accountType?: string | null
+  //关键字
+  keyWord?: string | null
+  //开始时间
+  startTime?: string | null
+  //结束时间
+  endTime?: string | null
+}
+
+/** 出货订单查询Input */
+export type QueryPageShipmentOrderInput = PageParams & {
   //关键字
   keyWord?: string | null
   //开始时间

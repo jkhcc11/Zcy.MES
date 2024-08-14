@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AccountTypeEnum, AccountTypeEnumList } from '@/services/constants'
-import { getPurchaseOrderDetailApi } from '@/services/new-order'
+import { getShipmentOrderDetailApi } from '@/services/new-order'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
@@ -20,13 +20,8 @@ const query = defineProps<{
 // 获取采购订单详情
 const orderDetail = ref<any>()
 const getOrderDetail = async () => {
-  const res = await getPurchaseOrderDetailApi(query.id)
+  const res = await getShipmentOrderDetailApi(query.id)
   orderDetail.value = res.data
-}
-
-//账号类型item
-const getAccountTypeItem = (accountType: AccountTypeEnum) => {
-  return AccountTypeEnumList.filter((item) => item.value == accountType)[0]
 }
 
 onLoad(() => {
@@ -40,15 +35,8 @@ onLoad(() => {
       <!-- 客户信息 -->
       <view class="shipment">
         <view class="locate">
-          <view class="user"> 供应商：{{ orderDetail.supplierClientName }} </view>
+          <view class="user"> 客户名：{{ orderDetail.supplierClientName }} </view>
           <view class="address"> 订单日期：{{ orderDetail.orderDate }} </view>
-
-          <uni-tag
-            :text="getAccountTypeItem(orderDetail.accountType).text"
-            :type="getAccountTypeItem(orderDetail.accountType).tagType"
-            :inverted="true"
-            size="small"
-          />
         </view>
       </view>
 
@@ -60,21 +48,18 @@ onLoad(() => {
             <view class="meta">
               <view class="name ellipsis">{{ item.productName }}</view>
               <!-- 散件 -->
-              <view class="type" v-if="item.unit && item.isLoose">
-                单价：{{ item.unitPrice }} , 规格：{{ item.unit }}
-              </view>
+              <view class="type" v-if="item.unit && item.isLoose"> 规格：{{ item.unit }} </view>
 
               <!-- 非散件 -->
               <view class="type" v-if="item.unit && !item.isLoose">
-                单价：{{ item.unitPrice }} , 规格：{{ item.spec }} ({{ item.specCount }}
-                {{ item.unit }})
+                规格：{{ item.spec }} ({{ item.specCount }} {{ item.unit }})
               </view>
               <view class="type" v-if="item.remark"> 备注：{{ item.remark }} </view>
               <view class="price">
-                <view class="actual">
+                <!-- <view class="actual">
                   <text class="symbol">¥</text>
                   <text>{{ item.sumPrice }}</text>
-                </view>
+                </view> -->
               </view>
 
               <!-- 单价 -->
@@ -90,17 +75,17 @@ onLoad(() => {
         <!-- 合计 -->
         <view class="total">
           <view class="row">
-            <view class="text">采购总价: </view>
-            <view class="symbol">{{ orderDetail.orderPrice }}</view>
+            <view class="text">订单出货量: </view>
+            <view class="symbol">{{ orderDetail.orderProductCount }}</view>
           </view>
           <!-- <view class="row">
             <view class="text">运费: </view>
             <view class="symbol">{{ orderDetail.freightPrice }}</view>
           </view> -->
-          <view class="row">
+          <!-- <view class="row">
             <view class="text">订单总价: </view>
             <view class="symbol primary">{{ orderDetail.orderPrice }}</view>
-          </view>
+          </view> -->
         </view>
       </view>
 
@@ -116,6 +101,9 @@ onLoad(() => {
             >备注: {{ orderDetail.orderRemark }}</view
           >
           <view class="item">创建时间: {{ orderDetail.createdTime }}</view>
+          <view class="item" v-if="orderDetail.pickUpUser"
+            >提货人: {{ orderDetail.pickUpUser }}</view
+          >
           <view class="item">经办人: {{ orderDetail.managerUser }}</view>
         </view>
       </view>
@@ -339,11 +327,11 @@ page {
       padding: 10rpx 0;
     }
 
-    .symbol::before {
-      content: '¥';
-      font-size: 80%;
-      margin-right: 3rpx;
-    }
+    // .symbol::before {
+    //   content: '¥';
+    //   font-size: 80%;
+    //   margin-right: 3rpx;
+    // }
 
     .primary {
       color: #cf4444;
