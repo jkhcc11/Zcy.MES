@@ -49,3 +49,34 @@ export const getBusinessDefaultDateTimeRange = (diffDay: number = 365) => {
     eDate: formatDate(currentDate),
   }
 }
+
+/**
+ * 获取是否授权了定位权限
+ * https://uniapp.dcloud.net.cn/api/other/authorize.html#authorize
+ * @param { Boolean } launchAuth: 是否发起授权请求, 初次有效
+ * @return { Boolean }
+ */
+export function getUserInfoAuth(launchAuth: boolean) {
+  return new Promise((resolve) => {
+    uni.getSetting({
+      success: (res) => {
+        if (launchAuth && res.authSetting['scope.userInfo'] === undefined) {
+          return uni.authorize({
+            scope: 'scope.userInfo',
+            success: () => {
+              resolve(true)
+            },
+            fail: () => {
+              resolve(false)
+            },
+          })
+        }
+
+        resolve(res.authSetting['scope.userInfo'])
+      },
+      fail: (err) => {
+        console.error(err)
+      },
+    })
+  })
+}

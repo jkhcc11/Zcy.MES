@@ -2,13 +2,16 @@
 import { ClientTypeEnumList } from '@/services/constants'
 import { createAndUpdateSupplierClientApi } from '@/services/supplierClient'
 import { useUserInfoStore } from '@/stores'
-import { reactive } from 'vue'
+import { getUserInfoAuth } from '@/utils'
+import { onLoad } from '@dcloudio/uni-app'
+import { reactive, ref } from 'vue'
 
 // 是否适配底部安全区域
 defineProps<{
   safeAreaInsetBottom?: boolean
 }>()
 
+const isAuth = ref(-1)
 const useUserInfo = useUserInfoStore()
 
 //提交保存
@@ -85,6 +88,31 @@ const onPickerChanage = (e: any) => {
     }
   }
 }
+
+//用户信息授权
+async function userInfoAuth() {
+  // 判断是否授权
+  const authRes = await getUserInfoAuth(true)
+  console.log('authRes', authRes)
+  if (authRes) {
+    isAuth.value = 1
+  } else {
+    //拒绝，需要重新唤起 授权
+    isAuth.value = 0
+
+    wx.openSetting({
+      success: (res) => {
+        if (res.authSetting['scope.userInfo']) {
+          isAuth.value = 1
+        }
+      },
+    })
+  }
+}
+
+onLoad(async () => {
+  await userInfoAuth()
+})
 </script>
 
 <template>
@@ -139,7 +167,10 @@ const onPickerChanage = (e: any) => {
     </uni-forms>
 
     <!-- 提交按钮 -->
-    <button @tap="onSubmit" class="button">保存</button>
+    <button @tap="onSubmit" class="button" v-if="isAuth == 1">保存</button>
+    <navigator url="/pages/new-index/index" hover-class="navigator-hover" v-if="isAuth !== 1">
+      返回
+    </navigator>
     <!-- 底部占位空盒子 -->
     <view class="toolbar-height"></view>
   </scroll-view>
