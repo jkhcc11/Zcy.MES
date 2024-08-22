@@ -19,6 +19,7 @@
 
         <n-button-group size="small">
           <DownloadButton @export="onBtnClick.export"> 员工汇总 </DownloadButton>
+          <DownloadButton @export="onBtnClick.exportDateHorizontal"> 员工汇总样式1 </DownloadButton>
           <DownloadButton @export="onBtnClick.exportProduct"> 产品汇总 </DownloadButton>
         </n-button-group>
 
@@ -354,6 +355,12 @@
         //导出
         export: function () {
           commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportDayReportWork)
+        },
+        //导出日期横板
+        exportDateHorizontal: function () {
+          commonQueryListRef.value?.onDownloadFile(
+            reportWorkApi.exportDayReportWorkWithDateHorizontal
+          )
         },
         //导出产品
         exportProduct: function () {

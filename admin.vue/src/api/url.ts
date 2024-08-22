@@ -215,6 +215,7 @@ export const reportWorkApi = {
   query: '/mes-manager/ReportWork/query',
   queryForAdmin: '/mes-manager/ReportWork/query-for-admin',
   create: '/mes-manager/ReportWork/create',
+  edit: '/mes-manager/ReportWork/update-report-work-info',
   batchCreate: '/mes-manager/ReportWork/batch-create',
   delete: '/mes-manager/ReportWork/delete',
   update: '/mes-manager/ReportWork/update',
@@ -224,6 +225,8 @@ export const reportWorkApi = {
   ban: '/mes-manager/ReportWork/ban',
 
   exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work-horizontal',
+  exportDayReportWorkWithDateHorizontal:
+    '/mes-manager/ReportWork/export-day-report-work-date-horizontal',
   // exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work',
   exportProductReportWork: '/mes-manager/ReportWork/export-product-report-work',
 }

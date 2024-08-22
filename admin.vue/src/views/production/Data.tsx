@@ -81,7 +81,7 @@ export const SearchReportWorkOptions = [
     render: (formItem) => {
       return h(NDatePicker, {
         type: 'date',
-        valueFormat: 'yyyy-MM-dd 00:00:00',
+        valueFormat: 'yyyy-MM-dd',
         defaultFormattedValue: formItem.value.value,
         clearable: true,
         isDateDisabled: function (ts: number) {
@@ -100,7 +100,7 @@ export const SearchReportWorkOptions = [
     render: (formItem) => {
       return h(NDatePicker, {
         type: 'date',
-        valueFormat: 'yyyy-MM-dd 00:00:00',
+        valueFormat: 'yyyy-MM-dd',
         defaultFormattedValue: formItem.value.value,
         clearable: true,
         isDateDisabled: function (ts: number) {
@@ -127,11 +127,17 @@ export const CreateReportWorkFormOptions = [
     value: ref(null),
     required: true,
     span: 2,
-    render: (formItem) => {
+    disabled: ref(false),
+    reset(formItem: any) {
+      formItem.value.value = null
+      formItem.disabled.value = false
+    },
+    render: (formItem: any) => {
       const useCompanyCache = useCompanyCacheStore()
       return renderSelect(formItem.value, useCompanyCache.cachedItems, {
         placeholder: '员工',
         filterable: true,
+        disabled: formItem.disabled.value,
       })
     },
   },
@@ -140,12 +146,18 @@ export const CreateReportWorkFormOptions = [
     key: 'reportWorkDate',
     value: ref(null),
     span: 1, //grid-item 生效
+    disabled: ref(false),
+    reset(formItem: any) {
+      formItem.value.value = null
+      formItem.disabled.value = false
+    },
     render: (formItem: any) => {
       return h(NDatePicker, {
         type: 'date',
-        valueFormat: 'yyyy-MM-dd 00:00:00',
+        valueFormat: 'yyyy-MM-dd',
         defaultFormattedValue: formItem.value.value,
         placeholder: '报工日期，不填为当天',
+        disabled: formItem.disabled.value,
         isDateDisabled: function (ts: number) {
           return ts > Date.now()
         },
@@ -161,7 +173,15 @@ export const CreateReportWorkFormOptions = [
     value: ref(null),
     required: true,
     span: 2,
-    render: (formItem) => {
+    disabled: ref(false),
+    reset(formItem: any) {
+      formItem.value.value = null
+      formItem.disabled.value = false
+    },
+    render: (formItem: any) => {
+      if (formItem.disabled.value) {
+        return h('div', formItem.value.value)
+      }
       const useProductCache = useProductCacheStore()
       return h(NCascader, {
         options: useProductCache.cachedItems,

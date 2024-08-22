@@ -297,7 +297,7 @@ namespace Zcy.Service.Production
         }
 
         /// <summary>
-        /// 更新报工记录
+        /// 更新报工记录(仅更新实际结算价格)
         /// </summary>
         /// <returns></returns>
         public async Task<KdyResult> UpdateReportWorkAsync(UpdateReportWorkInput input)
@@ -430,6 +430,24 @@ namespace Zcy.Service.Production
             }
 
             entity.Ban();
+            await _reportWorkRepository.UpdateAsync(entity);
+            return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 更新报工信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult> UpdateReportWorkInfoAsync(UpdateReportWorkInfoInput input)
+        {
+            var entity = await _reportWorkRepository.FirstOrDefaultAsync(input.Id);
+            if (entity == null)
+            {
+                return KdyResult.Error(KdyResultCode.Error, "修改失败，无效报工记录");
+            }
+
+            entity.Remark = input.Remark;
+            entity.UpdateWordDuration(input.WordDuration);
             await _reportWorkRepository.UpdateAsync(entity);
             return KdyResult.Success();
         }

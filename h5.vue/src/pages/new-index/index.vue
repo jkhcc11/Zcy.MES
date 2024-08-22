@@ -86,7 +86,8 @@ watch(useUserInfo, async () => {
             </navigator>
           </uni-grid-item>
 
-          <uni-grid-item :index="2">
+          <!-- 过审使用，只有Boss有 -->
+          <uni-grid-item :index="2" v-if="loginInfoRef?.bossReport">
             <navigator url="/person-mgr/supplier-client-list" hover-class="navigator-hover">
               <view class="grid-item-box">
                 <image model="scaleToFill" src="/static/icons/sys-info.png" class="image"></image>

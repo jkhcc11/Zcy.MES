@@ -53,7 +53,7 @@ namespace Zcy.IService.Production
         Task<KdyResult> BatchDeleteAsync(BatchOperationsInput input);
 
         /// <summary>
-        /// 更新报工记录
+        /// 更新报工记录(仅更新实际结算价格)
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> UpdateReportWorkAsync(UpdateReportWorkInput input);
@@ -83,5 +83,11 @@ namespace Zcy.IService.Production
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> BanReportWorkAsync(long reportWorkId);
+
+        /// <summary>
+        /// 更新报工信息
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult> UpdateReportWorkInfoAsync(UpdateReportWorkInfoInput input);
     }
 }

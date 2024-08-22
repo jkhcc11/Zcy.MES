@@ -165,6 +165,15 @@ namespace Zcy.Entity.Production
         }
 
         /// <summary>
+        /// 更新工作时长
+        /// </summary>
+        public void UpdateWordDuration(decimal wordDuration)
+        {
+            WordDuration = wordDuration;
+            TotalReceivablePrice();
+        }
+
+        /// <summary>
         /// 通过
         /// </summary>
         public void Approved()

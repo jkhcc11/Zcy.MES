@@ -21,6 +21,7 @@
 
         <n-button-group size="small">
           <DownloadButton @export="onBtnClick.export"> 员工汇总 </DownloadButton>
+          <DownloadButton @export="onBtnClick.exportDateHorizontal"> 员工汇总样式1 </DownloadButton>
           <DownloadButton @export="onBtnClick.exportProduct"> 产品汇总 </DownloadButton>
         </n-button-group>
         <n-tag :bordered="false" type="warning">
@@ -87,7 +88,7 @@
       const submitForm = ref<DataFormType | null>(null)
       const updateSubmitForm = ref<DataFormType | null>(null)
       const editTitle = ref('新增')
-      const optType = ref<'create' | 'update'>('create')
+      const optType = ref<'create' | 'update' | 'edit'>('create')
 
       //表格
       const table = useTable()
@@ -143,8 +144,10 @@
         {
           title: '备注',
           key: 'remark',
-          width: 50,
-          ellipsis: true,
+          width: 80,
+          ellipsis: {
+            tooltip: true,
+          },
         },
         {
           title: '状态',
@@ -225,6 +228,11 @@
               } as TableActionModel)
             } else {
               tempArray.push({
+                label: '编辑',
+                type: 'info',
+                onClick: onBtnClick.edit.bind(null, rowData),
+              } as TableActionModel)
+              tempArray.push({
                 label: '废弃',
                 type: 'error',
                 onClick: onBtnClick.ban.bind(null, rowData),
@@ -246,6 +254,29 @@
           optType.value = 'create'
           editTitle.value = '新增'
           submitForm.value?.reset()
+          commonQueryListRef.value?.showDialog()
+        },
+        //修改
+        edit: function (rowData: any) {
+          optType.value = 'edit'
+          editTitle.value = `【${rowData.employeeNickName} 】报工编辑`
+
+          CreateReportWorkFormOptions.forEach((it: any) => {
+            if (it.key === 'productProcessId') {
+              it.value.value = `${rowData['productName']}/${rowData['productCraftName']}`
+            } else {
+              it.value.value = rowData[it.key] || null
+            }
+
+            if (
+              it.key === 'employeeId' ||
+              it.key === 'reportWorkDate' ||
+              it.key === 'productProcessId'
+            ) {
+              it.disabled.value = true
+            }
+          })
+
           commonQueryListRef.value?.showDialog()
         },
         //驳回
@@ -333,6 +364,11 @@
             let pd = submitForm.value?.generatorParams()
             let postUrl = reportWorkApi.create
             let method = 'PUT'
+            if (optType.value === 'edit') {
+              postUrl = reportWorkApi.edit
+              method = 'POST'
+            }
+
             submitLoading.value = true
             post({
               url: postUrl,
@@ -366,6 +402,12 @@
         //导出
         export: function () {
           commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportDayReportWork)
+        },
+        //导出日期横板
+        exportDateHorizontal: function () {
+          commonQueryListRef.value?.onDownloadFile(
+            reportWorkApi.exportDayReportWorkWithDateHorizontal
+          )
         },
         //导出产品
         exportProduct: function () {

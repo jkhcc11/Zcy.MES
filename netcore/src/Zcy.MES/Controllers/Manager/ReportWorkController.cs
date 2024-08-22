@@ -81,7 +81,7 @@ namespace Zcy.MES.Controllers.Manager
         }
 
         /// <summary>
-        /// 更新报工
+        /// 更新报工(仅更新实际结算)
         /// </summary>
         /// <returns></returns>
         [HttpPost("update")]
@@ -173,6 +173,30 @@ namespace Zcy.MES.Controllers.Manager
             var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
             var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 员工汇总.xlsx";
             return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
+        }
+
+        /// <summary>
+        /// 导出员工报工-日期横板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("export-day-report-work-date-horizontal")]
+        public async Task<IActionResult> ExportDayReportWorkWithDateHorizontalAsync([FromQuery] QueryPageReportWorkInput input)
+        {
+            var fileBytes = await _reportWorkImportAndExportAppService.ExportDayReportWorkWithDateHorizontalAsync(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+            var downFileName = $"{timeRange.sTime:yyyy年MM月dd日}至{timeRange.eTime:yyyy年MM月dd日} 员工汇总.xlsx";
+            return File(fileBytes, ZcyMesConst.DownXlsxContextType, downFileName);
+        }
+
+        /// <summary>
+        /// 更新报工信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("update-report-work-info")]
+        public async Task<KdyResult> UpdateReportWorkInfoAsync(UpdateReportWorkInfoInput input)
+        {
+            var result = await _reportWorkService.UpdateReportWorkInfoAsync(input);
+            return result;
         }
     }
 }
