@@ -24,6 +24,11 @@
           <DownloadButton @export="onBtnClick.exportDateHorizontal"> 员工汇总样式1 </DownloadButton>
           <DownloadButton @export="onBtnClick.exportProduct"> 产品汇总 </DownloadButton>
         </n-button-group>
+        <n-button-group size="small">
+          <n-button strong secondary round type="info" @click="onBtnClick.printPreview">
+            打印员工报工
+          </n-button>
+        </n-button-group>
         <n-tag :bordered="false" type="warning">
           计时总工时： {{ totalsRef.timingWordDuration ?? '-' }}</n-tag
         >
@@ -49,6 +54,55 @@
         preset="grid-item"
       />
     </template>
+
+    <template #hideElement>
+      <ModalDialog
+        ref="printDialogRef"
+        @confirm="onBtnClick.onPrint"
+        :maskClosable="false"
+        :isClosable="true"
+        title="打印数据"
+        :submit-loading="submitLoading"
+        contentHeight="60vh"
+        contentWidth="80vh"
+      >
+        <template #content>
+          <div ref="zcyPrintRef">
+            <n-skeleton v-if="loadingPrintData" :width="146" :sharp="false" size="medium" />
+            <n-table
+              v-else
+              :bordered="true"
+              :single-line="false"
+              size="small"
+              class="zcy_print_table"
+            >
+              <tbody v-for="(employeeItem, index) of printDataRef.data" :key="index">
+                <tr>
+                  <th :colspan="33" style="text-align: center">
+                    {{ employeeItem.headTitle }}
+                  </th>
+                </tr>
+                <tr>
+                  <th>产品工艺/日期</th>
+                  <th v-for="titleItem in employeeItem.tableTitleArray" :key="titleItem">{{
+                    titleItem
+                  }}</th>
+                </tr>
+                <tr v-for="rowItem in employeeItem.tableRowsItems" :key="rowItem">
+                  <td v-for="colItem in rowItem.columnItems" :key="colItem">{{ colItem }}</td>
+                </tr>
+                <!-- 空行线 -->
+                <tr v-if="index < printDataRef.data.length - 1">
+                  <td :colspan="33" style="text-align: center">
+                    -----------------------------------------------剪切线-----------------------------------------------------
+                  </td>
+                </tr></tbody
+              >
+            </n-table>
+          </div>
+        </template>
+      </ModalDialog>
+    </template>
   </CommonQueryList>
 </template>
 
@@ -58,7 +112,7 @@
   import { TableActionModel, useRenderAction, useTable } from '@/hooks/table'
   import { useMessage, useDialog, NTag } from 'naive-ui'
   import { defineComponent, h, onMounted, reactive, ref } from 'vue'
-  import { DataFormType } from '@/types/components'
+  import { DataFormType, ModalDialogType } from '@/types/components'
   import {
     SearchReportWorkOptions,
     CreateReportWorkFormOptions,
@@ -69,6 +123,7 @@
   import useProductCacheStore from '@/store/modules/product'
   import useCompanyCacheStore from '@/store/modules/company'
   import { useRouter } from 'vue-router'
+  import { VuePrintNext } from 'vue-print-next'
   export default defineComponent({
     name: 'ReportWorkAdmin',
     setup() {
@@ -81,6 +136,14 @@
       const totalsRef = reactive({
         timingWordDuration: null,
         countingWordDuration: null,
+      })
+
+      const zcyPrintRef = ref<HTMLElement | undefined>(undefined)
+      const printDialogRef = ref<ModalDialogType | null>(null)
+
+      const loadingPrintData = ref(false)
+      const printDataRef = reactive({
+        data: [] as any[],
       })
 
       //提交
@@ -413,6 +476,33 @@
         exportProduct: function () {
           commonQueryListRef.value?.onDownloadFile(reportWorkApi.exportProductReportWork)
         },
+        //打印预览
+        printPreview: function () {
+          loadingPrintData.value = true
+          const params = commonQueryListRef.value?.getQueryParams()
+          get({
+            url: reportWorkApi.queryReportWithPrint,
+            data: params,
+          })
+            .then((res) => {
+              printDataRef.data = res.data
+            })
+            .finally(() => {
+              loadingPrintData.value = false
+            })
+          printDialogRef.value?.show()
+        },
+        //打印
+        onPrint: function () {
+          // console.log('zcyPrintRef.value', zcyPrintRef.value)
+          //todo:这里有个bug 如果不加preview: true时，打印无数据
+          new VuePrintNext({
+            el: zcyPrintRef.value,
+            preview: true,
+            popTitle: '员工报工记录',
+          })
+          //new VuePrintNext({ el: zcyPrintRef.value })
+        },
       }
 
       //刷新
@@ -428,6 +518,8 @@
       return {
         reportWorkApi,
         commonQueryListRef,
+        printDialogRef,
+        zcyPrintRef,
         tableColumns,
         SearchReportWorkOptions,
         CreateReportWorkFormOptions,
@@ -438,8 +530,27 @@
         editTitle,
         totalsRef,
         optType,
+        loadingPrintData,
+        printDataRef,
         onBtnClick,
       }
     },
   })
 </script>
+
+<style lang="scss" scoped>
+  .zcy_print_table {
+    border-top: 1px solid #000 !important;
+    border-left: 1px solid #000 !important;
+  }
+  .zcy_print_table th {
+    font-weight: bolder;
+  }
+
+  .zcy_print_table th,
+  .zcy_print_table td {
+    border-bottom: 0.5px solid #000 !important;
+    border-right: 0.5px solid #000 !important;
+    background: none !important;
+  }
+</style>

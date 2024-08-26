@@ -229,6 +229,7 @@ export const reportWorkApi = {
     '/mes-manager/ReportWork/export-day-report-work-date-horizontal',
   // exportDayReportWork: '/mes-manager/ReportWork/export-day-report-work',
   exportProductReportWork: '/mes-manager/ReportWork/export-product-report-work',
+  queryReportWithPrint: '/mes-manager/ReportWork/query-report-with-print',
 }
 
 //用户

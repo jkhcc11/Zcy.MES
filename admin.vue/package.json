@@ -25,6 +25,7 @@
     "screenfull": "^5.1.0",
     "tiny-emitter": "^2.1.0",
     "vue": "^3.2.25",
+    "vue-print-next": "^1.0.8",
     "vue-router": "^4.0.10",
     "vuedraggable": "^4.0.3",
     "vuex": "^4.0.2",
