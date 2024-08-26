@@ -89,5 +89,11 @@ namespace Zcy.IService.Production
         /// </summary>
         /// <returns></returns>
         Task<KdyResult> UpdateReportWorkInfoAsync(UpdateReportWorkInfoInput input);
+
+        /// <summary>
+        /// 员工报工记录（无分页，前端打印使用）
+        /// </summary>
+        /// <returns></returns>
+        Task<KdyResult<List<QueryEmployeeDayReportWorkWithDateDto>>> QueryEmployeeDayReportWorkWithDateAsync(QueryPageReportWorkInput input);
     }
 }

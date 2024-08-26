@@ -101,6 +101,7 @@ namespace Zcy.Dto
             CreateMap<ReportWork, ExportReportWorkWithProductDto>()
                 .ForMember(dest => dest.ReportWorkDate,
                     target => target.MapFrom(source => source.ReportWorkDate.ToString(ZcyMesConst.DateFormat)));
+            CreateMap<ReportWork, EmployeeDayReportWorkWithDateItem>();
 
 
             //订单

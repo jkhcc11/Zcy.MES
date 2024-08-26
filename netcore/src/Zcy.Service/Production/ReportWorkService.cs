@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper.Internal;
+using Microsoft.Extensions.Logging;
 using Zcy.BaseInterface;
 using Zcy.BaseInterface.BaseModel;
 using Zcy.BaseInterface.Entities;
@@ -450,6 +451,139 @@ namespace Zcy.Service.Production
             entity.UpdateWordDuration(input.WordDuration);
             await _reportWorkRepository.UpdateAsync(entity);
             return KdyResult.Success();
+        }
+
+        /// <summary>
+        /// 员工报工记录（无分页，前端打印使用）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<KdyResult<List<QueryEmployeeDayReportWorkWithDateDto>>> QueryEmployeeDayReportWorkWithDateAsync(
+            QueryPageReportWorkInput input)
+        {
+            #region db查询
+            var query = await _reportWorkRepository.GetQueryableAsync();
+            query = query.CreateConditions(input);
+            var timeRange = BaseTimeRangeInputExt.GetTimeRange(input);
+
+            query = query.Where(a => a.ReportWorkDate >= timeRange.sTime &&
+                                     a.ReportWorkDate <= timeRange.eTime);
+            var dbReportWork = await _reportWorkRepository.ToListAsync(query);
+            #endregion
+
+            if ((timeRange.eTime - timeRange.sTime).TotalDays > 31)
+            {
+                return KdyResult.Error<List<QueryEmployeeDayReportWorkWithDateDto>>(KdyResultCode.Error, "打印数据最多只能一个月");
+            }
+
+            if (dbReportWork.Count <= 0)
+            {
+                return KdyResult.Error<List<QueryEmployeeDayReportWorkWithDateDto>>(KdyResultCode.Error, "无有效数据");
+            }
+
+            var dayReportWorkDto = BaseMapper
+                .Map<IReadOnlyList<ReportWork>, List<EmployeeDayReportWorkWithDateItem>>(dbReportWork);
+            //暂时不考虑员工改名
+            var employeeList = dayReportWorkDto
+                .Select(a => a.EmployeeNickName)
+                .Distinct()
+                .ToList();
+            var result = new List<QueryEmployeeDayReportWorkWithDateDto>();
+            var timeFormat = "dd";
+            if (dayReportWorkDto.Select(a => a.ReportWorkDate.Month).Distinct().Count() > 1)
+            {
+                timeFormat = "MM/dd";
+            }
+
+            //员工数据
+            foreach (var employeeItem in employeeList)
+            {
+                //当前员工数据
+                var employeeDayReportWorkWithDateItems = dayReportWorkDto
+                    .Where(a => a.EmployeeNickName == employeeItem)
+                    .ToList();
+
+                //行数据
+                var tableRowsItems = new List<TableRowsItem>();
+                //工艺列表
+                var currentCraftList =
+                    employeeDayReportWorkWithDateItems
+                        .GroupBy(a => new
+                        {
+                            a.ProductName,
+                            a.ProductCraftName,
+                            a.BillingType
+                        })
+                        .OrderBy(a => a.Key.ProductName)
+                        .ThenBy(a => a.Key.ProductCraftName)
+                        .ToList();
+                //行表头
+                var tableTitleArray = new List<string>();
+
+                foreach (var currentCraftItem in currentCraftList)
+                {
+                    //当前列数据
+                    var currentColumnData = new TableRowsItem()
+                    {
+                        ColumnItems = new List<object>
+                        {
+                            $"{currentCraftItem.Key.ProductName}-{currentCraftItem.Key.ProductCraftName}"
+                        }
+                    };
+                    var dayItem = timeRange.sTime;
+                    while (dayItem <= timeRange.eTime)
+                    {
+                        var wordDuration = employeeDayReportWorkWithDateItems
+                            .FirstOrDefault(a => a.ProductName == currentCraftItem.Key.ProductName &&
+                                                 a.ProductCraftName == currentCraftItem.Key.ProductCraftName &&
+                                                 a.ReportWorkDate == dayItem)?.WordDuration;
+                        if (wordDuration != null)
+                        {
+                            if (currentCraftItem.Key.ProductCraftName == "请假")
+                            {
+                                currentColumnData.ColumnItems.Add(wordDuration == 8
+                                    ? "请假一天"
+                                    : wordDuration.Value.ToString("#,0.0"));
+                            }
+                            else if (currentCraftItem.Key.BillingType == BillingTypeEnum.Timing)
+                            {
+                                //计时2位
+                                currentColumnData.ColumnItems.Add(wordDuration.Value.ToString("#,0.0"));
+                            }
+                            else
+                            {
+                                //计件不用
+                                currentColumnData.ColumnItems.Add(wordDuration.Value.ToString("#,0"));
+                            }
+                        }
+                        else
+                        {
+                            currentColumnData.ColumnItems.Add(string.Empty);
+                        }
+
+                        tableTitleArray.TryAdd(dayItem.ToString(timeFormat));
+                        dayItem = dayItem.AddDays(1);
+                    }
+
+                    //合计
+                    tableTitleArray.TryAdd("合计");
+                    currentColumnData.ColumnItems.Add(employeeDayReportWorkWithDateItems
+                        .Where(a => a.ProductName == currentCraftItem.Key.ProductName &&
+                                             a.ProductCraftName == currentCraftItem.Key.ProductCraftName)
+                        .Sum(b => b.WordDuration).ToString("#,0.0"));
+                    tableRowsItems.Add(currentColumnData);
+                }
+
+                //员工数据
+                var resultItem = new QueryEmployeeDayReportWorkWithDateDto(employeeItem)
+                {
+                    TableTitleArray = tableTitleArray,
+                    TableRowsItems = tableRowsItems,
+                    HeadTitle = $"{employeeItem} {timeRange.sTime:MM/dd}至{timeRange.eTime:MM/dd} 报工记录"
+                };
+                result.Add(resultItem);
+            }
+
+            return KdyResult.Success(result);
         }
     }
 }

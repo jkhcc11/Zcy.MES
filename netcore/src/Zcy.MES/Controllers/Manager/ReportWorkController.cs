@@ -198,5 +198,17 @@ namespace Zcy.MES.Controllers.Manager
             var result = await _reportWorkService.UpdateReportWorkInfoAsync(input);
             return result;
         }
+
+        /// <summary>
+        /// 员工报工记录（无分页，前端打印使用）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("query-report-with-print")]
+        public async Task<KdyResult<List<QueryEmployeeDayReportWorkWithDateDto>>> QueryEmployeeDayReportWorkWithDateAsync(
+            [FromQuery] QueryPageReportWorkInput input)
+        {
+            var result = await _reportWorkService.QueryEmployeeDayReportWorkWithDateAsync(input);
+            return result;
+        }
     }
 }
