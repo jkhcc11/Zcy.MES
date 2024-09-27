@@ -75,29 +75,28 @@
               :single-line="false"
               size="small"
               class="zcy_print_table"
+              v-for="(employeeItem, index) of printDataRef.data"
+              :key="index"
             >
-              <tbody v-for="(employeeItem, index) of printDataRef.data" :key="index">
+              <tbody>
                 <tr>
                   <th :colspan="33" style="text-align: center">
-                    {{ employeeItem.headTitle }}
+                    表格序号：{{ index + 1 }}----{{ employeeItem.headTitle }}
                   </th>
                 </tr>
                 <tr>
-                  <th>产品工艺/日期</th>
+                  <th>工艺/日期</th>
                   <th v-for="titleItem in employeeItem.tableTitleArray" :key="titleItem">{{
                     titleItem
                   }}</th>
                 </tr>
                 <tr v-for="rowItem in employeeItem.tableRowsItems" :key="rowItem">
                   <td v-for="colItem in rowItem.columnItems" :key="colItem">{{ colItem }}</td>
-                </tr>
-                <!-- 空行线 -->
-                <tr v-if="index < printDataRef.data.length - 1">
-                  <td :colspan="33" style="text-align: center">
-                    -----------------------------------------------剪切线-----------------------------------------------------
-                  </td>
                 </tr></tbody
               >
+              <tfoot v-if="index != 0">
+                <n-divider dashed> 裁剪线 </n-divider>
+              </tfoot>
             </n-table>
           </div>
         </template>

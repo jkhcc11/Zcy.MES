@@ -532,27 +532,42 @@ namespace Zcy.Service.Production
                     var dayItem = timeRange.sTime;
                     while (dayItem <= timeRange.eTime)
                     {
-                        var wordDuration = employeeDayReportWorkWithDateItems
+                        var workDuration = employeeDayReportWorkWithDateItems
                             .FirstOrDefault(a => a.ProductName == currentCraftItem.Key.ProductName &&
                                                  a.ProductCraftName == currentCraftItem.Key.ProductCraftName &&
                                                  a.ReportWorkDate == dayItem)?.WordDuration;
-                        if (wordDuration != null)
+                        if (workDuration != null)
                         {
                             if (currentCraftItem.Key.ProductCraftName == "请假")
                             {
-                                currentColumnData.ColumnItems.Add(wordDuration == 8
-                                    ? "请假一天"
-                                    : wordDuration.Value.ToString("#,0.0"));
+                                switch (workDuration)
+                                {
+                                    case 8:
+                                        {
+                                            currentColumnData.ColumnItems.Add("请假一天");
+                                            break;
+                                        }
+                                    //case 0.5M:
+                                    //    {
+                                    //        currentColumnData.ColumnItems.Add("请假一天");
+                                    //        break;
+                                    //    }
+                                    default:
+                                        {
+                                            currentColumnData.ColumnItems.Add(workDuration);
+                                            break;
+                                        }
+                                }
                             }
                             else if (currentCraftItem.Key.BillingType == BillingTypeEnum.Timing)
                             {
                                 //计时2位
-                                currentColumnData.ColumnItems.Add(wordDuration.Value.ToString("#,0.0"));
+                                currentColumnData.ColumnItems.Add(workDuration.Value.ToString("#,0.0"));
                             }
                             else
                             {
                                 //计件不用
-                                currentColumnData.ColumnItems.Add(wordDuration.Value.ToString("#,0"));
+                                currentColumnData.ColumnItems.Add(workDuration.Value.ToString("#,0"));
                             }
                         }
                         else
@@ -566,10 +581,14 @@ namespace Zcy.Service.Production
 
                     //合计
                     tableTitleArray.TryAdd("合计");
-                    currentColumnData.ColumnItems.Add(employeeDayReportWorkWithDateItems
+                    var sumCount = employeeDayReportWorkWithDateItems
                         .Where(a => a.ProductName == currentCraftItem.Key.ProductName &&
-                                             a.ProductCraftName == currentCraftItem.Key.ProductCraftName)
-                        .Sum(b => b.WordDuration).ToString("#,0.0"));
+                                    a.ProductCraftName == currentCraftItem.Key.ProductCraftName)
+                        .Sum(b => b.WordDuration);
+                    //整数不显示.0 小数显示.0
+                    currentColumnData.ColumnItems.Add(sumCount % 1 == 0 ?
+                        sumCount.ToString("#,0") :
+                        sumCount.ToString("#,0.0"));
                     tableRowsItems.Add(currentColumnData);
                 }
 
@@ -583,7 +602,8 @@ namespace Zcy.Service.Production
                 result.Add(resultItem);
             }
 
-            return KdyResult.Success(result);
+            //行数少的在前面，这样凑在一张纸上
+            return KdyResult.Success(result.OrderBy(a => a.TableRowsItems.Count).ToList());
         }
     }
 }
