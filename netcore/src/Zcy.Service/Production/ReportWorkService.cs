@@ -559,15 +559,11 @@ namespace Zcy.Service.Production
                                         }
                                 }
                             }
-                            else if (currentCraftItem.Key.BillingType == BillingTypeEnum.Timing)
-                            {
-                                //计时2位
-                                currentColumnData.ColumnItems.Add(workDuration.Value.ToString("#,0.0"));
-                            }
                             else
                             {
-                                //计件不用
-                                currentColumnData.ColumnItems.Add(workDuration.Value.ToString("#,0"));
+                                currentColumnData.ColumnItems.Add(workDuration.Value % 1 == 0 ?
+                                    (int)workDuration.Value :
+                                    workDuration.Value);
                             }
                         }
                         else
@@ -585,10 +581,8 @@ namespace Zcy.Service.Production
                         .Where(a => a.ProductName == currentCraftItem.Key.ProductName &&
                                     a.ProductCraftName == currentCraftItem.Key.ProductCraftName)
                         .Sum(b => b.WordDuration);
-                    //整数不显示.0 小数显示.0
                     currentColumnData.ColumnItems.Add(sumCount % 1 == 0 ?
-                        sumCount.ToString("#,0") :
-                        sumCount.ToString("#,0.0"));
+                        (int)sumCount : sumCount);
                     tableRowsItems.Add(currentColumnData);
                 }
 

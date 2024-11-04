@@ -90,7 +90,7 @@
                     titleItem
                   }}</th>
                 </tr>
-                <tr v-for="rowItem in employeeItem.tableRowsItems" :key="rowItem">
+                <tr v-for="rowItem in employeeItem.tableRowsItems" :key="rowItem" class="tr_number">
                   <td v-for="colItem in rowItem.columnItems" :key="colItem">{{ colItem }}</td>
                 </tr></tbody
               >
@@ -551,5 +551,10 @@
     border-bottom: 0.5px solid #000 !important;
     border-right: 0.5px solid #000 !important;
     background: none !important;
+    font-family: '微软雅黑';
+  }
+
+  .zcy_print_table .tr_number {
+    font-size: 16px;
   }
 </style>
